@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CustomerTier {
+  STANDARD
+  WHOLESALE
+  VIP
+}
+
+enum CustomerStatus {
+  ACTIVE
+  AT_RISK
+  INACTIVE
+}
+
+model Customer {
+  id              String         @id @default(uuid())
+  businessName    String         // Tên Salon / Supply Store
+  contactPerson   String         // Tên chủ tiệm / người phụ trách
+  phone           String         @unique // Số điện thoại Mỹ (+1...)
+  email           String?
+  address         String?
+  city            String?
+  state           String?        @default("TX")
+  zipCode         String?
+  birthday        DateTime?      // Ngày sinh chủ tiệm
+  assignedSale    String         @default("admin") // Email / Tên Sale phụ trách
+  tier            CustomerTier   @default(STANDARD)
+  status          CustomerStatus @default(ACTIVE)
+  notes           String?
+  
+  orders          Order[]
+  quotes          Quote[]
+  churnSurveys    ChurnSurvey[]
+  smsLogs         SmsLog[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@map("customers")
+}
+
+model Product {
+  id             String          @id @default(uuid())
+  sku            String          @unique
+  name           String
+  category       String          @default("Z Brushes")
+  description    String?
+  imageUrl       String?         // URL hoặc path ảnh trích xuất từ file docx
+  wholesalePrice Float
+  retailPrice    Float?
+  currentStock   Int             @default(0)
+  minStockAlert  Int             @default(10)
+  location       String?         @default("Houston Hub")
+
+  stockMovements StockMovement[]
+  orderItems     OrderItem[]
+  quoteItems     QuoteItem[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("products")
+}
+
+enum MovementType {
+  INBOUND
+  OUTBOUND
+  ADJUSTMENT
+}
+
+model StockMovement {
+  id          String       @id @default(uuid())
+  productId   String
+  type        MovementType
+  quantity    Int
+  referenceNo String?
+  notes       String?
+  createdUser String       @default("system")
+  createdAt   DateTime     @default(now())
+
+  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("stock_movements")
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+}
+
+model Quote {
+  id          String      @id @default(uuid())
+  quoteNumber String      @unique
+  customerId  String
+  totalAmount Float
+  validUntil  DateTime
+  notes       String?
+  status      QuoteStatus @default(DRAFT)
+  createdUser String      @default("admin")
+
+  items       QuoteItem[]
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id        String   @id @default(uuid())
+  quoteId   String
+  productId String
+  quantity  Int
+  unitPrice Float
+  discount  Float    @default(0)
+
+  quote     Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("quote_items")
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+model Order {
+  id            String        @id @default(uuid())
+  orderNumber   String        @unique
+  customerId    String
+  totalAmount   Float
+  paidAmount    Float         @default(0)
+  paymentStatus PaymentStatus @default(UNPAID)
+  dueDate       DateTime
+  saleRep       String        @default("admin")
+  notes         String?
+  
+  items         OrderItem[]
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Float
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+enum DipReason {
+  HIGH_INVENTORY_REMAINING
+  PRICE_COMPETITION
+  PRODUCT_QUALITY_FEEDBACK
+  DELIVERY_DELAY
+  STORE_TEMPORARILY_CLOSED
+  OTHER
+}
+
+model ChurnSurvey {
+  id            String    @id @default(uuid())
+  customerId    String
+  analysisMonth String    // "YYYY-MM"
+  dropPercent   Float     // VD: -55%
+  reason        DipReason
+  saleNotes     String?
+  actionPlan    String?
+  saleRep       String
+  isResolved    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("churn_surveys")
+}
+
+enum SmsType {
+  PROMOTION
+  BIRTHDAY
+  AR_REMINDER
+  FOLLOW_UP
+}
+
+model SmsLog {
+  id         String   @id @default(uuid())
+  customerId String?
+  toPhone    String
+  fromPhone  String   @default("+17133306165")
+  content    String
+  type       SmsType  @default(FOLLOW_UP)
+  status     String   @default("SENT") // SENT, RECEIVED, FAILED
+  providerId String?
+  createdAt  DateTime @default(now())
+
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@map("sms_logs")
+}
+
+model B2BLead {
+  id               String   @id @default(uuid())
+  salonName        String
+  ownerName        String?
+  phone            String   @unique
+  city             String?
+  state            String?  @default("TX")
+  address          String?
+  googleReviewCount Int?    @default(0)
+  rating           Float?   @default(0)
+  icpScore         Int      @default(50) // 1-100
+  personalizedHook String?
+  status           String   @default("NEW") // NEW, CONTACTED, QUALIFIED, CONVERTED, REJECTED
+  assignedSale     String?  @default("admin")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("b2b_leads")
+}

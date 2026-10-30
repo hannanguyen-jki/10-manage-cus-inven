@@ -1,0 +1,65 @@
+services:
+  erp-db:
+    image: postgres:16-alpine
+    container_name: jki-erp-db
+    restart: always
+    environment:
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: JkiErp2026PasswordSecure
+      POSTGRES_DB: jki_erp
+    volumes:
+      - jki_erp_db_data:/var/lib/postgresql/data
+    networks:
+      - erp-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d jki_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  erp-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jki-erp-web
+    restart: always
+    depends_on:
+      erp-db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://erp_user:JkiErp2026PasswordSecure@erp-db:5432/jki_erp?schema=public"
+      ATTENDANCE_SSO_URL: "http://attendance-web:3000/api/auth/verify"
+      JWT_SECRET: "jkiocean-erp-jwt-secret-key-2026-very-secure"
+      QUO_API_KEY: "${QUO_API_KEY:-quo_live_secret_key}"
+      QUO_PHONE_NUMBER: "+17133306165"
+      NODE_ENV: "production"
+      PORT: "3000"
+    networks:
+      - coolify
+      - erp-internal
+    labels:
+      - "coolify.managed=true"
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      # HTTP -> HTTPS Redirect
+      - "traefik.http.routers.erp-http.entrypoints=http"
+      - "traefik.http.routers.erp-http.rule=Host(`manage.jkioceanhub.com`)"
+      - "traefik.http.routers.erp-http.middlewares=erp-redirect"
+      - "traefik.http.middlewares.erp-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.erp-redirect.redirectscheme.permanent=true"
+      # HTTPS Router
+      - "traefik.http.routers.erp.entrypoints=https"
+      - "traefik.http.routers.erp.rule=Host(`manage.jkioceanhub.com`)"
+      - "traefik.http.routers.erp.tls=true"
+      - "traefik.http.routers.erp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.erp.loadbalancer.server.port=3000"
+
+volumes:
+  jki_erp_db_data:
+    name: jki_erp_db_data
+
+networks:
+  coolify:
+    external: true
+  erp-internal:
+    driver: bridge

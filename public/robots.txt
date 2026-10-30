@@ -1,0 +1,3 @@
+# JKIOCEAN Hub
+User-agent: *
+Allow: /
