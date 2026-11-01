@@ -16,7 +16,7 @@ export async function POST(
     const quote = await getQuoteDetail(id);
     if (!quote) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy báo giá" },
+        { success: false, error: "Quote not found" },
         { status: 404 }
       );
     }
@@ -24,9 +24,9 @@ export async function POST(
     const phone = targetPhone || quote.customer.phone;
     const messageContent =
       customMessage ||
-      `JKIOCEAN Houston Hub: Chao quy khach ${quote.customer.contactPerson} (${quote.customer.businessName}), chung toi xin gui Bao gia #${quote.quoteNumber}. Tong cong: $${quote.totalAmount.toFixed(
+      `JKIOCEAN Houston Hub: Hi ${quote.customer.contactPerson} (${quote.customer.businessName}), here is your official wholesale quote #${quote.quoteNumber}. Total: $${quote.totalAmount.toFixed(
         2
-      )}. Hieu luc den: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Free local delivery Houston! Lien he hotline: +1-713-330-6165 de duoc giao hang nhanh nhat.`;
+      )}. Valid until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Free local Houston delivery included. Call us at +1-713-330-6165 to confirm your order.`;
 
     // Try logging to prisma if available
     if (process.env.DATABASE_URL) {
@@ -53,7 +53,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: `Đã gửi báo giá qua Quo SMS đến ${phone} thành công!`,
+      message: `Quote sent successfully via Quo SMS to ${phone}!`,
       sms: {
         toPhone: phone,
         fromPhone: "+17133306165",
@@ -64,7 +64,7 @@ export async function POST(
   } catch (error: any) {
     console.error("Send SMS Error:", error);
     return NextResponse.json(
-      { success: false, error: error?.message || "Lỗi khi gửi SMS" },
+      { success: false, error: error?.message || "Error sending SMS" },
       { status: 500 }
     );
   }

@@ -13,8 +13,8 @@ let mockOrdersState: any[] = [
     paymentStatus: PaymentStatus.PARTIAL,
     dueDate: new Date(Date.now() - 12 * 86400000).toISOString(), // 12 days ago (Current 0-30)
     createdAt: new Date(Date.now() - 25 * 86400000).toISOString(),
-    saleRep: "Sơn Nguyễn",
-    notes: "Đơn cọ Kolinsky #14 và cọ oval",
+    saleRep: "Johnny Tran",
+    notes: "Kolinsky #14 and oval brush order",
     customer: {
       id: "cus-001",
       businessName: "Nails of America - Galleria",
@@ -34,12 +34,12 @@ let mockOrdersState: any[] = [
     paymentStatus: PaymentStatus.OVERDUE,
     dueDate: new Date(Date.now() - 42 * 86400000).toISOString(), // 42 days overdue (31-60)
     createdAt: new Date(Date.now() - 60 * 86400000).toISOString(),
-    saleRep: "Kevin Trần",
-    notes: "Lô hàng Z-Brush Master Set 50 cây",
+    saleRep: "Kevin Tran",
+    notes: "Z-Brush Master Set batch (50 pcs)",
     customer: {
       id: "cus-002",
       businessName: "Venetian Nail Spa - Katy",
-      contactPerson: "Jennifer Lê",
+      contactPerson: "Jennifer Le",
       phone: "+12815550143",
       email: "jenny@venetianspa.com",
       state: "TX",
@@ -55,12 +55,12 @@ let mockOrdersState: any[] = [
     paymentStatus: PaymentStatus.OVERDUE,
     dueDate: new Date(Date.now() - 74 * 86400000).toISOString(), // 74 days overdue (61-90)
     createdAt: new Date(Date.now() - 95 * 86400000).toISOString(),
-    saleRep: "Sơn Nguyễn",
-    notes: "Chủ hẹn trả sau khi mở thêm chi nhánh mới",
+    saleRep: "Johnny Tran",
+    notes: "Owner requested payment deferral until grand opening of new branch",
     customer: {
       id: "cus-003",
       businessName: "Luxury Nails & Spa Austin",
-      contactPerson: "David Vũ",
+      contactPerson: "David Vu",
       phone: "+15125550188",
       email: "davidvu@luxurynails.com",
       state: "TX",
@@ -76,12 +76,12 @@ let mockOrdersState: any[] = [
     paymentStatus: PaymentStatus.OVERDUE,
     dueDate: new Date(Date.now() - 110 * 86400000).toISOString(), // 110 days overdue (>90)
     createdAt: new Date(Date.now() - 130 * 86400000).toISOString(),
-    saleRep: "Alex Đặng",
-    notes: "Đã gọi điện nhắc nợ 3 lần qua Quo, cần ghé salon trực tiếp",
+    saleRep: "Alex Dang",
+    notes: "Followed up 3 times via Quo SMS, scheduled in-person visit",
     customer: {
       id: "cus-004",
       businessName: "Diamond Nail Bar Dallas",
-      contactPerson: "Michael Hoàng",
+      contactPerson: "Michael Hoang",
       phone: "+12145550177",
       email: "michael@diamondnailbar.com",
       state: "TX",
@@ -97,12 +97,12 @@ let mockOrdersState: any[] = [
     paymentStatus: PaymentStatus.UNPAID,
     dueDate: new Date(Date.now() + 5 * 86400000).toISOString(), // 5 days remaining (Current 0-30)
     createdAt: new Date(Date.now() - 10 * 86400000).toISOString(),
-    saleRep: "Sơn Nguyễn",
-    notes: "Đơn giao tuần trước, hạn thanh toán Net-15",
+    saleRep: "Johnny Tran",
+    notes: "Order delivered last week, Net-15 payment terms",
     customer: {
       id: "cus-005",
       businessName: "Regal Nails Woodlands",
-      contactPerson: "Kimberly Phạm",
+      contactPerson: "Kimberly Pham",
       phone: "+18325550129",
       email: "kim@regalwoodlands.com",
       state: "TX",
@@ -179,29 +179,29 @@ export async function GET() {
       const daysPastDue = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
       let agingBucket: "0-30" | "31-60" | "61-90" | ">90" = "0-30";
-      let bucketLabel = "Current (0-30 ngày)";
+      let bucketLabel = "Current (0-30 Days)";
 
       if (daysPastDue > 90) {
         agingBucket = ">90";
-        bucketLabel = ">90 ngày (Rất nguy cấp)";
+        bucketLabel = ">90 Days (Severely Overdue)";
         bucketOver90 += balanceDue;
         countOver90 += 1;
         totalOverdue += balanceDue;
       } else if (daysPastDue >= 61) {
         agingBucket = "61-90";
-        bucketLabel = "61-90 ngày (Cảnh báo cao)";
+        bucketLabel = "61-90 Days (High Alert)";
         bucket61_90 += balanceDue;
         count61_90 += 1;
         totalOverdue += balanceDue;
       } else if (daysPastDue >= 31) {
         agingBucket = "31-60";
-        bucketLabel = "31-60 ngày (Quá hạn)";
+        bucketLabel = "31-60 Days (Past Due)";
         bucket31_60 += balanceDue;
         count31_60 += 1;
         totalOverdue += balanceDue;
       } else {
         agingBucket = "0-30";
-        bucketLabel = daysPastDue > 0 ? `Quá hạn ${daysPastDue} ngày` : "Trong hạn thanh toán";
+        bucketLabel = daysPastDue > 0 ? `Past due by ${daysPastDue} days` : "Current / Within Terms";
         bucket0_30 += balanceDue;
         count0_30 += 1;
         if (daysPastDue > 0) {
@@ -229,28 +229,28 @@ export async function GET() {
         buckets: {
           current: {
             key: "0-30",
-            label: "Current (0-30 ngày)",
+            label: "Current (0-30 Days)",
             amount: bucket0_30,
             count: count0_30,
             severity: "normal",
           },
           bucket31_60: {
             key: "31-60",
-            label: "31-60 ngày",
+            label: "31-60 Days",
             amount: bucket31_60,
             count: count31_60,
             severity: "warning",
           },
           bucket61_90: {
             key: "61-90",
-            label: "61-90 ngày",
+            label: "61-90 Days",
             amount: bucket61_90,
             count: count61_90,
             severity: "danger",
           },
           bucketOver90: {
             key: ">90",
-            label: ">90 ngày",
+            label: ">90 Days",
             amount: bucketOver90,
             count: countOver90,
             severity: "critical",
@@ -309,10 +309,10 @@ export async function POST(req: NextRequest) {
         newStatus = PaymentStatus.UNPAID;
       }
 
-      const paymentTimestamp = new Date().toLocaleDateString("vi-VN", {
+      const paymentTimestamp = new Date().toLocaleDateString("en-US", {
         timeZone: "America/Chicago",
       });
-      const appendNote = `[${paymentTimestamp} Đã thu $${payNum.toFixed(2)} qua ${paymentMethod}]${
+      const appendNote = `[${paymentTimestamp} Collected $${payNum.toFixed(2)} via ${paymentMethod}]${
         notes ? `: ${notes}` : ""
       }`;
       const updatedNotes = existing.notes
@@ -340,9 +340,9 @@ export async function POST(req: NextRequest) {
         const newStatus =
           newPaidAmount >= totalAmount ? PaymentStatus.PAID : PaymentStatus.PARTIAL;
 
-        const appendNote = `[${new Date().toLocaleDateString()} Đã thu $${payNum.toFixed(
+        const appendNote = `[${new Date().toLocaleDateString("en-US")} Collected $${payNum.toFixed(
           2
-        )} qua ${paymentMethod}]${notes ? `: ${notes}` : ""}`;
+        )} via ${paymentMethod}]${notes ? `: ${notes}` : ""}`;
 
         mockOrdersState[targetIndex] = {
           ...existing,
@@ -361,7 +361,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Thanh toán $${payNum.toFixed(2)} đã được ghi nhận thành công.`,
+      message: `Payment of $${payNum.toFixed(2)} recorded successfully.`,
       order: updatedOrder,
     });
   } catch (error: any) {

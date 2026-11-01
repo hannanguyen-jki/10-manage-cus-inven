@@ -21,6 +21,7 @@ import {
   ExternalLink,
   X,
   FileCheck,
+  RotateCcw,
 } from "lucide-react";
 
 interface ParsedProductItem {
@@ -48,6 +49,7 @@ export default function DocxImporterPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccessAlert, setUploadSuccessAlert] = useState<string | null>(null);
 
   // Extracted data state
   const [products, setProducts] = useState<ParsedProductItem[]>([]);
@@ -55,7 +57,7 @@ export default function DocxImporterPage() {
   const [activeImagePickerIndex, setActiveImagePickerIndex] = useState<number | null>(null);
 
   // Bulk Edit Bar
-  const [bulkCategory, setBulkCategory] = useState("Z Brushes");
+  const [bulkCategory, setBulkCategory] = useState("Acrylic Brushes");
   const [bulkLocation, setBulkLocation] = useState("Houston Hub");
 
   // Save state
@@ -95,7 +97,7 @@ export default function DocxImporterPage() {
 
   const handleFileSelected = (selectedFile: File) => {
     if (!selectedFile.name.toLowerCase().endsWith(".docx")) {
-      setUploadError("Chỉ chấp nhận file Word định dạng .docx. Vui lòng kiểm tra lại.");
+      setUploadError("Only Microsoft Word (.docx) files are supported. Please try again.");
       return;
     }
     setFile(selectedFile);
@@ -108,6 +110,7 @@ export default function DocxImporterPage() {
     try {
       setIsUploading(true);
       setUploadError(null);
+      setUploadSuccessAlert(null);
 
       const formData = new FormData();
       formData.append("file", fileToUpload);
@@ -120,15 +123,16 @@ export default function DocxImporterPage() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Không thể phân tích file Word");
+        throw new Error(data.error || "Failed to parse document");
       }
 
       setProducts(data.products || []);
       setExtractedImages(data.extractedImages || []);
+      setUploadSuccessAlert("File parsed successfully");
       setCurrentStep(2);
     } catch (err: any) {
       console.error(err);
-      setUploadError(err.message || "Lỗi khi trích xuất dữ liệu từ file Word");
+      setUploadError(err.message || "Failed to parse document");
     } finally {
       setIsUploading(false);
     }
@@ -155,7 +159,7 @@ export default function DocxImporterPage() {
       ...prev,
       {
         sku: `JKI-NEW-${String(newIdx).padStart(3, "0")}`,
-        name: "Sản phẩm mới",
+        name: "New Catalog Product",
         category: bulkCategory,
         wholesalePrice: 0,
         retailPrice: 0,
@@ -188,10 +192,20 @@ export default function DocxImporterPage() {
     );
   };
 
+  // Reset / Re-upload
+  const handleResetReupload = () => {
+    setFile(null);
+    setProducts([]);
+    setExtractedImages([]);
+    setUploadError(null);
+    setUploadSuccessAlert(null);
+    setCurrentStep(1);
+  };
+
   // Confirm and Save into Database
   const handleConfirmSave = async () => {
     if (products.length === 0) {
-      alert("Không có sản phẩm nào để lưu");
+      alert("No products to save");
       return;
     }
 
@@ -205,7 +219,7 @@ export default function DocxImporterPage() {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Lỗi khi lưu sản phẩm vào kho");
+        throw new Error(data.error || "Failed to save products to database");
       }
 
       setSaveResult({
@@ -216,7 +230,7 @@ export default function DocxImporterPage() {
 
       setCurrentStep(3);
     } catch (err: any) {
-      alert(err.message || "Lỗi khi lưu dữ liệu");
+      alert(err.message || "Error saving products to inventory");
     } finally {
       setIsSaving(false);
     }
@@ -232,10 +246,10 @@ export default function DocxImporterPage() {
             className="hover:text-[#253c68] font-semibold flex items-center space-x-1"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Quay lại Kho hàng</span>
+            <span>Back to Inventory</span>
           </Link>
           <span>/</span>
-          <span className="text-slate-800 font-bold">Import Word (.docx) kèm ảnh</span>
+          <span className="text-slate-800 font-bold">Import from Word (.docx)</span>
         </div>
       </div>
 
@@ -247,14 +261,10 @@ export default function DocxImporterPage() {
             <span>AI & OpenXML Smart Extraction Engine</span>
           </span>
           <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-            Nhập Danh Mục Sản Phẩm Từ File Word (.docx)
+            Bulk Import Products from Word (.docx)
           </h1>
           <p className="text-sm text-slate-300 mt-2 leading-relaxed">
-            Hệ thống tự động giải nén cấu trúc OpenXML, trích xuất tất cả ảnh sản phẩm từ
-            <code className="mx-1 px-1.5 py-0.5 rounded bg-slate-800/80 text-[#38bdf8] font-mono text-xs">
-              word/media/
-            </code>
-            và map chuẩn xác với từng dòng bảng giá (SKU, Tên, Giá sỉ, Giá lẻ, Phân loại).
+            Upload official JKIOCEAN product catalog document to automatically parse SKUs, descriptions, pricing and images.
           </p>
         </div>
 
@@ -270,7 +280,7 @@ export default function DocxImporterPage() {
               1
             </div>
             <span className={currentStep === 1 ? "font-bold text-white" : "text-slate-400"}>
-              Tải File .docx
+              Upload .docx
             </span>
           </div>
 
@@ -286,7 +296,7 @@ export default function DocxImporterPage() {
               2
             </div>
             <span className={currentStep === 2 ? "font-bold text-white" : "text-slate-400"}>
-              Xem Trước & Chỉnh Sửa ({products.length})
+              Extracted Products Preview ({products.length})
             </span>
           </div>
 
@@ -302,7 +312,7 @@ export default function DocxImporterPage() {
               3
             </div>
             <span className={currentStep === 3 ? "font-bold text-white" : "text-slate-400"}>
-              Hoàn Tất Lưu Kho
+              Save to Inventory
             </span>
           </div>
         </div>
@@ -333,9 +343,9 @@ export default function DocxImporterPage() {
             {isUploading ? (
               <div className="py-8 space-y-4">
                 <RefreshCw className="w-12 h-12 text-[#253c68] animate-spin mx-auto" />
-                <h3 className="text-lg font-bold text-slate-800">Đang Giải Nén & Trích Xuất Dữ Liệu...</h3>
+                <h3 className="text-lg font-bold text-slate-800">Extracting OpenXML Content & Parsing Catalog...</h3>
                 <p className="text-xs text-slate-500 max-w-md mx-auto">
-                  Đang quét cấu trúc file Word, lưu ảnh sản phẩm vào máy chủ và phân tích cột bảng biểu.
+                  Scanning Word document structure, extracting product media, and mapping catalog tables...
                 </p>
                 <div className="w-64 h-2 bg-slate-200 rounded-full mx-auto overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-[#253c68] to-[#38bdf8] animate-pulse w-3/4 rounded-full"></div>
@@ -348,15 +358,15 @@ export default function DocxImporterPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    Kéo thả file Word (.docx) vào đây, hoặc nhấn để chọn
+                    Drag & drop Word catalog file (.docx) here, or click to browse
                   </h3>
                   <p className="text-xs text-slate-500 mt-1">
-                    Hỗ trợ các file báo giá, catalogue sản phẩm Word có chứa hình ảnh và bảng giá.
+                    Supported format: Microsoft Word (.docx) with embedded product tables & images
                   </p>
                 </div>
                 <div className="inline-flex items-center space-x-2 bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold text-slate-700">
                   <UploadCloud className="w-4 h-4 text-[#253c68]" />
-                  <span>Dung lượng tối đa 50MB • Định dạng .docx</span>
+                  <span>Maximum file size 50MB • Microsoft Word (.docx)</span>
                 </div>
               </div>
             )}
@@ -377,9 +387,9 @@ export default function DocxImporterPage() {
                 1
               </div>
               <div>
-                <p className="font-bold text-slate-800">Tự Động Map Ảnh</p>
+                <p className="font-bold text-slate-800">Automated Image Extraction</p>
                 <p className="text-slate-500 mt-0.5">
-                  Ảnh được trích xuất trực tiếp từ file docx và gán chính xác theo từng hàng sản phẩm.
+                  High-res images are extracted directly from word/media/ and mapped to table rows.
                 </p>
               </div>
             </div>
@@ -389,9 +399,9 @@ export default function DocxImporterPage() {
                 2
               </div>
               <div>
-                <p className="font-bold text-slate-800">Tùy Biến Trực Tiếp</p>
+                <p className="font-bold text-slate-800">Interactive Live Preview</p>
                 <p className="text-slate-500 mt-0.5">
-                  Dễ dàng chỉnh sửa giá, tên, mã SKU hoặc đổi ảnh trước khi xác nhận lưu vào kho.
+                  Review, edit pricing, update SKUs, or change images prior to saving to inventory.
                 </p>
               </div>
             </div>
@@ -401,9 +411,9 @@ export default function DocxImporterPage() {
                 3
               </div>
               <div>
-                <p className="font-bold text-slate-800">Tự Động Cập Nhật</p>
+                <p className="font-bold text-slate-800">Smart Merge & Sync</p>
                 <p className="text-slate-500 mt-0.5">
-                  Nếu mã SKU đã tồn tại, hệ thống sẽ tự động cập nhật giá và cộng dồn tồn kho.
+                  Existing SKUs are updated with latest pricing and incremental stock quantities.
                 </p>
               </div>
             </div>
@@ -414,45 +424,63 @@ export default function DocxImporterPage() {
       {/* STEP 2: LIVE PREVIEW & EDIT TABLE */}
       {currentStep === 2 && (
         <div className="space-y-4">
+          {/* Success banner if just parsed */}
+          {uploadSuccessAlert && (
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs text-emerald-800">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span className="font-bold">{uploadSuccessAlert}</span>
+                <span>— {products.length} products ready for preview</span>
+              </div>
+              <button
+                onClick={() => setUploadSuccessAlert(null)}
+                className="text-emerald-600 hover:text-emerald-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           {/* Action Toolbar */}
           <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center space-x-3">
-              <span className="text-xs font-bold text-slate-700">
-                Tổng tìm thấy: <span className="text-[#253c68] font-black text-sm">{products.length}</span> sản phẩm
-              </span>
-              <span className="text-slate-300">|</span>
-              <span className="text-xs text-slate-500">
-                {extractedImages.length} hình ảnh đã trích xuất
-              </span>
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">Extracted Products Preview</h3>
+                <p className="text-xs text-slate-500">
+                  Total Extracted: <span className="text-[#253c68] font-black">{products.length}</span> products ({extractedImages.length} embedded images)
+                </p>
+              </div>
             </div>
 
             {/* Bulk actions */}
             <div className="flex flex-wrap items-center gap-2">
               {/* Bulk category */}
               <div className="flex items-center space-x-1 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
-                <span className="text-[11px] font-semibold text-slate-600">Loại:</span>
+                <span className="text-[11px] font-semibold text-slate-600">Category:</span>
                 <select
                   value={bulkCategory}
                   onChange={(e) => setBulkCategory(e.target.value)}
                   className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none"
                 >
+                  <option value="Acrylic Brushes">Acrylic Brushes</option>
+                  <option value="Nail Nippers & Tools">Nail Nippers & Tools</option>
+                  <option value="Gel & Lacquer">Gel & Lacquer</option>
+                  <option value="Accessories & Supplies">Accessories & Supplies</option>
                   <option value="Z Brushes">Z Brushes</option>
-                  <option value="Kềm cắt da">Kềm cắt da</option>
-                  <option value="Dụng cụ nail">Dụng cụ nail</option>
-                  <option value="Phụ liệu">Phụ liệu</option>
+                  <option value="Other">Other</option>
                 </select>
                 <button
                   type="button"
                   onClick={applyBulkCategory}
                   className="text-[10px] bg-[#253c68] text-white px-2 py-0.5 rounded font-bold hover:bg-[#1a2c4e]"
                 >
-                  Áp dụng tất cả
+                  Apply to All
                 </button>
               </div>
 
               {/* Bulk location */}
               <div className="flex items-center space-x-1 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
-                <span className="text-[11px] font-semibold text-slate-600">Kho:</span>
+                <span className="text-[11px] font-semibold text-slate-600">Location:</span>
                 <select
                   value={bulkLocation}
                   onChange={(e) => setBulkLocation(e.target.value)}
@@ -466,7 +494,7 @@ export default function DocxImporterPage() {
                   onClick={applyBulkLocation}
                   className="text-[10px] bg-[#253c68] text-white px-2 py-0.5 rounded font-bold hover:bg-[#1a2c4e]"
                 >
-                  Áp dụng tất cả
+                  Apply to All
                 </button>
               </div>
 
@@ -476,7 +504,16 @@ export default function DocxImporterPage() {
                 className="inline-flex items-center space-x-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Thêm dòng</span>
+                <span>Add Product</span>
+              </button>
+
+              {/* Reset / Re-upload */}
+              <button
+                onClick={handleResetReupload}
+                className="inline-flex items-center space-x-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset / Re-upload</span>
               </button>
 
               {/* Confirm Save Button */}
@@ -490,7 +527,7 @@ export default function DocxImporterPage() {
                 ) : (
                   <CheckCircle2 className="w-4 h-4" />
                 )}
-                <span>Xác Nhận & Lưu Vào Kho ({products.length})</span>
+                <span>Save to Inventory ({products.length})</span>
               </button>
             </div>
           </div>
@@ -501,16 +538,16 @@ export default function DocxImporterPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead className="sticky top-0 bg-slate-100 z-10 border-b border-slate-200 text-[11px] font-bold text-slate-600 uppercase">
                   <tr>
-                    <th className="py-3 px-3 w-12 text-center">STT</th>
-                    <th className="py-3 px-3 w-16 text-center">Ảnh</th>
-                    <th className="py-3 px-3 w-32">Mã SKU *</th>
-                    <th className="py-3 px-3 min-w-[200px]">Tên Sản Phẩm *</th>
-                    <th className="py-3 px-3 w-32">Phân Loại</th>
-                    <th className="py-3 px-3 w-28 text-right">Giá Sỉ ($) *</th>
-                    <th className="py-3 px-3 w-28 text-right">Giá Lẻ ($)</th>
-                    <th className="py-3 px-3 w-20 text-center">Tồn Kho</th>
-                    <th className="py-3 px-3 w-28">Vị Trí</th>
-                    <th className="py-3 px-2 w-10 text-center">Xóa</th>
+                    <th className="py-3 px-3 w-12 text-center">#</th>
+                    <th className="py-3 px-3 w-16 text-center">Image</th>
+                    <th className="py-3 px-3 w-32">SKU *</th>
+                    <th className="py-3 px-3 min-w-[200px]">Product Name *</th>
+                    <th className="py-3 px-3 w-36">Category</th>
+                    <th className="py-3 px-3 w-28 text-right">Wholesale Price ($) *</th>
+                    <th className="py-3 px-3 w-28 text-right">Retail / MSRP ($)</th>
+                    <th className="py-3 px-3 w-24 text-center">Initial Stock</th>
+                    <th className="py-3 px-3 w-28">Location</th>
+                    <th className="py-3 px-2 w-10 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -525,7 +562,7 @@ export default function DocxImporterPage() {
                       <td className="py-2.5 px-3 text-center">
                         <div
                           onClick={() => setActiveImagePickerIndex(idx)}
-                          title="Bấm để xem hoặc đổi ảnh"
+                          title="Click to preview or change image"
                           className="w-12 h-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden mx-auto flex items-center justify-center cursor-pointer hover:border-[#253c68] relative group"
                         >
                           {p.imageUrl ? (
@@ -538,7 +575,7 @@ export default function DocxImporterPage() {
                             <ImageIcon className="w-4 h-4 text-slate-300" />
                           )}
                           <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity">
-                            <span className="text-[9px] font-bold">Đổi</span>
+                            <span className="text-[9px] font-bold">Edit</span>
                           </div>
                         </div>
                       </td>
@@ -570,11 +607,12 @@ export default function DocxImporterPage() {
                           onChange={(e) => handleCellChange(idx, "category", e.target.value)}
                           className="w-full px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded focus:bg-white focus:border-[#253c68]"
                         >
+                          <option value="Acrylic Brushes">Acrylic Brushes</option>
+                          <option value="Nail Nippers & Tools">Nail Nippers & Tools</option>
+                          <option value="Gel & Lacquer">Gel & Lacquer</option>
+                          <option value="Accessories & Supplies">Accessories & Supplies</option>
                           <option value="Z Brushes">Z Brushes</option>
-                          <option value="Kềm cắt da">Kềm cắt da</option>
-                          <option value="Dụng cụ nail">Dụng cụ nail</option>
-                          <option value="Phụ liệu">Phụ liệu</option>
-                          <option value="Khác">Khác</option>
+                          <option value="Other">Other</option>
                         </select>
                       </td>
 
@@ -644,7 +682,7 @@ export default function DocxImporterPage() {
                       <td className="py-2.5 px-2 text-center">
                         <button
                           onClick={() => handleRemoveRow(idx)}
-                          title="Xóa dòng này"
+                          title="Remove this product row"
                           className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -668,25 +706,25 @@ export default function DocxImporterPage() {
 
           <div>
             <h2 className="text-2xl font-black text-slate-900">
-              Nhập Sản Phẩm Vào Kho Thành Công!
+              All products saved to database
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Dữ liệu từ file Word đã được lưu an toàn vào cơ sở dữ liệu hệ thống JKIOCEAN.
+              Catalog items and product images have been successfully imported into the JKIOCEAN inventory system.
             </p>
           </div>
 
           {/* Stats summary */}
           <div className="grid grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
             <div>
-              <span className="text-xs text-slate-500 font-bold uppercase">Tổng Xử Lý</span>
+              <span className="text-xs text-slate-500 font-bold uppercase">Total Processed</span>
               <p className="text-2xl font-black text-slate-900 mt-1">{saveResult.total}</p>
             </div>
             <div>
-              <span className="text-xs text-slate-500 font-bold uppercase">Tạo Mới</span>
+              <span className="text-xs text-slate-500 font-bold uppercase">Created New</span>
               <p className="text-2xl font-black text-emerald-600 mt-1">+{saveResult.created}</p>
             </div>
             <div>
-              <span className="text-xs text-slate-500 font-bold uppercase">Cập Nhật</span>
+              <span className="text-xs text-slate-500 font-bold uppercase">Updated Existing</span>
               <p className="text-2xl font-black text-[#253c68] mt-1">{saveResult.updated}</p>
             </div>
           </div>
@@ -697,7 +735,7 @@ export default function DocxImporterPage() {
               href="/inventory"
               className="w-full sm:w-auto px-6 py-3 bg-[#253c68] hover:bg-[#1a2c4e] text-white font-bold rounded-xl text-sm shadow-md transition-all card-hover"
             >
-              Về Trang Quản Lý Tồn Kho
+              Back to Inventory Management
             </Link>
             <button
               onClick={() => {
@@ -708,7 +746,7 @@ export default function DocxImporterPage() {
               }}
               className="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-colors"
             >
-              Import Thêm File Khác
+              Import Another Document
             </button>
           </div>
         </div>
@@ -721,10 +759,10 @@ export default function DocxImporterPage() {
             <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div>
                 <h3 className="font-bold text-slate-900 text-sm">
-                  Chọn Ảnh Cho Sản Phẩm: {products[activeImagePickerIndex]?.name}
+                  Select Image for Product: {products[activeImagePickerIndex]?.name}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Chọn một hình ảnh từ danh sách ảnh đã trích xuất từ file Word
+                  Select an extracted image from the Word document media pool
                 </p>
               </div>
               <button
@@ -765,7 +803,7 @@ export default function DocxImporterPage() {
 
               {extractedImages.length === 0 && (
                 <p className="text-center py-8 text-xs text-slate-400">
-                  Không tìm thấy ảnh nào trong file Word.
+                  No images were found in the Word document.
                 </p>
               )}
             </div>
@@ -778,13 +816,13 @@ export default function DocxImporterPage() {
                 }}
                 className="text-xs text-rose-600 hover:underline font-semibold"
               >
-                Xóa ảnh khỏi sản phẩm này
+                Remove image from this product
               </button>
               <button
                 onClick={() => setActiveImagePickerIndex(null)}
                 className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl"
               >
-                Đóng
+                Close
               </button>
             </div>
           </div>

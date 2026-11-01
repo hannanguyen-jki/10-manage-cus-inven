@@ -12,13 +12,29 @@ export interface UserSession {
   department?: string;
 }
 
+export function sanitizeFullName(name?: string): string {
+  if (!name) return "";
+  return name
+    .replace(/\s*\([Ss][ếe]p\)/gi, "")
+    .replace(/\s*[Ss]ếp/gi, "")
+    .trim();
+}
+
 export function signUserToken(user: UserSession, expiresIn = "30d"): string {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: expiresIn as jwt.SignOptions["expiresIn"] });
+  const sanitizedUser: UserSession = {
+    ...user,
+    fullName: sanitizeFullName(user.fullName),
+  };
+  return jwt.sign(sanitizedUser, JWT_SECRET, { expiresIn: expiresIn as jwt.SignOptions["expiresIn"] });
 }
 
 export function verifyUserToken(token: string): UserSession | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as UserSession;
+    const user = jwt.verify(token, JWT_SECRET) as UserSession;
+    if (user && user.fullName) {
+      user.fullName = sanitizeFullName(user.fullName);
+    }
+    return user;
   } catch {
     return null;
   }
@@ -28,5 +44,9 @@ export async function getSessionUser(): Promise<UserSession | null> {
   const cookieStore = cookies();
   const token = cookieStore.get("jki_erp_token")?.value;
   if (!token) return null;
-  return verifyUserToken(token);
+  const user = verifyUserToken(token);
+  if (user && user.fullName) {
+    user.fullName = sanitizeFullName(user.fullName);
+  }
+  return user;
 }

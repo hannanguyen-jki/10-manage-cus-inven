@@ -27,7 +27,7 @@ export async function GET(
 
     if (!product) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy sản phẩm" },
+        { success: false, error: "Product not found" },
         { status: 404 }
       );
     }
@@ -39,7 +39,7 @@ export async function GET(
   } catch (error: any) {
     console.error("Error fetching product detail:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi tải chi tiết sản phẩm" },
+      { success: false, error: error.message || "Failed to load product details" },
       { status: 500 }
     );
   }
@@ -61,7 +61,7 @@ export async function PUT(
 
     if (!existingProduct) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy sản phẩm để cập nhật" },
+        { success: false, error: "Product not found for update" },
         { status: 404 }
       );
     }
@@ -87,7 +87,7 @@ export async function PUT(
       });
       if (duplicate && duplicate.id !== existingProduct.id) {
         return NextResponse.json(
-          { success: false, error: `Mã SKU '${cleanSku}' đã được sử dụng bởi sản phẩm khác` },
+          { success: false, error: `SKU code '${cleanSku}' is already in use by another product` },
           { status: 409 }
         );
       }
@@ -109,7 +109,7 @@ export async function PUT(
             type: "ADJUSTMENT",
             quantity: Math.abs(stockDiff),
             referenceNo: "MANUAL-EDIT",
-            notes: `Điều chỉnh tồn kho thủ công: ${existingProduct.currentStock} -> ${newStock} (${
+            notes: `Manual stock level adjustment: ${existingProduct.currentStock} -> ${newStock} (${
               stockDiff > 0 ? `+${stockDiff}` : stockDiff
             })`,
             createdUser: "admin",
@@ -151,13 +151,13 @@ export async function PUT(
 
     return NextResponse.json({
       success: true,
-      message: "Cập nhật sản phẩm thành công",
+      message: "Product updated successfully",
       product: updatedProduct,
     });
   } catch (error: any) {
     console.error("Error updating product:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi cập nhật sản phẩm" },
+      { success: false, error: error.message || "Error updating product" },
       { status: 500 }
     );
   }
@@ -178,7 +178,7 @@ export async function DELETE(
 
     if (!existingProduct) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy sản phẩm để xóa" },
+        { success: false, error: "Product not found for deletion" },
         { status: 404 }
       );
     }
@@ -192,7 +192,7 @@ export async function DELETE(
       return NextResponse.json(
         {
           success: false,
-          error: `Không thể xóa vì sản phẩm đang nằm trong ${orderItemsCount} đơn hàng. Bạn có thể cập nhật tồn kho về 0 thay vì xóa.`,
+          error: `Cannot delete product because it is referenced in ${orderItemsCount} active orders. You may set stock quantity to 0 instead.`,
         },
         { status: 400 }
       );
@@ -205,12 +205,12 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: `Đã xóa sản phẩm ${existingProduct.sku} - ${existingProduct.name}`,
+      message: `Successfully deleted product ${existingProduct.sku} - ${existingProduct.name}`,
     });
   } catch (error: any) {
     console.error("Error deleting product:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi xóa sản phẩm" },
+      { success: false, error: error.message || "Error deleting product" },
       { status: 500 }
     );
   }

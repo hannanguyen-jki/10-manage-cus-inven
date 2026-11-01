@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, AlertCircle, Loader2, ShieldCheck, Sparkles } from "lucide-react";
+import { LogIn, AlertCircle, Loader2, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Đăng nhập thất bại");
+        throw new Error(data.error || "Login failed");
       }
 
       if (rememberMe) {
@@ -43,7 +43,7 @@ export default function LoginPage() {
       router.push("/dashboard");
       router.refresh();
     } catch (err: any) {
-      setError(err?.message || "Lỗi kết nối máy chủ");
+      setError(err?.message || "Server connection error");
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">JKIOCEAN HUB</h1>
           <p className="text-xs uppercase tracking-widest text-[#253c68] font-bold mt-1">Let Beauty Begin</p>
-          <p className="text-xs text-slate-500 mt-2">Hệ thống quản lý khách hàng B2B, bán hàng & kho hàng</p>
+          <p className="text-xs text-slate-500 mt-2">B2B Customer CRM, Wholesale Distribution & Inventory Hub</p>
         </div>
 
         {/* Error Alert */}
@@ -75,21 +75,21 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              Email hoặc Mã nhân viên
+              Email or Employee ID
             </label>
             <input
               type="text"
               required
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="VD: johnny, hanna, hoặc johnny@jkiocean.com"
+              placeholder="e.g. johnny, hanna, or johnny@jkiocean.com"
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition-all"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              Mật khẩu
+              Password
             </label>
             <input
               type="password"
@@ -109,9 +109,9 @@ export default function LoginPage() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 text-[#253c68] rounded border-slate-300 focus:ring-[#253c68]"
               />
-              <span className="text-xs text-slate-600">Ghi nhớ đăng nhập</span>
+              <span className="text-xs text-slate-600">Remember login</span>
             </label>
-            <span className="text-xs text-slate-400">Dùng chung SSO Nextcloud</span>
+            <span className="text-xs text-slate-400">Shared Nextcloud SSO</span>
           </div>
 
           <button
@@ -122,12 +122,12 @@ export default function LoginPage() {
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Đang kết nối SSO...</span>
+                <span>Connecting to SSO...</span>
               </>
             ) : (
               <>
                 <LogIn className="w-4 h-4" />
-                <span>Đăng Nhập Hệ Thống</span>
+                <span>Sign In to ERP</span>
               </>
             )}
           </button>
@@ -135,7 +135,7 @@ export default function LoginPage() {
 
         <div className="mt-8 pt-5 border-t border-slate-100 flex items-center justify-center space-x-2 text-[11px] text-slate-400">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Bảo mật nội bộ • Cổng xác thực tập trung JKIOCEAN</span>
+          <span>Enterprise Security • JKIOCEAN Centralized Authentication Gateway</span>
         </div>
       </div>
     </div>

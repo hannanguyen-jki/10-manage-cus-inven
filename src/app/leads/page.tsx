@@ -79,7 +79,7 @@ export default function LeadsPage() {
     icpScore: 85,
     personalizedHook: "",
     status: "NEW",
-    assignedSale: "admin",
+    assignedSale: "johnny",
   });
 
   // SMS Form
@@ -108,11 +108,11 @@ export default function LeadsPage() {
       if (data.success) {
         setLeads(data.leads || []);
       } else {
-        setError(data.error || "Không thể tải danh sách Leads");
+        setError(data.error || "Failed to load Leads list");
       }
     } catch (err: any) {
       console.error("Fetch leads error:", err);
-      setError("Lỗi kết nối máy chủ");
+      setError("Failed to connect to server");
     } finally {
       setLoading(false);
     }
@@ -143,7 +143,7 @@ export default function LeadsPage() {
 
   // Convert Lead to Customer (1-Click)
   const handleConvertToCustomer = async (lead: LeadItem) => {
-    if (!confirm(`Bạn có chắc muốn chuyển đổi Salon "${lead.salonName}" thành Khách Hàng B2B chính thức trong hệ thống?`)) {
+    if (!confirm(`Are you sure you want to convert Salon "${lead.salonName}" into an active B2B Customer?`)) {
       return;
     }
 
@@ -160,7 +160,7 @@ export default function LeadsPage() {
       const data = await res.json();
 
       if (data.success) {
-        showToast(data.message || "Đã chuyển đổi thành khách hàng B2B!");
+        showToast(data.message || "Lead converted to active B2B customer!");
         fetchLeads();
         if (data.customerId) {
           setTimeout(() => {
@@ -168,10 +168,10 @@ export default function LeadsPage() {
           }, 1200);
         }
       } else {
-        showToast(data.error || "Chuyển đổi thất bại", "error");
+        showToast(data.error || "Failed to convert lead", "error");
       }
     } catch (err) {
-      showToast("Lỗi khi chuyển đổi lead", "error");
+      showToast("Error converting lead", "error");
     } finally {
       setIsConvertingId(null);
     }
@@ -190,15 +190,15 @@ export default function LeadsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast(`Đã chuyển trạng thái sang ${newStatus}`);
+        showToast(`Status updated to ${newStatus}`);
         setLeads((prev) =>
           prev.map((l) => (l.id === leadId ? { ...l, status: newStatus as any } : l))
         );
       } else {
-        showToast(data.error || "Không thể cập nhật trạng thái", "error");
+        showToast(data.error || "Failed to update status", "error");
       }
     } catch (err) {
-      showToast("Lỗi cập nhật", "error");
+      showToast("Error updating status", "error");
     }
   };
 
@@ -206,7 +206,7 @@ export default function LeadsPage() {
   const handleAddLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.salonName || !formData.phone) {
-      showToast("Vui lòng điền đủ Tên Tiệm và Số Điện Thoại", "error");
+      showToast("Please provide Salon Name and Phone Number", "error");
       return;
     }
 
@@ -220,7 +220,7 @@ export default function LeadsPage() {
       const data = await res.json();
 
       if (data.success) {
-        showToast("Đã thêm Lead B2B mới!");
+        showToast("New B2B Lead added successfully!");
         setIsAddModalOpen(false);
         setFormData({
           salonName: "",
@@ -234,14 +234,14 @@ export default function LeadsPage() {
           icpScore: 85,
           personalizedHook: "",
           status: "NEW",
-          assignedSale: "admin",
+          assignedSale: "johnny",
         });
         fetchLeads();
       } else {
-        showToast(data.error || "Không thể thêm lead", "error");
+        showToast(data.error || "Failed to add lead", "error");
       }
     } catch (err) {
-      showToast("Lỗi kết nối", "error");
+      showToast("Server connection error", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -249,12 +249,12 @@ export default function LeadsPage() {
 
   // AI Hook Generator
   const generateAiHook = () => {
-    const salon = formData.salonName || "Tiệm Nail";
+    const salon = formData.salonName || "Nail Salon";
     const city = formData.city || "Houston";
     const reviews = formData.googleReviewCount || 100;
     const rating = formData.rating || 4.8;
 
-    const hook = `Tiệm ${salon} tại khu vực ${city} với ${reviews} đánh giá ${rating}⭐ cực kỳ uy tín. Khách chuộng dịch vụ Ombre, Acrylic cao cấp. Đội ngũ thợ đông, rất thích hợp chào thử combo cọ Z-Kolinsky Master #14 và cọ Ombre bảo hành 30 ngày.`;
+    const hook = `${salon} in ${city} with ${reviews} reviews and a ${rating}⭐ rating. Premium clientele and strong technician volume, ideal for introducing the Z-Kolinsky Master #14 and Ombre brush trial kit with a 30-day quality guarantee.`;
     setFormData((prev) => ({ ...prev, personalizedHook: hook }));
   };
 
@@ -263,7 +263,7 @@ export default function LeadsPage() {
     setSelectedLeadForSms(lead);
     const content =
       lead.personalizedHook ||
-      `JKIOCEAN xin chào ${lead.ownerName || "Chủ Tiệm"} (${lead.salonName}). Em từ tổng kho cọ Z-Brushes Houston, gửi tặng tiệm mình mã dùng thử cọ Kolinsky VIP...`;
+      `JKIOCEAN: Hi ${lead.ownerName || "Salon Owner"} (${lead.salonName}). This is JKI Wholesale Hub Houston, presenting an exclusive trial package for our Kolinsky VIP brushes...`;
     setSmsData({ content });
     setIsSmsModalOpen(true);
   };
@@ -286,15 +286,15 @@ export default function LeadsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast("Đã gửi tin nhắn mở hàng qua Quo SMS!");
+        showToast("Outbound Quo SMS sent successfully!");
         setIsSmsModalOpen(false);
-        // Tự động chuyển status sang CONTACTED
+        // Automatically switch status to CONTACTED
         handleStatusChange(selectedLeadForSms.id, "CONTACTED");
       } else {
-        showToast(data.error || "Không thể gửi SMS", "error");
+        showToast(data.error || "Failed to send SMS", "error");
       }
     } catch (err) {
-      showToast("Lỗi gửi tin nhắn", "error");
+      showToast("Error sending message", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -332,10 +332,10 @@ export default function LeadsPage() {
             <span className="text-xs text-slate-500 font-medium">B2B Nail Salons Discovery</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#253c68] mt-1 tracking-tight">
-            Săn Tìm Khách Hàng Tiềm Năng (B2B Leads)
+            AI B2B Lead Generation
           </h1>
           <p className="text-sm text-slate-500 mt-0.5">
-            Phân tích điểm phù hợp ICP (Ideal Customer Profile), gợi ý kịch bản mở lời AI Hook và chuyển đổi tiệm thành khách hàng 1 chạm.
+            High-potential nail salons & beauty supplies in Texas & California identified by AI
           </p>
         </div>
 
@@ -343,7 +343,7 @@ export default function LeadsPage() {
           <button
             onClick={() => fetchLeads()}
             className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 btn-press transition"
-            title="Làm mới danh sách"
+            title="Refresh lead list"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
@@ -353,7 +353,7 @@ export default function LeadsPage() {
             className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#253c68] text-white font-semibold hover:bg-[#1a2c4e] shadow-md shadow-[#253c68]/20 btn-press transition"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Thêm Lead Tiềm Năng</span>
+            <span>Add Lead</span>
           </button>
         </div>
       </div>
@@ -363,43 +363,43 @@ export default function LeadsPage() {
         {/* Total Leads */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-slate-400">Tổng Số Leads</span>
+            <span className="text-xs font-bold uppercase text-slate-400">Total Leads</span>
             <div className="w-8 h-8 rounded-lg bg-slate-100 text-[#253c68] flex items-center justify-center">
               <Target className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-black text-slate-900 mt-2">{metrics.total}</p>
-          <p className="text-xs text-slate-500 mt-1">Tiệm nail tiềm năng trên bản đồ</p>
+          <p className="text-xs text-slate-500 mt-1">High-potential nail salons on radar</p>
         </div>
 
         {/* High ICP Score (>80) */}
         <div className="bg-white p-5 rounded-2xl border border-emerald-200/80 shadow-sm card-hover bg-gradient-to-br from-white to-emerald-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-emerald-700">Điểm ICP Cao (&gt;80)</span>
+            <span className="text-xs font-bold uppercase text-emerald-700">High ICP Score (&gt;80)</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-black text-emerald-800 mt-2">{metrics.highIcp}</p>
-          <p className="text-xs text-emerald-700/80 mt-1">Đạt chuẩn salon lớn & chuộng cọ xịn</p>
+          <p className="text-xs text-emerald-700/80 mt-1">Meets large salon & premium brush criteria</p>
         </div>
 
         {/* Contacted */}
         <div className="bg-white p-5 rounded-2xl border border-sky-200/80 shadow-sm card-hover bg-gradient-to-br from-white to-sky-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-sky-700">Đã Tiếp Cận</span>
+            <span className="text-xs font-bold uppercase text-sky-700">Contacted Leads</span>
             <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
               <PhoneCall className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-black text-sky-900 mt-2">{metrics.contacted}</p>
-          <p className="text-xs text-sky-700/80 mt-1">Đã gọi điện / gửi Quo SMS</p>
+          <p className="text-xs text-sky-700/80 mt-1">Reached out via Call or Quo SMS</p>
         </div>
 
         {/* Converted to Customer */}
         <div className="bg-white p-5 rounded-2xl border border-[#253c68]/20 shadow-sm card-hover bg-gradient-to-br from-white to-blue-50/50">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-[#253c68]">Đã Chuyển Đổi (Win)</span>
+            <span className="text-xs font-bold uppercase text-[#253c68]">Converted to Customers</span>
             <div className="w-8 h-8 rounded-lg bg-[#253c68]/10 text-[#253c68] flex items-center justify-center">
               <UserCheck className="w-4 h-4" />
             </div>
@@ -407,10 +407,10 @@ export default function LeadsPage() {
           <div className="flex items-baseline space-x-2 mt-2">
             <p className="text-2xl font-black text-[#253c68]">{metrics.converted}</p>
             <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-              {metrics.conversionRate}% tỷ lệ
+              {metrics.conversionRate}% conversion rate
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">Thành khách hàng B2B chính thức</p>
+          <p className="text-xs text-slate-500 mt-1">Official B2B customer accounts</p>
         </div>
       </div>
 
@@ -424,7 +424,7 @@ export default function LeadsPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo Tên Tiệm, Chủ Tiệm, Phone, Thành Phố..."
+              placeholder="Search by salon name, owner, phone, city..."
               className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] focus:ring-2 focus:ring-[#253c68]/10 bg-slate-50/50"
             />
             {search && (
@@ -444,12 +444,12 @@ export default function LeadsPage() {
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 font-medium text-slate-700"
             >
-              <option value="ALL">Tất cả Trạng Thái</option>
-              <option value="NEW">Mới (New)</option>
-              <option value="CONTACTED">Đã Liên Hệ (Contacted)</option>
-              <option value="QUALIFIED">Đủ Tiêu Chuẩn (Qualified)</option>
-              <option value="CONVERTED">Đã Chuyển Đổi (Converted)</option>
-              <option value="REJECTED">Không Phù Hợp (Rejected)</option>
+              <option value="ALL">All Statuses</option>
+              <option value="NEW">New</option>
+              <option value="CONTACTED">Contacted</option>
+              <option value="QUALIFIED">Qualified</option>
+              <option value="CONVERTED">Converted</option>
+              <option value="REJECTED">Rejected</option>
             </select>
           </div>
 
@@ -460,9 +460,9 @@ export default function LeadsPage() {
               onChange={(e) => setMinScoreFilter(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 font-medium text-slate-700"
             >
-              <option value="ALL">Tất cả Điểm ICP</option>
-              <option value="80">Top Tier (&gt;= 80đ)</option>
-              <option value="60">Medium (&gt;= 60đ)</option>
+              <option value="ALL">All ICP Scores</option>
+              <option value="80">Top Tier (&gt;= 80 pts)</option>
+              <option value="60">Medium (&gt;= 60 pts)</option>
             </select>
           </div>
 
@@ -473,7 +473,7 @@ export default function LeadsPage() {
               onChange={(e) => setSelectedState(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 font-medium text-slate-700"
             >
-              <option value="ALL">Tất cả Tiểu Bang</option>
+              <option value="ALL">All States</option>
               <option value="TX">Texas (TX)</option>
               <option value="CA">California (CA)</option>
               <option value="FL">Florida (FL)</option>
@@ -488,7 +488,7 @@ export default function LeadsPage() {
         {loading ? (
           <div className="p-12 text-center">
             <RefreshCw className="w-8 h-8 text-[#253c68] animate-spin mx-auto mb-3" />
-            <p className="text-slate-500 font-medium text-sm">Đang tải danh sách B2B Leads...</p>
+            <p className="text-slate-500 font-medium text-sm">Loading B2B Leads...</p>
           </div>
         ) : error ? (
           <div className="p-8 text-center text-rose-600">
@@ -497,27 +497,27 @@ export default function LeadsPage() {
               onClick={() => fetchLeads()}
               className="mt-3 px-4 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold"
             >
-              Thử lại
+              Retry
             </button>
           </div>
         ) : leads.length === 0 ? (
           <div className="p-12 text-center text-slate-500">
             <Target className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-            <p className="font-semibold text-base text-slate-700">Chưa có Lead nào phù hợp bộ lọc</p>
-            <p className="text-xs text-slate-400 mt-1">Bấm nút "Thêm Lead Tiềm Năng" để nhập tiệm mới</p>
+            <p className="font-semibold text-base text-slate-700">No leads match your filter</p>
+            <p className="text-xs text-slate-400 mt-1">Click "Add Lead" to enter a new prospect</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
-                  <th className="py-3.5 px-4">Salon Name & Địa Chỉ</th>
-                  <th className="py-3.5 px-4">Chủ Tiệm & Phone</th>
-                  <th className="py-3.5 px-4">Đánh Giá Google</th>
+                  <th className="py-3.5 px-4">Salon Name & Address</th>
+                  <th className="py-3.5 px-4">Owner / Decision Maker</th>
+                  <th className="py-3.5 px-4">Google Reviews</th>
                   <th className="py-3.5 px-4 text-center">ICP Score</th>
-                  <th className="py-3.5 px-4 max-w-xs">Gợi Ý Mở Lời (AI Hook)</th>
-                  <th className="py-3.5 px-4 text-center">Trạng Thái</th>
-                  <th className="py-3.5 px-4 text-right">Thao Tác</th>
+                  <th className="py-3.5 px-4 max-w-xs">Personalized Pitch / Hook</th>
+                  <th className="py-3.5 px-4 text-center">Status</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -542,7 +542,7 @@ export default function LeadsPage() {
                       {/* Owner & Phone */}
                       <td className="py-4 px-4">
                         <div className="font-semibold text-slate-800">
-                          {lead.ownerName || "Chủ Tiệm"}
+                          {lead.ownerName || "Salon Owner"}
                         </div>
                         <div className="mt-1">
                           <a
@@ -590,7 +590,7 @@ export default function LeadsPage() {
                             {lead.personalizedHook}
                           </div>
                         ) : (
-                          <span className="text-xs text-slate-400 italic">Chưa tạo kịch bản AI</span>
+                          <span className="text-xs text-slate-400 italic">No AI pitch generated yet</span>
                         )}
                       </td>
 
@@ -612,11 +612,11 @@ export default function LeadsPage() {
                               : "bg-rose-100 text-rose-800 border-rose-200"
                           }`}
                         >
-                          <option value="NEW">MỚI (NEW)</option>
-                          <option value="CONTACTED">ĐÃ LIÊN HỆ</option>
-                          <option value="QUALIFIED">ĐẠT TIÊU CHUẨN</option>
-                          <option value="CONVERTED">ĐÃ CHUYỂN ĐỔI</option>
-                          <option value="REJECTED">TỪ CHỐI</option>
+                          <option value="NEW">NEW</option>
+                          <option value="CONTACTED">CONTACTED</option>
+                          <option value="QUALIFIED">QUALIFIED</option>
+                          <option value="CONVERTED">CONVERTED</option>
+                          <option value="REJECTED">REJECTED</option>
                         </select>
                       </td>
 
@@ -627,7 +627,7 @@ export default function LeadsPage() {
                           <button
                             onClick={() => openLeadSmsModal(lead)}
                             className="p-1.5 rounded-lg text-sky-600 hover:bg-sky-50 transition"
-                            title="Gửi tin nhắn mở hàng qua Quo SMS"
+                            title="Contact via Quo SMS"
                           >
                             <MessageSquare className="w-4 h-4" />
                           </button>
@@ -636,17 +636,17 @@ export default function LeadsPage() {
                           {lead.status === "CONVERTED" ? (
                             <span className="inline-flex items-center space-x-1 text-xs text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1.5 rounded-lg">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                              <span>Đã là Khách Hàng</span>
+                              <span>Customer</span>
                             </span>
                           ) : (
                             <button
                               onClick={() => handleConvertToCustomer(lead)}
                               disabled={isConvertingId === lead.id}
                               className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#253c68] text-white hover:bg-[#1a2c4e] text-xs font-bold shadow-sm shadow-[#253c68]/20 btn-press transition disabled:opacity-50"
-                              title="Tạo ngay hồ sơ khách hàng chính thức trong CRM"
+                              title="Convert to Customer"
                             >
                               <UserCheck className="w-3.5 h-3.5" />
-                              <span>{isConvertingId === lead.id ? "Đang tạo..." : "Chuyển B2B"}</span>
+                              <span>{isConvertingId === lead.id ? "Converting..." : "Convert"}</span>
                             </button>
                           )}
                         </div>
@@ -660,7 +660,7 @@ export default function LeadsPage() {
         )}
       </div>
 
-      {/* MODAL: THÊM LEAD MỚI */}
+      {/* MODAL: ADD NEW LEAD */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full max-h-[90vh] overflow-y-auto">
@@ -670,8 +670,8 @@ export default function LeadsPage() {
                   <Target className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-[#253c68]">Thêm B2B Lead Tiềm Năng Mới</h3>
-                  <p className="text-xs text-slate-500">Khảo sát salon qua Google Maps / Instagram</p>
+                  <h3 className="text-base font-extrabold text-[#253c68]">Add New B2B Lead</h3>
+                  <p className="text-xs text-slate-500">Prospect salon via Google Maps / Instagram discovery</p>
                 </div>
               </div>
               <button
@@ -686,12 +686,12 @@ export default function LeadsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Tên Salon <span className="text-rose-500">*</span>
+                    Salon Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: Crystal Luxe Nail Lounge"
+                    placeholder="e.g. Crystal Luxe Nail Lounge"
                     value={formData.salonName}
                     onChange={(e) => setFormData({ ...formData, salonName: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
@@ -699,10 +699,10 @@ export default function LeadsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tên Chủ Tiệm</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Owner / Decision Maker</label>
                   <input
                     type="text"
-                    placeholder="VD: Sarah Dang"
+                    placeholder="e.g. Sarah Dang"
                     value={formData.ownerName}
                     onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
@@ -711,12 +711,12 @@ export default function LeadsPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Số Điện Thoại (+1) <span className="text-rose-500">*</span>
+                    Phone Number (+1) <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="+18325550711"
+                    placeholder="e.g. +18325550711"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] font-mono"
@@ -724,7 +724,7 @@ export default function LeadsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Thành Phố</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
                   <input
                     type="text"
                     placeholder="Katy"
@@ -735,7 +735,7 @@ export default function LeadsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tiểu Bang</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">State</label>
                   <select
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
@@ -749,10 +749,10 @@ export default function LeadsPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Địa Chỉ</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Address</label>
                   <input
                     type="text"
-                    placeholder="24419 Katy Fwy"
+                    placeholder="e.g. 24419 Katy Fwy"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
@@ -761,7 +761,7 @@ export default function LeadsPage() {
 
                 {/* Reviews & Ratings */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Số Review Google</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Google Review Count</label>
                   <input
                     type="number"
                     value={formData.googleReviewCount}
@@ -771,7 +771,7 @@ export default function LeadsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Điểm Sao (Rating)</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Rating (Stars)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -787,7 +787,7 @@ export default function LeadsPage() {
                 <div className="md:col-span-2">
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-xs font-bold text-slate-700 uppercase">
-                      Điểm Tiềm Năng ICP Score: <span className="text-[#253c68] font-black">{formData.icpScore}/100</span>
+                      Ideal Customer Profile (ICP) Score: <span className="text-[#253c68] font-black">{formData.icpScore}/100</span>
                     </label>
                   </div>
                   <input
@@ -803,23 +803,39 @@ export default function LeadsPage() {
                 {/* AI Hook */}
                 <div className="md:col-span-2">
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-bold text-slate-700 uppercase">Gợi Ý Mở Lời (AI Hook)</label>
+                    <label className="text-xs font-bold text-slate-700 uppercase">Personalized Pitch / Hook</label>
                     <button
                       type="button"
                       onClick={generateAiHook}
                       className="text-xs font-bold text-sky-600 hover:text-sky-800 inline-flex items-center space-x-1"
                     >
                       <Sparkles className="w-3.5 h-3.5 text-sky-500" />
-                      <span>Tạo Hook Bằng AI</span>
+                      <span>Generate AI Pitch</span>
                     </button>
                   </div>
                   <textarea
                     rows={3}
-                    placeholder="Kịch bản mở lời hoặc đặc điểm tiệm..."
+                    placeholder="Opening pitch script or salon notes..."
                     value={formData.personalizedHook}
                     onChange={(e) => setFormData({ ...formData, personalizedHook: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Assigned Sales Rep</label>
+                  <select
+                    value={formData.assignedSale}
+                    onChange={(e) => setFormData({ ...formData, assignedSale: e.target.value })}
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                  >
+                    <option value="johnny">Johnny Tran</option>
+                    <option value="hanna">Hanna Nguyen</option>
+                    <option value="alice">Alice Nguyen</option>
+                    <option value="tan">Tan Ho</option>
+                    <option value="kate">Kate</option>
+                    <option value="admin">Admin</option>
+                  </select>
                 </div>
               </div>
 
@@ -829,14 +845,14 @@ export default function LeadsPage() {
                   onClick={() => setIsAddModalOpen(false)}
                   className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="px-6 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md btn-press disabled:opacity-50"
                 >
-                  {isSubmitting ? "Đang lưu..." : "Lưu B2B Lead"}
+                  {isSubmitting ? "Saving..." : "Save Lead"}
                 </button>
               </div>
             </form>
@@ -844,7 +860,7 @@ export default function LeadsPage() {
         </div>
       )}
 
-      {/* MODAL: GỬI QUO SMS CHO LEAD */}
+      {/* MODAL: SEND QUO SMS TO LEAD */}
       {isSmsModalOpen && selectedLeadForSms && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full overflow-hidden">
@@ -854,7 +870,7 @@ export default function LeadsPage() {
                   <MessageSquare className="w-5 h-5 text-sky-300" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold">Gửi Quo SMS Chào Hàng</h3>
+                  <h3 className="text-base font-extrabold">Send Quo SMS Pitch</h3>
                   <p className="text-xs text-sky-200">{selectedLeadForSms.salonName} • {selectedLeadForSms.phone}</p>
                 </div>
               </div>
@@ -869,7 +885,7 @@ export default function LeadsPage() {
             <form onSubmit={handleSendLeadSms} className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Nội Dung Tin Nhắn (Đầu số gửi: +1 713-330-6165)
+                  Message Content (Outbound line: +1 713-330-6165)
                 </label>
                 <textarea
                   rows={4}
@@ -877,6 +893,7 @@ export default function LeadsPage() {
                   value={smsData.content}
                   onChange={(e) => setSmsData({ ...smsData, content: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                  placeholder="Enter opening pitch text..."
                 />
               </div>
 
@@ -886,7 +903,7 @@ export default function LeadsPage() {
                   onClick={() => setIsSmsModalOpen(false)}
                   className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -894,7 +911,7 @@ export default function LeadsPage() {
                   className="flex items-center space-x-2 px-5 py-2 text-sm font-bold text-white bg-sky-600 hover:bg-sky-700 rounded-xl shadow-md btn-press disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
-                  <span>{isSubmitting ? "Đang gửi..." : "Gửi Quo SMS Mở Lời"}</span>
+                  <span>{isSubmitting ? "Sending..." : "Send Quo SMS Pitch"}</span>
                 </button>
               </div>
             </form>

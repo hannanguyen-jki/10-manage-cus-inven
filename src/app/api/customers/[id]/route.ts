@@ -15,7 +15,7 @@ export async function GET(
 
     if (!id) {
       return NextResponse.json(
-        { success: false, error: "Thiếu Customer ID" },
+        { success: false, error: "Missing Customer ID" },
         { status: 400 }
       );
     }
@@ -23,7 +23,7 @@ export async function GET(
     let customerData: any = null;
 
     try {
-      // 1. Thử truy vấn chi tiết từ PostgreSQL qua Prisma
+      // 1. Query details from PostgreSQL via Prisma
       const dbCustomer = await prisma.customer.findUnique({
         where: { id },
         include: {
@@ -90,7 +90,7 @@ export async function GET(
       console.warn(`[Customer 360 API GET ${id}] DB query failed, checking mock store:`, dbErr);
     }
 
-    // 2. Fallback nếu DB không có hoặc offline
+    // 2. Fallback if DB is empty or offline
     if (!customerData) {
       const mockCus = getMockCustomerById(id);
       if (mockCus) {
@@ -112,7 +112,7 @@ export async function GET(
 
     if (!customerData) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy thông tin khách hàng" },
+        { success: false, error: "Customer not found" },
         { status: 404 }
       );
     }
@@ -124,7 +124,7 @@ export async function GET(
   } catch (error: any) {
     console.error(`[GET /api/customers/${params.id}] Error:`, error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi lấy chi tiết khách hàng" },
+      { success: false, error: error.message || "Failed to retrieve customer details" },
       { status: 500 }
     );
   }
@@ -157,7 +157,7 @@ export async function PUT(
     let updatedCustomer: any = null;
 
     try {
-      // 1. Thử cập nhật qua Prisma
+      // 1. Update via Prisma
       updatedCustomer = await prisma.customer.update({
         where: { id },
         data: {
@@ -198,20 +198,20 @@ export async function PUT(
 
     if (!updatedCustomer) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy khách hàng để cập nhật" },
+        { success: false, error: "Customer not found for update" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Cập nhật thông tin khách hàng thành công",
+      message: "Customer updated successfully",
       customer: updatedCustomer,
     });
   } catch (error: any) {
     console.error(`[PUT /api/customers/${params.id}] Error:`, error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi cập nhật khách hàng" },
+      { success: false, error: error.message || "Failed to update customer" },
       { status: 500 }
     );
   }
@@ -234,12 +234,12 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: "Xóa khách hàng thành công",
+      message: "Customer deleted successfully",
     });
   } catch (error: any) {
     console.error(`[DELETE /api/customers/${params.id}] Error:`, error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi xóa khách hàng" },
+      { success: false, error: error.message || "Failed to delete customer" },
       { status: 500 }
     );
   }

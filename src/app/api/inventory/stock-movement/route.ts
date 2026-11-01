@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error("Error fetching stock movements:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi lấy lịch sử xuất nhập kho" },
+      { success: false, error: error.message || "Failed to retrieve stock movement history" },
       { status: 500 }
     );
   }
@@ -62,14 +62,14 @@ export async function POST(request: NextRequest) {
 
     if (!productId) {
       return NextResponse.json(
-        { success: false, error: "Vui lòng chọn sản phẩm" },
+        { success: false, error: "Please select a product" },
         { status: 400 }
       );
     }
 
     if (!type || !["INBOUND", "OUTBOUND", "ADJUSTMENT"].includes(type)) {
       return NextResponse.json(
-        { success: false, error: "Loại giao dịch không hợp lệ (INBOUND, OUTBOUND, hoặc ADJUSTMENT)" },
+        { success: false, error: "Invalid movement type (must be INBOUND, OUTBOUND, or ADJUSTMENT)" },
         { status: 400 }
       );
     }
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!product) {
-        throw new Error("Không tìm thấy sản phẩm trong hệ thống");
+        throw new Error("Product not found in system");
       }
 
       let newStock = product.currentStock;
@@ -92,23 +92,23 @@ export async function POST(request: NextRequest) {
 
       if (type === "INBOUND") {
         if (isNaN(parsedQty) || parsedQty <= 0) {
-          throw new Error("Số lượng nhập kho phải lớn hơn 0");
+          throw new Error("Inbound quantity must be greater than 0");
         }
         recordedQuantity = parsedQty;
         newStock = product.currentStock + parsedQty;
-        if (!finalNotes) finalNotes = `Nhập kho +${parsedQty} sp`;
+        if (!finalNotes) finalNotes = `Inbound stock +${parsedQty} units`;
       } else if (type === "OUTBOUND") {
         if (isNaN(parsedQty) || parsedQty <= 0) {
-          throw new Error("Số lượng xuất kho phải lớn hơn 0");
+          throw new Error("Outbound quantity must be greater than 0");
         }
         if (!allowNegative && product.currentStock < parsedQty) {
           throw new Error(
-            `Không đủ tồn kho để xuất. Hiện còn: ${product.currentStock}, yêu cầu xuất: ${parsedQty}`
+            `Insufficient stock for outbound movement. Available: ${product.currentStock}, requested: ${parsedQty}`
           );
         }
         recordedQuantity = parsedQty;
         newStock = product.currentStock - parsedQty;
-        if (!finalNotes) finalNotes = `Xuất kho -${parsedQty} sp`;
+        if (!finalNotes) finalNotes = `Outbound stock -${parsedQty} units`;
       } else if (type === "ADJUSTMENT") {
         // Can be given as targetStock (actual physical count) or difference quantity
         if (targetStock !== undefined && targetStock !== null && !isNaN(Number(targetStock))) {
@@ -117,16 +117,16 @@ export async function POST(request: NextRequest) {
           recordedQuantity = Math.abs(diff);
           newStock = target;
           if (!finalNotes) {
-            finalNotes = `Kiểm kê kho: Từ ${product.currentStock} -> ${target} (${diff >= 0 ? `+${diff}` : diff})`;
+            finalNotes = `Stock count audit: ${product.currentStock} -> ${target} (${diff >= 0 ? `+${diff}` : diff} units)`;
           }
         } else {
           if (isNaN(parsedQty)) {
-            throw new Error("Vui lòng cung cấp số lượng kiểm kê hoặc số tồn thực tế");
+            throw new Error("Please provide audit adjustment quantity or physical count");
           }
           recordedQuantity = Math.abs(parsedQty);
           newStock = Math.max(0, product.currentStock + parsedQty);
           if (!finalNotes) {
-            finalNotes = `Điều chỉnh kiểm kê: ${parsedQty >= 0 ? `+${parsedQty}` : parsedQty}`;
+            finalNotes = `Audit adjustment: ${parsedQty >= 0 ? `+${parsedQty}` : parsedQty} units`;
           }
         }
       }
@@ -154,16 +154,20 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Đã thực hiện ${
-        type === "INBOUND" ? "Nhập kho" : type === "OUTBOUND" ? "Xuất kho" : "Kiểm kê kho"
-      } thành công`,
+      message: `Successfully completed ${
+        type === "INBOUND"
+          ? "Inbound stock movement"
+          : type === "OUTBOUND"
+          ? "Outbound stock movement"
+          : "Inventory count adjustment"
+      }`,
       movement: result.movement,
       product: result.product,
     });
   } catch (error: any) {
     console.error("Error creating stock movement:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi ghi nhận xuất nhập kho" },
+      { success: false, error: error.message || "Error processing stock movement" },
       { status: 400 }
     );
   }

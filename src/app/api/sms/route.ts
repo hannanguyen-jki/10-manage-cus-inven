@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     if (!toPhone || !content) {
       return NextResponse.json(
-        { success: false, error: "Vui lòng nhập số điện thoại người nhận và nội dung SMS" },
+        { success: false, error: "Please provide recipient phone number and SMS content" },
         { status: 400 }
       );
     }
@@ -56,13 +56,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Đã gửi Quo SMS thành công đến ${toPhone} qua tổng đài Houston (+1 713-330-6165)!`,
+      message: `Quo SMS sent successfully to ${toPhone} via Houston Hub (+1 713-330-6165)!`,
       smsLog: createdLog,
     });
   } catch (error: any) {
     console.error("[POST /api/sms] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi gửi SMS" },
+      { success: false, error: error.message || "Failed to send SMS" },
       { status: 500 }
     );
   }

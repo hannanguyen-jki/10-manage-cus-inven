@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     if (!Array.isArray(products) || products.length === 0) {
       return NextResponse.json(
-        { success: false, error: "Danh sách sản phẩm trống" },
+        { success: false, error: "Product list is empty" },
         { status: 400 }
       );
     }
@@ -26,8 +26,8 @@ export async function POST(request: NextRequest) {
         sku = `JKI-IMP-${Date.now().toString().slice(-4)}-${String(i + 1).padStart(3, "0")}`;
       }
 
-      const name = p.name?.trim() || `Sản phẩm ${sku}`;
-      const category = p.category?.trim() || "Z Brushes";
+      const name = p.name?.trim() || `Product ${sku}`;
+      const category = p.category?.trim() || "Acrylic Brushes";
       const wholesalePrice = Math.max(0, parseFloat(String(p.wholesalePrice)) || 0);
       const retailPrice =
         p.retailPrice !== undefined && p.retailPrice !== null && !isNaN(parseFloat(String(p.retailPrice)))
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
                   type: "INBOUND",
                   quantity: currentStock,
                   referenceNo: "DOCX-IMPORT",
-                  notes: `Cộng dồn tồn kho từ file Word (+${currentStock})`,
+                  notes: `Incremental stock import from Word catalog (+${currentStock})`,
                   createdUser: "admin",
                 },
               });
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
                   type: "INBOUND",
                   quantity: currentStock,
                   referenceNo: "DOCX-IMPORT",
-                  notes: `Nhập kho ban đầu từ file Word (+${currentStock})`,
+                  notes: `Initial stock import from Word catalog (+${currentStock})`,
                   createdUser: "admin",
                 },
               });
@@ -112,13 +112,13 @@ export async function POST(request: NextRequest) {
         });
       } catch (err: any) {
         console.error(`Error saving product ${sku}:`, err);
-        errors.push({ sku, error: err.message || "Lỗi lưu dữ liệu" });
+        errors.push({ sku, error: err.message || "Error saving product" });
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: `Đã lưu thành công ${createdCount + updatedCount} sản phẩm`,
+      message: `Successfully saved ${createdCount + updatedCount} products`,
       totalProcessed: products.length,
       createdCount,
       updatedCount,
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Error bulk saving products:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi lưu danh sách sản phẩm" },
+      { success: false, error: error.message || "Error bulk saving products" },
       { status: 500 }
     );
   }

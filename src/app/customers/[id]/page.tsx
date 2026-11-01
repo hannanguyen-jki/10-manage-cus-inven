@@ -90,7 +90,7 @@ export default function Customer360Page() {
     state: "TX",
     zipCode: "",
     birthday: "",
-    assignedSale: "admin",
+    assignedSale: "johnny",
     tier: "STANDARD",
     status: "ACTIVE",
     notes: "",
@@ -138,17 +138,17 @@ export default function Customer360Page() {
           state: c.state || "TX",
           zipCode: c.zipCode || "",
           birthday: c.birthday ? c.birthday.split("T")[0] : "",
-          assignedSale: c.assignedSale || "admin",
+          assignedSale: c.assignedSale || "johnny",
           tier: c.tier || "STANDARD",
           status: c.status || "ACTIVE",
           notes: c.notes || "",
         });
       } else {
-        setError(data.error || "Không tìm thấy thông tin khách hàng");
+        setError(data.error || "Customer profile not found");
       }
     } catch (err: any) {
       console.error("Fetch customer detail error:", err);
-      setError("Lỗi kết nối khi tải hồ sơ khách hàng");
+      setError("Failed to load customer profile");
     } finally {
       setLoading(false);
     }
@@ -170,14 +170,14 @@ export default function Customer360Page() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast("Cập nhật thông tin khách hàng thành công!");
+        showToast("Customer profile updated successfully!");
         setIsEditModalOpen(false);
         fetchCustomerDetail();
       } else {
-        showToast(data.error || "Không thể cập nhật thông tin", "error");
+        showToast(data.error || "Failed to update profile", "error");
       }
     } catch (err) {
-      showToast("Lỗi kết nối máy chủ", "error");
+      showToast("Server connection error", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -202,15 +202,15 @@ export default function Customer360Page() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast("Đã gửi tin nhắn Quo SMS thành công!");
+        showToast("Quo SMS sent successfully!");
         setIsSmsModalOpen(false);
         setSmsData({ type: "FOLLOW_UP", content: "" });
         fetchCustomerDetail();
       } else {
-        showToast(data.error || "Không thể gửi SMS", "error");
+        showToast(data.error || "Failed to send SMS", "error");
       }
     } catch (err) {
-      showToast("Lỗi gửi tin nhắn", "error");
+      showToast("Error sending SMS", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -220,22 +220,34 @@ export default function Customer360Page() {
     if (!customer) return;
     let text = "";
     if (type === "PROMOTION") {
-      text = `JKIOCEAN: Chào ${customer.contactPerson} ơi, lô cọ Z-Kolinsky Master #14 vừa về kho Houston. Em giữ trước cho tiệm ${customer.businessName} giá sỉ VIP nhé!`;
+      text = `JKIOCEAN: Hi ${customer.contactPerson}, the new batch of Z-Kolinsky Master #14 brushes just arrived at our Houston Hub. We reserved a VIP wholesale price for ${customer.businessName}!`;
     } else if (type === "BIRTHDAY") {
-      text = `JKIOCEAN kính chúc ${customer.contactPerson} sinh nhật vui vẻ, dồi dào sức khỏe và tiệm ${customer.businessName} ngày càng phát tài phát lộc!`;
+      text = `JKIOCEAN wishes ${customer.contactPerson} a wonderful birthday filled with happiness, health, and continued prosperity for ${customer.businessName}!`;
     } else if (type === "AR_REMINDER") {
-      text = `JKIOCEAN thân gửi ${customer.contactPerson}: Tiệm hiện còn nợ $${customer.debtAmount.toLocaleString()} tiền cọ Z-Brushes, chị sắp xếp gửi check/zelle hỗ trợ team em nhé ạ!`;
+      text = `JKIOCEAN friendly notice for ${customer.contactPerson}: ${customer.businessName} currently has an open balance of $${customer.debtAmount.toLocaleString()} for your brush order. Please arrange payment via Check or Zelle at your earliest convenience!`;
     } else {
-      text = `JKIOCEAN xin chào ${customer.contactPerson}! Cọ đợt trước tiệm mình dùng có êm tay không ạ? Khi nào cần lấy thêm cọ đắp bột hoặc cọ vẽ chị nhắn em nha!`;
+      text = `JKIOCEAN follow-up for ${customer.contactPerson}: How are your nail technicians liking the latest brushes? Let us know when you need refills on acrylic or art brushes!`;
     }
     setSmsData({ type, content: text });
+  };
+
+  const formatSalesRep = (rep: string) => {
+    if (!rep) return "Johnny Tran";
+    const low = rep.toLowerCase();
+    if (low === "johnny" || low === "johnny tran") return "Johnny Tran";
+    if (low === "hanna" || low === "hanna nguyen") return "Hanna Nguyen";
+    if (low === "alice" || low === "alice nguyen") return "Alice Nguyen";
+    if (low === "tan" || low === "tan ho") return "Tan Ho";
+    if (low === "kate") return "Kate";
+    if (low === "admin") return "Admin";
+    return rep;
   };
 
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-8">
         <RefreshCw className="w-10 h-10 text-[#253c68] animate-spin mb-3" />
-        <p className="text-slate-600 font-semibold text-sm">Đang tải hồ sơ Customer 360°...</p>
+        <p className="text-slate-600 font-semibold text-sm">Loading Customer 360° Profile...</p>
       </div>
     );
   }
@@ -244,14 +256,14 @@ export default function Customer360Page() {
     return (
       <div className="max-w-xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 text-center shadow-sm">
         <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-slate-800">Không tìm thấy hồ sơ</h2>
-        <p className="text-slate-500 text-sm mt-1">{error || "Khách hàng không tồn tại trong cơ sở dữ liệu."}</p>
+        <h2 className="text-xl font-bold text-slate-800">Profile Not Found</h2>
+        <p className="text-slate-500 text-sm mt-1">{error || "Customer does not exist in the database."}</p>
         <Link
           href="/customers"
           className="mt-5 inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#253c68] text-white text-sm font-semibold hover:bg-[#1a2c4e] transition btn-press"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Quay lại danh sách khách hàng</span>
+          <span>Back to Customers</span>
         </Link>
       </div>
     );
@@ -284,7 +296,7 @@ export default function Customer360Page() {
           className="inline-flex items-center space-x-2 text-sm font-semibold text-slate-500 hover:text-[#253c68] transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Quay lại danh sách Khách Hàng B2B</span>
+          <span>Back to Customers</span>
         </Link>
 
         <div className="flex items-center space-x-2">
@@ -318,7 +330,7 @@ export default function Customer360Page() {
               {customer.tier === "WHOLESALE" && (
                 <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
                   <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>ĐẠI LÝ SỈ</span>
+                  <span>WHOLESALE</span>
                 </span>
               )}
               {customer.tier === "STANDARD" && (
@@ -331,13 +343,18 @@ export default function Customer360Page() {
               {customer.status === "ACTIVE" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
-                  Đang hoạt động
+                  Active
                 </span>
               )}
               {customer.status === "AT_RISK" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
                   <AlertTriangle className="w-3.5 h-3.5 mr-1 text-rose-600" />
-                  Cần Chăm Sóc Khẩn
+                  At Risk - Attention Needed
+                </span>
+              )}
+              {customer.status === "INACTIVE" && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                  Inactive
                 </span>
               )}
             </div>
@@ -347,7 +364,7 @@ export default function Customer360Page() {
               <div className="flex items-center space-x-1.5">
                 <User className="w-4 h-4 text-slate-400" />
                 <span className="font-semibold text-slate-800">{customer.contactPerson}</span>
-                <span className="text-xs text-slate-400">(Chủ Tiệm)</span>
+                <span className="text-xs text-slate-400">(Contact Person)</span>
               </div>
 
               <div className="flex items-center space-x-1.5">
@@ -379,7 +396,7 @@ export default function Customer360Page() {
 
               <div className="flex items-center space-x-1.5">
                 <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
-                  Sale phụ trách: <strong className="capitalize">{customer.assignedSale}</strong>
+                  Assigned Sales Rep: <strong>{formatSalesRep(customer.assignedSale)}</strong>
                 </span>
               </div>
             </div>
@@ -393,7 +410,7 @@ export default function Customer360Page() {
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-[#253c68] text-[#253c68] hover:bg-[#253c68]/5 font-bold text-sm btn-press transition"
             >
               <FileText className="w-4 h-4" />
-              <span>Tạo Báo Giá Mới</span>
+              <span>Create New Quote</span>
             </Link>
 
             {/* Send Quo SMS */}
@@ -401,14 +418,14 @@ export default function Customer360Page() {
               onClick={() => {
                 setSmsData({
                   type: "FOLLOW_UP",
-                  content: `JKIOCEAN: Chào ${customer.contactPerson} (${customer.businessName})...`,
+                  content: `JKIOCEAN: Hi ${customer.contactPerson} (${customer.businessName})...`,
                 });
                 setIsSmsModalOpen(true);
               }}
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm shadow-md shadow-sky-600/20 btn-press transition"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>Gửi Quo SMS</span>
+              <span>Send Quo SMS</span>
             </button>
 
             {/* Edit Profile */}
@@ -417,7 +434,7 @@ export default function Customer360Page() {
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm btn-press transition"
             >
               <Edit className="w-4 h-4" />
-              <span>Sửa Thông Tin</span>
+              <span>Edit Profile</span>
             </button>
           </div>
         </div>
@@ -427,7 +444,7 @@ export default function Customer360Page() {
           <div className="mt-5 p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl text-xs text-amber-900 flex items-start space-x-2.5">
             <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <strong className="font-bold">Đặc điểm / Ghi chú tiệm:</strong> {customer.notes}
+              <strong className="font-bold">Customer Notes / Preferences:</strong> {customer.notes}
             </div>
           </div>
         )}
@@ -438,24 +455,24 @@ export default function Customer360Page() {
         {/* Total Lifetime Spent */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Doanh Số Trọn Đời (LTV)</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Lifetime Revenue (LTV)</span>
             <DollarSign className="w-4 h-4 text-[#253c68]" />
           </div>
           <div className="text-2xl font-black text-[#253c68] mt-2">
             ${customer.totalSpent.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
           </div>
-          <p className="text-xs text-slate-500 mt-1">Đã thanh toán: ${customer.totalPaid.toLocaleString()}</p>
+          <p className="text-xs text-slate-500 mt-1">Paid to date: ${customer.totalPaid.toLocaleString()}</p>
         </div>
 
         {/* Total Orders & AOV */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Số Lượng Đơn Hàng</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Total Orders</span>
             <ShoppingBag className="w-4 h-4 text-sky-600" />
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-2">{customer.orderCount} đơn</div>
+          <div className="text-2xl font-black text-slate-900 mt-2">{customer.orderCount} orders</div>
           <p className="text-xs text-slate-500 mt-1">
-            Giá trị TB/đơn:{" "}
+            Avg Order Value:{" "}
             <strong className="text-slate-800">
               $
               {customer.orderCount > 0
@@ -475,7 +492,7 @@ export default function Customer360Page() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Công Nợ Chưa Thu (AR)
+              AR Balance
             </span>
             <Receipt className={`w-4 h-4 ${customer.debtAmount > 0 ? "text-rose-600" : "text-emerald-600"}`} />
           </div>
@@ -487,32 +504,32 @@ export default function Customer360Page() {
             ${customer.debtAmount.toLocaleString()}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            {customer.debtAmount > 0 ? "Cần gửi SMS nhắc thanh toán" : "Tuyệt vời, không có nợ tồn đọng"}
+            {customer.debtAmount > 0 ? "SMS payment reminder recommended" : "Zero outstanding balance"}
           </p>
         </div>
 
         {/* Health & Churn Risk */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Tình Trạng Sức Khỏe Tiệm</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Account Health</span>
             <ShieldAlert className="w-4 h-4 text-slate-600" />
           </div>
           <div className="text-2xl font-black mt-2">
             {customer.status === "ACTIVE" ? (
-              <span className="text-emerald-600">Ổn định</span>
+              <span className="text-emerald-600">Stable</span>
             ) : customer.status === "AT_RISK" ? (
-              <span className="text-rose-600">Nguy cơ sụt giảm</span>
+              <span className="text-rose-600">Churn Risk</span>
             ) : (
-              <span className="text-slate-500">Tạm dừng</span>
+              <span className="text-slate-500">Inactive</span>
             )}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Đơn gần nhất: {customer.lastOrderDate ? new Date(customer.lastOrderDate).toLocaleDateString("vi-VN") : "Chưa có đơn"}
+            Last order: {customer.lastOrderDate ? new Date(customer.lastOrderDate).toLocaleDateString("en-US") : "No orders recorded"}
           </p>
         </div>
       </div>
 
-      {/* 4 Detail Tabs Navigation */}
+      {/* Detail Tabs Navigation */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         {/* Tab Headers */}
         <div className="flex border-b border-slate-200 bg-slate-50/80 px-4 pt-3 space-x-2 overflow-x-auto">
@@ -525,7 +542,7 @@ export default function Customer360Page() {
             }`}
           >
             <ShoppingBag className="w-4 h-4" />
-            <span>Lịch Sử Đơn Hàng ({customer.orders?.length || 0})</span>
+            <span>Order History ({customer.orders?.length || 0})</span>
           </button>
 
           <button
@@ -537,7 +554,7 @@ export default function Customer360Page() {
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>Báo Giá PDF ({customer.quotes?.length || 0})</span>
+            <span>Quotes ({customer.quotes?.length || 0})</span>
           </button>
 
           <button
@@ -549,7 +566,7 @@ export default function Customer360Page() {
             }`}
           >
             <MessageSquare className="w-4 h-4" />
-            <span>Nhật Ký Quo SMS ({customer.smsLogs?.length || 0})</span>
+            <span>Quo SMS Log ({customer.smsLogs?.length || 0})</span>
           </button>
 
           <button
@@ -561,7 +578,7 @@ export default function Customer360Page() {
             }`}
           >
             <TrendingDown className="w-4 h-4 text-rose-500" />
-            <span>Xu Hướng Mua & Churn Notes ({customer.churnSurveys?.length || 0})</span>
+            <span>Purchasing Trends & Churn ({customer.churnSurveys?.length || 0})</span>
           </button>
         </div>
 
@@ -571,14 +588,14 @@ export default function Customer360Page() {
           {activeTab === "orders" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-800">Danh Sách Đơn Hàng Cọ Z-Brushes</h3>
-                <span className="text-xs text-slate-400">Tất cả đơn xuất từ kho Houston Hub</span>
+                <h3 className="text-base font-bold text-slate-800">Z-Brushes Order History</h3>
+                <span className="text-xs text-slate-400">All orders fulfilled from Houston Hub</span>
               </div>
 
               {(!customer.orders || customer.orders.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <ShoppingBag className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">Chưa có đơn hàng nào được tạo cho salon này.</p>
+                  <p className="font-medium text-sm">No orders recorded for this salon yet.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -591,9 +608,9 @@ export default function Customer360Page() {
                         <div className="flex items-center space-x-3">
                           <span className="font-extrabold text-[#253c68] text-base">{order.orderNumber}</span>
                           <span className="text-xs text-slate-400">
-                            {new Date(order.createdAt).toLocaleDateString("vi-VN", {
+                            {new Date(order.createdAt).toLocaleDateString("en-US", {
                               year: "numeric",
-                              month: "long",
+                              month: "short",
                               day: "numeric",
                             })}
                           </span>
@@ -610,10 +627,10 @@ export default function Customer360Page() {
                             }`}
                           >
                             {order.paymentStatus === "PAID"
-                              ? "ĐÃ THANH TOÁN"
+                              ? "PAID"
                               : order.paymentStatus === "PARTIAL"
-                              ? "THANH TOÁN 1 PHẦN"
-                              : "CHƯA THANH TOÁN"}
+                              ? "PARTIAL"
+                              : "UNPAID"}
                           </span>
                           <span className="font-black text-slate-900 text-lg">
                             ${order.totalAmount.toLocaleString()}
@@ -625,7 +642,7 @@ export default function Customer360Page() {
                       {order.items && order.items.length > 0 && (
                         <div className="mt-3 pt-2 text-xs">
                           <div className="text-slate-400 font-bold uppercase text-[10px] mb-1.5">
-                            Sản phẩm trong đơn:
+                            Products in order:
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {order.items.map((item: any) => (
@@ -643,7 +660,7 @@ export default function Customer360Page() {
                                 </div>
                                 <div className="text-right">
                                   <div className="font-semibold text-slate-700">
-                                    {item.quantity} cây × ${item.unitPrice}
+                                    {item.quantity} pcs x ${item.unitPrice}
                                   </div>
                                   <div className="font-bold text-[#253c68]">
                                     ${(item.quantity * item.unitPrice).toLocaleString()}
@@ -657,7 +674,7 @@ export default function Customer360Page() {
 
                       {order.notes && (
                         <div className="mt-2 text-xs text-slate-500 italic">
-                          Ghi chú giao hàng: {order.notes}
+                          Delivery Notes: {order.notes}
                         </div>
                       )}
                     </div>
@@ -671,20 +688,20 @@ export default function Customer360Page() {
           {activeTab === "quotes" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-800">Danh Sách Báo Giá Đã Lập</h3>
+                <h3 className="text-base font-bold text-slate-800">Quotes List</h3>
                 <Link
                   href={`/quotes/create?customerId=${customer.id}`}
                   className="flex items-center space-x-1.5 text-xs font-bold text-white bg-[#253c68] px-3.5 py-2 rounded-xl hover:bg-[#1a2c4e] transition"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Tạo Báo Giá Mới</span>
+                  <span>Create New Quote</span>
                 </Link>
               </div>
 
               {(!customer.quotes || customer.quotes.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">Chưa có bản báo giá nào cho salon này.</p>
+                  <p className="font-medium text-sm">No quotes created for this salon yet.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -709,11 +726,11 @@ export default function Customer360Page() {
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-1">
-                          Hiệu lực đến:{" "}
+                          Valid until:{" "}
                           <strong>
-                            {new Date(quote.validUntil).toLocaleDateString("vi-VN")}
+                            {new Date(quote.validUntil).toLocaleDateString("en-US")}
                           </strong>
-                          {quote.notes && ` • Ghi chú: ${quote.notes}`}
+                          {quote.notes && ` • Notes: ${quote.notes}`}
                         </p>
                       </div>
 
@@ -724,7 +741,7 @@ export default function Customer360Page() {
                         <Link
                           href={`/quotes/${quote.id}`}
                           className="p-2 rounded-lg text-slate-500 hover:text-[#253c68] hover:bg-slate-100 transition"
-                          title="Xem chi tiết báo giá"
+                          title="View quote details"
                         >
                           <ExternalLink className="w-4 h-4" />
                         </Link>
@@ -741,9 +758,9 @@ export default function Customer360Page() {
             <div className="space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-800">Nhật Ký Quo SMS Trực Tiếp</h3>
+                  <h3 className="text-base font-bold text-slate-800">Direct Quo SMS Log</h3>
                   <p className="text-xs text-slate-500">
-                    Đầu số tổng đài JKIOCEAN Houston: <strong>+1 (713) 330-6165</strong>
+                    Houston Hub Hotline: <strong>+1 (713) 330-6165</strong>
                   </p>
                 </div>
                 <button
@@ -751,7 +768,7 @@ export default function Customer360Page() {
                   className="flex items-center space-x-1.5 text-xs font-bold text-white bg-sky-600 px-3.5 py-2 rounded-xl hover:bg-sky-700 transition"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  <span>Soạn SMS Mới</span>
+                  <span>Compose New SMS</span>
                 </button>
               </div>
 
@@ -759,7 +776,7 @@ export default function Customer360Page() {
               {(!customer.smsLogs || customer.smsLogs.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">Chưa có tin nhắn SMS nào được gửi.</p>
+                  <p className="font-medium text-sm">No SMS messages sent yet.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -775,7 +792,7 @@ export default function Customer360Page() {
                         <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                           <div className="flex items-center space-x-2">
                             <span className="font-bold text-xs text-slate-800">
-                              Đến: {log.toPhone}
+                              To: {log.toPhone}
                             </span>
                             <span
                               className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -792,7 +809,7 @@ export default function Customer360Page() {
                             </span>
                           </div>
                           <span className="text-[11px] text-slate-400">
-                            {new Date(log.createdAt).toLocaleString("vi-VN")}
+                            {new Date(log.createdAt).toLocaleString("en-US")}
                           </span>
                         </div>
                         <p className="text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-sans">
@@ -812,10 +829,10 @@ export default function Customer360Page() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-bold text-slate-800">
-                    Phân Tích Sụt Giảm & Kế Hoạch Chăm Sóc (Churn Prevention)
+                    Purchasing Trends & Churn Prevention
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Ghi nhận nguyên nhân tiệm giảm lượng cọ và phương án giữ chân khách hàng
+                    Record causes of decreased order volume and customer retention strategies
                   </p>
                 </div>
                 <button
@@ -823,16 +840,16 @@ export default function Customer360Page() {
                   className="flex items-center space-x-1.5 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3.5 py-2 rounded-xl hover:bg-rose-100 transition"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Ghi Nhận Churn Mới</span>
+                  <span>Record New Churn Entry</span>
                 </button>
               </div>
 
               {(!customer.churnSurveys || customer.churnSurveys.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
-                  <p className="font-semibold text-slate-700 text-sm">Tiệm duy trì phong độ tốt!</p>
+                  <p className="font-semibold text-slate-700 text-sm">Consistent ordering pattern!</p>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Chưa có cảnh báo sụt giảm đơn hàng bất thường nào trong 3 tháng qua.
+                    No abnormal volume drops detected in the past 3 months.
                   </p>
                 </div>
               ) : (
@@ -845,31 +862,31 @@ export default function Customer360Page() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <span className="font-bold text-sm text-slate-800">
-                            Tháng khảo sát: {survey.analysisMonth}
+                            Survey Month: {survey.analysisMonth}
                           </span>
                           <span className="font-black text-rose-600 bg-rose-100 px-2 py-0.5 rounded text-xs">
-                            {survey.dropPercent}% doanh số
+                            {survey.dropPercent}% order volume
                           </span>
                         </div>
                         <span className="text-xs text-slate-400">
-                          Ghi nhận bởi: <strong>{survey.saleRep}</strong>
+                          Recorded by: <strong>{formatSalesRep(survey.saleRep)}</strong>
                         </span>
                       </div>
 
                       <div className="text-xs text-slate-700">
-                        <strong>Nguyên nhân chính: </strong>
+                        <strong>Primary Reason: </strong>
                         <span className="font-semibold text-rose-800">{survey.reason}</span>
                       </div>
 
                       {survey.saleNotes && (
                         <div className="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200">
-                          <strong>Ghi nhận từ tiệm:</strong> {survey.saleNotes}
+                          <strong>Salon Feedback:</strong> {survey.saleNotes}
                         </div>
                       )}
 
                       {survey.actionPlan && (
                         <div className="text-xs text-emerald-800 bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
-                          <strong>Kế hoạch giữ chân (Action Plan):</strong> {survey.actionPlan}
+                          <strong>Retention Action Plan:</strong> {survey.actionPlan}
                         </div>
                       )}
                     </div>
@@ -881,12 +898,12 @@ export default function Customer360Page() {
         </div>
       </div>
 
-      {/* MODAL: SỬA HỒ SƠ KHÁCH HÀNG */}
+      {/* MODAL: EDIT CUSTOMER PROFILE */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-5 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
-              <h3 className="text-lg font-bold text-[#253c68]">Chỉnh Sửa Hồ Sơ Salon</h3>
+              <h3 className="text-lg font-bold text-[#253c68]">Edit Salon Profile</h3>
               <button
                 onClick={() => setIsEditModalOpen(false)}
                 className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
@@ -898,7 +915,7 @@ export default function Customer360Page() {
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tên Tiệm Nail</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Business / Salon Name</label>
                   <input
                     type="text"
                     required
@@ -909,7 +926,7 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Chủ Tiệm</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Contact Person</label>
                   <input
                     type="text"
                     required
@@ -920,7 +937,7 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Số ĐT (+1)</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number (+1)</label>
                   <input
                     type="tel"
                     required
@@ -941,7 +958,7 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ngày Sinh Chủ Tiệm</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Birthday</label>
                   <input
                     type="date"
                     value={editFormData.birthday}
@@ -951,7 +968,7 @@ export default function Customer360Page() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Địa Chỉ</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Address</label>
                   <input
                     type="text"
                     value={editFormData.address}
@@ -961,7 +978,7 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Thành Phố</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
                   <input
                     type="text"
                     value={editFormData.city}
@@ -971,7 +988,7 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tiểu Bang</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">State</label>
                   <select
                     value={editFormData.state}
                     onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })}
@@ -986,11 +1003,11 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phân Hạng (Tier)</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Customer Tier</label>
                   <select
                     value={editFormData.tier}
-                    onChange={(e) => setEditFormData({ ...editFormData, tier: e.target.value })}
-                    className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] font-bold text-[#253c68]"
+                    onChange={(e) => setEditFormData({ ...editFormData, tier: e.target.value as any })}
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] font-bold text-[#253c68]"
                   >
                     <option value="STANDARD">Standard</option>
                     <option value="WHOLESALE">Wholesale</option>
@@ -999,20 +1016,36 @@ export default function Customer360Page() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Trạng Thái</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Status</label>
                   <select
                     value={editFormData.status}
-                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
-                    className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as any })}
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
                   >
-                    <option value="ACTIVE">Hoạt động (Active)</option>
-                    <option value="AT_RISK">Nguy cơ sụt giảm (At Risk)</option>
-                    <option value="INACTIVE">Tạm ngưng (Inactive)</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="AT_RISK">At Risk</option>
+                    <option value="INACTIVE">Inactive</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Assigned Sales Rep</label>
+                  <select
+                    value={editFormData.assignedSale}
+                    onChange={(e) => setEditFormData({ ...editFormData, assignedSale: e.target.value })}
+                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                  >
+                    <option value="johnny">Johnny Tran</option>
+                    <option value="hanna">Hanna Nguyen</option>
+                    <option value="alice">Alice Nguyen</option>
+                    <option value="tan">Tan Ho</option>
+                    <option value="kate">Kate</option>
+                    <option value="admin">Admin</option>
                   </select>
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ghi Chú</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Notes / Preferences</label>
                   <textarea
                     rows={2}
                     value={editFormData.notes}
@@ -1028,14 +1061,14 @@ export default function Customer360Page() {
                   onClick={() => setIsEditModalOpen(false)}
                   className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="px-6 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md btn-press disabled:opacity-50"
                 >
-                  {isSubmitting ? "Đang lưu..." : "Cập Nhật Hồ Sơ"}
+                  {isSubmitting ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </form>
@@ -1043,7 +1076,7 @@ export default function Customer360Page() {
         </div>
       )}
 
-      {/* MODAL: GỬI QUO SMS */}
+      {/* MODAL: SEND QUO SMS */}
       {isSmsModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full overflow-hidden">
@@ -1053,7 +1086,7 @@ export default function Customer360Page() {
                   <MessageSquare className="w-5 h-5 text-sky-300" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold">Gửi Quo SMS Cho {customer.contactPerson}</h3>
+                  <h3 className="text-base font-extrabold">Send Quo SMS to {customer.contactPerson}</h3>
                   <p className="text-xs text-sky-200">{customer.businessName} • {customer.phone}</p>
                 </div>
               </div>
@@ -1068,7 +1101,7 @@ export default function Customer360Page() {
             <form onSubmit={handleSendSms} className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                  Chọn mẫu tin nhắn mẫu:
+                  Select message template:
                 </label>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
@@ -1080,7 +1113,7 @@ export default function Customer360Page() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    🎉 Khuyến mãi cọ Z-Brushes
+                    🎉 Z-Brushes Promotion
                   </button>
 
                   <button
@@ -1092,7 +1125,7 @@ export default function Customer360Page() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    💬 Hỏi thăm trải nghiệm cọ
+                    💬 Brush Experience Follow-up
                   </button>
 
                   <button
@@ -1104,7 +1137,7 @@ export default function Customer360Page() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    💳 Nhắc thanh toán công nợ
+                    💳 Payment / AR Reminder
                   </button>
 
                   <button
@@ -1116,14 +1149,14 @@ export default function Customer360Page() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    🎂 Chúc mừng sinh nhật
+                    🎂 Birthday Greeting
                   </button>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Nội Dung Tin Nhắn
+                  Message Content
                 </label>
                 <textarea
                   rows={4}
@@ -1133,8 +1166,8 @@ export default function Customer360Page() {
                   className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
                 />
                 <div className="flex items-center justify-between text-[11px] text-slate-400 mt-1">
-                  <span>Ký tự: {smsData.content.length}</span>
-                  <span>Người nhận: {customer.phone}</span>
+                  <span>Characters: {smsData.content.length}</span>
+                  <span>Recipient: {customer.phone}</span>
                 </div>
               </div>
 
@@ -1144,7 +1177,7 @@ export default function Customer360Page() {
                   onClick={() => setIsSmsModalOpen(false)}
                   className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -1152,7 +1185,7 @@ export default function Customer360Page() {
                   className="flex items-center space-x-2 px-5 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md btn-press disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
-                  <span>{isSubmitting ? "Đang gửi..." : "Gửi Quo SMS Ngay"}</span>
+                  <span>{isSubmitting ? "Sending..." : "Send Quo SMS Now"}</span>
                 </button>
               </div>
             </form>

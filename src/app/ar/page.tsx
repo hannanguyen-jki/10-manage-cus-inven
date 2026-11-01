@@ -126,7 +126,7 @@ export default function AccountsReceivablePage() {
     if (!selectedOrderForPayment) return;
     const amount = parseFloat(paymentAmount);
     if (isNaN(amount) || amount <= 0) {
-      showToast("Vui lòng nhập số tiền hợp lệ (> 0)", "error");
+      showToast("Please enter a valid payment amount (> 0)", "error");
       return;
     }
 
@@ -145,14 +145,14 @@ export default function AccountsReceivablePage() {
 
       const resData = await res.json();
       if (resData.success) {
-        showToast(`Đã thu thành công $${amount.toFixed(2)} từ ${selectedOrderForPayment.customer?.businessName}`);
+        showToast(`Payment of $${amount.toFixed(2)} recorded successfully for ${selectedOrderForPayment.customer?.businessName}`);
         setSelectedOrderForPayment(null);
         await fetchARData();
       } else {
-        showToast(resData.error || "Lỗi khi ghi nhận thanh toán", "error");
+        showToast(resData.error || "Failed to record payment", "error");
       }
     } catch (err: any) {
-      showToast(err?.message || "Lỗi mạng hoặc hệ thống", "error");
+      showToast(err?.message || "Network or server error", "error");
     } finally {
       setIsSubmittingPayment(false);
     }
@@ -161,7 +161,7 @@ export default function AccountsReceivablePage() {
   // Open Quo SMS Modal
   const handleOpenSmsModal = (order: OrderAR) => {
     setSelectedOrderForSms(order);
-    const contact = order.customer?.contactPerson || order.customer?.businessName || "Quý khách";
+    const contact = order.customer?.contactPerson || order.customer?.businessName || "Valued Customer";
     const dueDateStr = new Date(order.dueDate).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -180,7 +180,7 @@ export default function AccountsReceivablePage() {
   // Apply quick templates for Quo SMS
   const applyTemplate = (type: "gentle" | "urgent" | "zelle") => {
     if (!selectedOrderForSms) return;
-    const contact = selectedOrderForSms.customer?.contactPerson || selectedOrderForSms.customer?.businessName || "Quý khách";
+    const contact = selectedOrderForSms.customer?.contactPerson || selectedOrderForSms.customer?.businessName || "Valued Customer";
     const dueDateStr = new Date(selectedOrderForSms.dueDate).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -222,14 +222,14 @@ export default function AccountsReceivablePage() {
       const resData = await res.json();
       if (resData.success) {
         showToast(
-          `Đã gửi Quo SMS thành công đến ${selectedOrderForSms.customer?.businessName} (${selectedOrderForSms.customer?.phone})!`
+          `Quo SMS sent successfully to ${selectedOrderForSms.customer?.businessName} (${selectedOrderForSms.customer?.phone})!`
         );
         setSelectedOrderForSms(null);
       } else {
-        showToast(resData.error || "Không thể gửi SMS qua Quo", "error");
+        showToast(resData.error || "Failed to send SMS via Quo gateway", "error");
       }
     } catch (err: any) {
-      showToast(err?.message || "Lỗi kết nối Quo SMS", "error");
+      showToast(err?.message || "Quo SMS connection error", "error");
     } finally {
       setIsSendingSms(false);
     }
@@ -283,9 +283,9 @@ export default function AccountsReceivablePage() {
                 <Receipt className="w-6 h-6 text-[#38bdf8]" />
               </div>
               <div>
-                <h1 className="text-2xl font-black tracking-tight">Accounts Receivable (Công Nợ Khách Hàng)</h1>
+                <h1 className="text-2xl font-black tracking-tight">Accounts Receivable (AR) & Collection</h1>
                 <p className="text-sm text-slate-300">
-                  Phân loại nợ theo tuổi hóa đơn (Aging Buckets), nhắc nợ 1-click qua Quo SMS US Hotline
+                  Monitor overdue invoices, track payment status, and automate debt recovery via Quo SMS.
                 </p>
               </div>
             </div>
@@ -298,7 +298,7 @@ export default function AccountsReceivablePage() {
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold backdrop-blur-sm transition-all"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-              <span>Làm mới</span>
+              <span>Refresh</span>
             </button>
             <div className="flex items-center space-x-2 bg-emerald-500/20 border border-emerald-400/30 px-3 py-2 rounded-xl text-xs font-bold text-emerald-300">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -311,48 +311,48 @@ export default function AccountsReceivablePage() {
       {/* Metric Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard
-          title="Tổng Công Nợ Còn Lại"
+          title="Total Outstanding AR"
           value={`$${(summary?.totalOutstanding || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-          subtitle={`${summary?.totalInvoices || 0} hóa đơn chưa thu xong`}
+          subtitle={`${summary?.totalInvoices || 0} active invoices with balances`}
           icon={DollarSign}
           color="navy"
           badge="Total AR"
         />
 
         <MetricCard
-          title="Current (0-30 Ngày)"
+          title="Current (0-30 Days)"
           value={`$${(summary?.buckets?.current?.amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-          subtitle={`${summary?.buckets?.current?.count || 0} đơn an toàn / mới xuất`}
+          subtitle={`${summary?.buckets?.current?.count || 0} orders within normal terms`}
           icon={CheckCircle2}
           color="emerald"
           badge="0-30D"
         />
 
         <MetricCard
-          title="31 - 60 Ngày"
+          title="31 - 60 Days"
           value={`$${(summary?.buckets?.bucket31_60?.amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-          subtitle={`${summary?.buckets?.bucket31_60?.count || 0} đơn cần gửi nhắc nợ đợt 1`}
+          subtitle={`${summary?.buckets?.bucket31_60?.count || 0} orders due for 1st follow-up`}
           icon={Clock}
           color="amber"
           badge="31-60D"
         />
 
         <MetricCard
-          title="61 - 90 Ngày"
+          title="61 - 90 Days"
           value={`$${(summary?.buckets?.bucket61_90?.amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-          subtitle={`${summary?.buckets?.bucket61_90?.count || 0} đơn nguy cơ quá hạn cao`}
+          subtitle={`${summary?.buckets?.bucket61_90?.count || 0} orders on high overdue alert`}
           icon={AlertTriangle}
           color="rose"
           badge="61-90D"
         />
 
         <MetricCard
-          title="> 90 Ngày Quá Hạn"
+          title="> 90 Days Past Due"
           value={`$${(summary?.buckets?.bucketOver90?.amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-          subtitle={`${summary?.buckets?.bucketOver90?.count || 0} đơn nợ xấu / gọi trực tiếp`}
+          subtitle={`${summary?.buckets?.bucketOver90?.count || 0} critical orders / direct call`}
           icon={AlertOctagon}
           color="rose"
-          badge=">90D Nợ Xấu"
+          badge=">90D Critical"
         />
       </div>
 
@@ -362,7 +362,7 @@ export default function AccountsReceivablePage() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
             type="text"
-            placeholder="Tìm theo Salon, Order #, chủ tiệm, phone..."
+            placeholder="Search by salon, invoice #, contact person, phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:border-transparent transition-all"
@@ -383,7 +383,7 @@ export default function AccountsReceivablePage() {
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                 }`}
               >
-                {b === "ALL" ? "Tất cả" : b}
+                {b === "ALL" ? "All" : b}
               </button>
             ))}
           </div>
@@ -394,10 +394,10 @@ export default function AccountsReceivablePage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-[#253c68]"
           >
-            <option value="ALL">Mọi trạng thái</option>
-            <option value="UNPAID">Chưa thanh toán (UNPAID)</option>
-            <option value="PARTIAL">Thanh toán một phần (PARTIAL)</option>
-            <option value="OVERDUE">Quá hạn (OVERDUE)</option>
+            <option value="ALL">All Statuses</option>
+            <option value="UNPAID">Pending / Unpaid</option>
+            <option value="PARTIAL">Partially Paid</option>
+            <option value="OVERDUE">Overdue</option>
           </select>
         </div>
       </div>
@@ -408,15 +408,15 @@ export default function AccountsReceivablePage() {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
               <tr>
-                <th className="py-3.5 px-4">Order # & Ngày</th>
-                <th className="py-3.5 px-4">Salon / Khách Hàng</th>
-                <th className="py-3.5 px-4">Hạn TT (Due Date)</th>
-                <th className="py-3.5 px-4 text-right">Tổng Đơn</th>
-                <th className="py-3.5 px-4 text-right">Đã Trả</th>
-                <th className="py-3.5 px-4 text-right">Còn Nợ (Balance)</th>
-                <th className="py-3.5 px-4 text-center">Tuổi Nợ (Bucket)</th>
-                <th className="py-3.5 px-4 text-center">Trạng Thái</th>
-                <th className="py-3.5 px-4 text-right">Hành Động</th>
+                <th className="py-3.5 px-4">Invoice / Order #</th>
+                <th className="py-3.5 px-4">Customer</th>
+                <th className="py-3.5 px-4">Invoice Date</th>
+                <th className="py-3.5 px-4">Due Date</th>
+                <th className="py-3.5 px-4 text-right">Total Amount</th>
+                <th className="py-3.5 px-4 text-right">Paid</th>
+                <th className="py-3.5 px-4 text-right">Balance Due</th>
+                <th className="py-3.5 px-4 text-center">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -424,15 +424,15 @@ export default function AccountsReceivablePage() {
                 <tr>
                   <td colSpan={9} className="py-12 text-center text-slate-400">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#253c68]" />
-                    <span>Đang tải danh sách công nợ...</span>
+                    <span>Loading receivables ledger...</span>
                   </td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-12 text-center text-slate-400">
                     <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                    <p className="font-semibold text-slate-700">Không có hóa đơn công nợ phù hợp!</p>
-                    <p className="text-xs text-slate-400 mt-1">Toàn bộ khách hàng đã thanh toán hoặc không khớp bộ lọc.</p>
+                    <p className="font-semibold text-slate-700">No overdue accounts or matching invoices!</p>
+                    <p className="text-xs text-slate-400 mt-1">All accounts are paid in full or match your filter criteria.</p>
                   </td>
                 </tr>
               ) : (
@@ -452,7 +452,11 @@ export default function AccountsReceivablePage() {
                       <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
                         <div>{order.orderNumber}</div>
                         <div className="text-[11px] font-normal text-slate-400">
-                          {new Date(order.createdAt).toLocaleDateString("vi-VN")}
+                          {new Date(order.createdAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
                         </div>
                       </td>
 
@@ -463,7 +467,7 @@ export default function AccountsReceivablePage() {
                           <span>{order.customer?.businessName || "Salon"}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-xs text-slate-500 mt-0.5">
-                          <span>{order.customer?.contactPerson || "Chủ tiệm"}</span>
+                          <span>{order.customer?.contactPerson || "Manager"}</span>
                           <span>•</span>
                           <span className="font-mono text-[11px] text-[#253c68] font-semibold">
                             {order.customer?.phone}
@@ -471,18 +475,31 @@ export default function AccountsReceivablePage() {
                         </div>
                       </td>
 
+                      {/* Invoice Date */}
+                      <td className="py-3.5 px-4 text-xs font-medium text-slate-700">
+                        {new Date(order.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </td>
+
                       {/* Due Date */}
                       <td className="py-3.5 px-4">
                         <div className="text-xs font-semibold text-slate-800">
-                          {new Date(order.dueDate).toLocaleDateString("vi-VN")}
+                          {new Date(order.dueDate).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
                         </div>
                         <div className="text-[11px]">
                           {order.daysPastDue > 0 ? (
                             <span className="text-rose-600 font-bold">
-                              Trễ {order.daysPastDue} ngày
+                              {order.daysPastDue} days overdue
                             </span>
                           ) : (
-                            <span className="text-emerald-600 font-medium">Còn {Math.abs(order.daysPastDue)} ngày</span>
+                            <span className="text-emerald-600 font-medium">{Math.abs(order.daysPastDue)} days left</span>
                           )}
                         </div>
                       </td>
@@ -502,41 +519,26 @@ export default function AccountsReceivablePage() {
                         ${order.balanceDue.toFixed(2)}
                       </td>
 
-                      {/* Aging Bucket Badge */}
-                      <td className="py-3.5 px-4 text-center">
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
-                            isCritical
-                              ? "bg-rose-100 text-rose-700 border border-rose-300"
-                              : isHighAlert
-                              ? "bg-orange-100 text-orange-700 border border-orange-300"
-                              : isWarning
-                              ? "bg-amber-100 text-amber-700 border border-amber-300"
-                              : "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                          }`}
-                        >
-                          {order.agingBucket === "0-30"
-                            ? "Current (0-30)"
-                            : order.agingBucket === "31-60"
-                            ? "31-60 Ngày"
-                            : order.agingBucket === "61-90"
-                            ? "61-90 Ngày"
-                            : ">90 Ngày"}
-                        </span>
-                      </td>
-
                       {/* Status */}
                       <td className="py-3.5 px-4 text-center">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                          className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-extrabold ${
                             order.paymentStatus === "PAID"
-                              ? "bg-emerald-50 text-emerald-700"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                               : order.paymentStatus === "PARTIAL"
-                              ? "bg-sky-50 text-sky-700"
-                              : "bg-amber-50 text-amber-700"
+                              ? "bg-sky-50 text-sky-700 border border-sky-200"
+                              : order.daysPastDue > 0
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
+                              : "bg-amber-50 text-amber-700 border border-amber-200"
                           }`}
                         >
-                          {order.paymentStatus}
+                          {order.paymentStatus === "PAID"
+                            ? "Paid"
+                            : order.paymentStatus === "PARTIAL"
+                            ? "Pending (Partial)"
+                            : order.daysPastDue > 0
+                            ? "Overdue"
+                            : "Due Soon"}
                         </span>
                       </td>
 
@@ -546,17 +548,17 @@ export default function AccountsReceivablePage() {
                           {/* Record Payment Button */}
                           <button
                             onClick={() => handleOpenPayment(order)}
-                            title="Ghi nhận thu nợ"
+                            title="Record Payment"
                             className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition-all flex items-center space-x-1"
                           >
                             <CreditCard className="w-3.5 h-3.5" />
-                            <span>Thu tiền</span>
+                            <span>Record Payment</span>
                           </button>
 
                           {/* Quo SMS 1-Click Reminder */}
                           <button
                             onClick={() => handleOpenSmsModal(order)}
-                            title="1-Click Quo SMS Reminder"
+                            title="Send Quo Payment Reminder SMS"
                             className="px-2.5 py-1.5 rounded-lg bg-[#253c68] hover:bg-[#1a2c4e] text-white text-xs font-bold shadow-sm transition-all flex items-center space-x-1"
                           >
                             <Send className="w-3.5 h-3.5" />
@@ -573,14 +575,14 @@ export default function AccountsReceivablePage() {
         </div>
       </div>
 
-      {/* MODAL 1: GHI NHẬN THU NỢ (RECORD PAYMENT) */}
+      {/* MODAL 1: RECORD PAYMENT */}
       {selectedOrderForPayment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
             <div className="p-5 bg-gradient-to-r from-[#253c68] to-[#1a2c4e] text-white flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
                 <CreditCard className="w-5 h-5 text-[#38bdf8]" />
-                <h3 className="font-extrabold text-base">Ghi Nhận Thu Nợ Đơn Hàng</h3>
+                <h3 className="font-extrabold text-base">Record Payment</h3>
               </div>
               <button
                 onClick={() => setSelectedOrderForPayment(null)}
@@ -593,19 +595,19 @@ export default function AccountsReceivablePage() {
             <form onSubmit={handleSubmitPayment} className="p-6 space-y-4">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Hóa đơn:</span>
+                  <span className="text-slate-500 font-medium">Invoice / Order #:</span>
                   <span className="font-mono font-bold text-slate-800">
                     {selectedOrderForPayment.orderNumber}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Khách hàng:</span>
+                  <span className="text-slate-500 font-medium">Customer:</span>
                   <span className="font-bold text-slate-900">
                     {selectedOrderForPayment.customer?.businessName}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs pt-1 border-t border-slate-200">
-                  <span className="text-slate-500 font-medium">Số nợ hiện tại:</span>
+                  <span className="text-slate-500 font-medium">Balance Due:</span>
                   <span className="font-mono font-black text-rose-600 text-sm">
                     ${selectedOrderForPayment.balanceDue.toFixed(2)}
                   </span>
@@ -614,7 +616,7 @@ export default function AccountsReceivablePage() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Số tiền thu ($ USD)
+                  Amount Paid ($ USD)
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2.5 text-slate-400 font-bold">$</span>
@@ -631,7 +633,7 @@ export default function AccountsReceivablePage() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Phương thức thanh toán
+                  Payment Method (Zelle, Check, Credit Card, Wire)
                 </label>
                 <select
                   value={paymentMethod}
@@ -639,20 +641,20 @@ export default function AccountsReceivablePage() {
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-[#253c68]"
                 >
                   <option value="Zelle">Zelle (+1 713-330-6165 JKIOCEAN LLC)</option>
-                  <option value="Check">Check (Chi phiếu gửi tiệm/bưu điện)</option>
+                  <option value="Check">Check (Payable to JKIOCEAN LLC)</option>
                   <option value="Credit Card">Credit Card / POS</option>
-                  <option value="Bank Wire">Bank Wire Transfer</option>
-                  <option value="Cash">Tiền mặt (Cash)</option>
+                  <option value="Wire Transfer">Bank Wire Transfer</option>
+                  <option value="Cash">Cash (Houston Delivery Hub)</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Ghi chú giao dịch
+                  Transaction Ref
                 </label>
                 <input
                   type="text"
-                  placeholder="Mã reference Zelle, số check, người chuyển..."
+                  placeholder="Zelle confirmation #, Check #, transaction auth..."
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-[#253c68]"
@@ -665,7 +667,7 @@ export default function AccountsReceivablePage() {
                   onClick={() => setSelectedOrderForPayment(null)}
                   className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50 transition-colors"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -677,7 +679,7 @@ export default function AccountsReceivablePage() {
                   ) : (
                     <Check className="w-4 h-4" />
                   )}
-                  <span>Xác nhận thu nợ</span>
+                  <span>Confirm</span>
                 </button>
               </div>
             </form>
@@ -685,7 +687,7 @@ export default function AccountsReceivablePage() {
         </div>
       )}
 
-      {/* MODAL 2: GỬI QUO SMS NHẮC CÔNG NỢ (1-CLICK SMS) */}
+      {/* MODAL 2: SEND QUO PAYMENT REMINDER SMS */}
       {selectedOrderForSms && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
@@ -693,8 +695,8 @@ export default function AccountsReceivablePage() {
               <div className="flex items-center space-x-2.5">
                 <MessageSquare className="w-5 h-5 text-[#38bdf8]" />
                 <div>
-                  <h3 className="font-extrabold text-base">Quo SMS Nhắc Nợ Tức Thì</h3>
-                  <p className="text-[11px] text-slate-300">Hotline gửi: +1 (713) 330-6165 (Quo US)</p>
+                  <h3 className="font-extrabold text-base">Send Quo Payment Reminder SMS</h3>
+                  <p className="text-[11px] text-slate-300">Sending Hotline: +1 (713) 330-6165 (Quo US)</p>
                 </div>
               </div>
               <button
@@ -709,7 +711,7 @@ export default function AccountsReceivablePage() {
               {/* Recipient Card */}
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-slate-500 font-medium">Gửi tới: </span>
+                  <span className="text-slate-500 font-medium">To: </span>
                   <span className="font-bold text-slate-900">
                     {selectedOrderForSms.customer?.businessName} ({selectedOrderForSms.customer?.contactPerson})
                   </span>
@@ -722,7 +724,7 @@ export default function AccountsReceivablePage() {
               {/* Template quick select */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                  Chọn mẫu tin nhắn nhanh
+                  Select Quick Template
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
@@ -730,24 +732,24 @@ export default function AccountsReceivablePage() {
                     onClick={() => applyTemplate("gentle")}
                     className="p-2 rounded-xl border border-slate-200 hover:border-[#253c68] text-left text-xs bg-slate-50 hover:bg-white transition-all group"
                   >
-                    <div className="font-bold text-slate-800 group-hover:text-[#253c68]">Lịch sự</div>
-                    <div className="text-[10px] text-slate-400">Đơn trong hạn</div>
+                    <div className="font-bold text-slate-800 group-hover:text-[#253c68]">Gentle</div>
+                    <div className="text-[10px] text-slate-400">Within terms</div>
                   </button>
                   <button
                     type="button"
                     onClick={() => applyTemplate("urgent")}
                     className="p-2 rounded-xl border border-rose-200 hover:border-rose-500 text-left text-xs bg-rose-50/50 hover:bg-rose-50 transition-all group"
                   >
-                    <div className="font-bold text-rose-700">Khẩn cấp</div>
-                    <div className="text-[10px] text-rose-500">Đã quá hạn</div>
+                    <div className="font-bold text-rose-700">Urgent</div>
+                    <div className="text-[10px] text-rose-500">Past due</div>
                   </button>
                   <button
                     type="button"
                     onClick={() => applyTemplate("zelle")}
                     className="p-2 rounded-xl border border-slate-200 hover:border-[#253c68] text-left text-xs bg-slate-50 hover:bg-white transition-all group"
                   >
-                    <div className="font-bold text-slate-800 group-hover:text-[#253c68]">Thông tin Zelle</div>
-                    <div className="text-[10px] text-slate-400">Kèm số phone</div>
+                    <div className="font-bold text-slate-800 group-hover:text-[#253c68]">Zelle Info</div>
+                    <div className="text-[10px] text-slate-400">With phone ref</div>
                   </button>
                 </div>
               </div>
@@ -755,7 +757,7 @@ export default function AccountsReceivablePage() {
               {/* Message Content Textarea */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Nội dung tin nhắn SMS
+                  SMS Message Content
                 </label>
                 <textarea
                   rows={5}
@@ -764,8 +766,8 @@ export default function AccountsReceivablePage() {
                   className="w-full p-3 bg-white border border-slate-300 rounded-xl text-xs font-sans text-slate-800 leading-relaxed focus:ring-2 focus:ring-[#253c68] focus:border-transparent resize-none"
                 />
                 <div className="flex justify-between items-center text-[11px] text-slate-400 mt-1">
-                  <span>Ký tự: {smsContent.length} (~{Math.ceil(smsContent.length / 160)} SMS)</span>
-                  <span className="text-emerald-600 font-semibold">Tự động lưu lịch sử vào hệ thống</span>
+                  <span>Characters: {smsContent.length} (~{Math.ceil(smsContent.length / 160)} SMS)</span>
+                  <span className="text-emerald-600 font-semibold">Automatically logged to customer history</span>
                 </div>
               </div>
 
@@ -776,7 +778,7 @@ export default function AccountsReceivablePage() {
                   onClick={() => setSelectedOrderForSms(null)}
                   className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50 transition-colors"
                 >
-                  Đóng
+                  Close
                 </button>
                 <button
                   type="button"
@@ -789,7 +791,7 @@ export default function AccountsReceivablePage() {
                   ) : (
                     <Send className="w-3.5 h-3.5" />
                   )}
-                  <span>Gửi SMS qua Quo ngay</span>
+                  <span>Send SMS via Quo</span>
                 </button>
               </div>
             </div>

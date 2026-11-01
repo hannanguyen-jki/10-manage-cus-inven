@@ -83,9 +83,9 @@ export default function QuotesListPage() {
   const handleOpenSmsModal = (quote: QuoteData) => {
     setSmsModalQuote(quote);
     setSmsContent(
-      `JKIOCEAN: Chào ${quote.customer.contactPerson} (${quote.customer.businessName}), em gửi chị Báo giá sỉ #${quote.quoteNumber}. Tổng tiền: $${quote.totalAmount.toFixed(
+      `JKIOCEAN Houston Hub: Hi ${quote.customer.contactPerson} (${quote.customer.businessName}), here is your official wholesale price quote #${quote.quoteNumber}. Total: $${quote.totalAmount.toFixed(
         2
-      )}. Hiệu lực đến: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Miễn phí giao hàng nội thành Houston Hub. Chị xem chi tiết tại hệ thống hoặc gọi hotline +1-713-330-6165.`
+      )}. Valid until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Free local delivery from Houston Distribution Hub. View full PDF or call hotline +1 (713) 330-6165.`
     );
     setSmsSuccess(false);
   };
@@ -144,28 +144,28 @@ export default function QuotesListPage() {
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
             <CheckCircle className="w-3 h-3 mr-1" />
-            Đã Chốt (Accepted)
+            Accepted
           </span>
         );
       case "SENT":
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200">
             <Send className="w-3 h-3 mr-1" />
-            Đã Gửi (Sent)
+            Sent
           </span>
         );
       case "DRAFT":
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
             <Clock className="w-3 h-3 mr-1" />
-            Bản Nháp (Draft)
+            Draft
           </span>
         );
       case "REJECTED":
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
             <XCircle className="w-3 h-3 mr-1" />
-            Từ Chối (Rejected)
+            Rejected
           </span>
         );
     }
@@ -177,20 +177,20 @@ export default function QuotesListPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Quản Lý Báo Giá (Quotes)</h1>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">B2B Quotes & Invoices</h1>
             <span className="bg-[#253c68]/10 text-[#253c68] text-xs font-extrabold px-2.5 py-0.5 rounded-full border border-[#253c68]/20">
               Houston Hub
             </span>
           </div>
           <p className="text-sm text-slate-500 mt-1">
-            Tạo, xuất PDF chuẩn in ấn và gửi báo giá sỉ cọ JKIOCEAN kèm hình ảnh độ phân giải cao tới salon B2B.
+            Create, manage, and dispatch official JKIOCEAN wholesale price quotes with 1-click PDF and SMS delivery.
           </p>
         </div>
 
         <div className="flex items-center space-x-3">
           <button
             onClick={() => fetchQuotes()}
-            title="Làm mới dữ liệu"
+            title="Refresh Quotes"
             className="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 transition shadow-sm"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -200,7 +200,7 @@ export default function QuotesListPage() {
             className="inline-flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-[#253c68] to-[#1e3054] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#253c68]/20 hover:shadow-[#253c68]/30 hover:scale-[1.01] active:scale-[0.99] transition-all"
           >
             <Plus className="w-4 h-4" />
-            <span>Tạo Báo Giá Mới</span>
+            <span>Create New Quote</span>
           </Link>
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function QuotesListPage() {
         {/* Card 1 */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Báo Giá Tháng Này</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Quotes This Month</span>
             <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
               <FileText className="w-5 h-5" />
             </div>
@@ -220,8 +220,8 @@ export default function QuotesListPage() {
               ${stats.totalAmountThisMonth.toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </span>
             <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-              <span className="font-bold text-blue-600">{stats.totalQuotesThisMonth} báo giá</span>
-              <span>đã phát hành</span>
+              <span className="font-bold text-blue-600">{stats.totalQuotesThisMonth} quotes</span>
+              <span>issued this month</span>
             </div>
           </div>
           <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-blue-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
@@ -230,7 +230,7 @@ export default function QuotesListPage() {
         {/* Card 2 */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Đang Chờ Phản Hồi</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Pending Response</span>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
               <Clock className="w-5 h-5" />
             </div>
@@ -238,8 +238,8 @@ export default function QuotesListPage() {
           <div className="mt-3">
             <span className="text-2xl font-black text-slate-900 font-mono">{stats.pendingCount}</span>
             <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-              <span className="font-semibold text-amber-600">Bản nháp & Đã gửi</span>
-              <span>cần follow-up</span>
+              <span className="font-semibold text-amber-600">Draft & Sent</span>
+              <span>require follow-up</span>
             </div>
           </div>
           <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-amber-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
@@ -248,7 +248,7 @@ export default function QuotesListPage() {
         {/* Card 3 */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Doanh Số Đã Chốt ($)</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Closed Revenue ($)</span>
             <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
               <DollarSign className="w-5 h-5" />
             </div>
@@ -258,7 +258,7 @@ export default function QuotesListPage() {
               ${stats.closedAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </span>
             <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-              <span className="font-bold text-emerald-600">{stats.acceptedCount} báo giá thành công</span>
+              <span className="font-bold text-emerald-600">{stats.acceptedCount} accepted quotes</span>
             </div>
           </div>
           <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-emerald-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
@@ -267,7 +267,7 @@ export default function QuotesListPage() {
         {/* Card 4 */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Tỷ Lệ Chốt Báo Giá</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Quote Win Rate</span>
             <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
               <Sparkles className="w-5 h-5" />
             </div>
@@ -279,8 +279,8 @@ export default function QuotesListPage() {
                 : "0%"}
             </span>
             <div className="flex items-center space-x-2 text-xs text-slate-500 mt-1">
-              <span>Tổng số: </span>
-              <span className="font-bold text-slate-700">{stats.totalQuotesCount} báo giá</span>
+              <span>Total: </span>
+              <span className="font-bold text-slate-700">{stats.totalQuotesCount} quotes</span>
             </div>
           </div>
           <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-purple-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
@@ -293,11 +293,11 @@ export default function QuotesListPage() {
           {/* Status Tabs */}
           <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 md:pb-0">
             {[
-              { id: "ALL", label: "Tất Cả" },
-              { id: "DRAFT", label: "Bản Nháp" },
-              { id: "SENT", label: "Đã Gửi" },
-              { id: "ACCEPTED", label: "Đã Chốt" },
-              { id: "REJECTED", label: "Từ Chối" },
+              { id: "ALL", label: "All" },
+              { id: "DRAFT", label: "Draft" },
+              { id: "SENT", label: "Sent" },
+              { id: "ACCEPTED", label: "Accepted" },
+              { id: "REJECTED", label: "Rejected" },
             ].map((tab) => {
               const active = statusFilter === tab.id;
               return (
@@ -317,12 +317,12 @@ export default function QuotesListPage() {
           </div>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="relative min-w-[280px]">
+          <form onSubmit={handleSearchSubmit} className="relative min-w-[300px]">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo Mã báo giá, Tên Salon, Phone..."
+              placeholder="Search quote #, customer name, phone..."
               className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -336,40 +336,49 @@ export default function QuotesListPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                <th className="py-3.5 px-4">Mã Báo Giá</th>
-                <th className="py-3.5 px-4">Khách Hàng / Salon B2B</th>
-                <th className="py-3.5 px-4">Ngày Tạo</th>
-                <th className="py-3.5 px-4">Hiệu Lực Đến</th>
-                <th className="py-3.5 px-4 text-center">Sản Phẩm</th>
-                <th className="py-3.5 px-4 text-right">Tổng Tiền (USD)</th>
-                <th className="py-3.5 px-4 text-center">Trạng Thái</th>
-                <th className="py-3.5 px-4 text-right">Hành Động</th>
+                <th className="py-3.5 px-4">Quote #</th>
+                <th className="py-3.5 px-4">Customer / Salon</th>
+                <th className="py-3.5 px-4">Created Date</th>
+                <th className="py-3.5 px-4">Valid Until</th>
+                <th className="py-3.5 px-4 text-center">Items</th>
+                <th className="py-3.5 px-4 text-right">Total Amount</th>
+                <th className="py-3.5 px-4 text-center">Status</th>
+                <th className="py-3.5 px-4 text-center">Sales Rep</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <RefreshCw className="w-6 h-6 animate-spin text-[#253c68]" />
-                      <span className="text-xs">Đang tải danh sách báo giá...</span>
+                      <span className="text-xs">Loading quotation list...</span>
                     </div>
                   </td>
                 </tr>
               ) : quotes.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <FileText className="w-8 h-8 text-slate-300" />
-                      <span className="text-sm font-semibold text-slate-600">Không tìm thấy báo giá nào</span>
-                      <span className="text-xs text-slate-400">Hãy tạo báo giá mới cho salon B2B</span>
+                      <span className="text-sm font-semibold text-slate-600">No quotes found</span>
+                      <span className="text-xs text-slate-400">Create a new wholesale quote for B2B salons</span>
                     </div>
                   </td>
                 </tr>
               ) : (
                 quotes.map((quote) => {
-                  const createdDate = new Date(quote.createdAt).toLocaleDateString("vi-VN");
-                  const validDate = new Date(quote.validUntil).toLocaleDateString("vi-VN");
+                  const createdDate = new Date(quote.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+                  const validDate = new Date(quote.validUntil).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  });
                   const isExpired = new Date(quote.validUntil).getTime() < Date.now();
 
                   return (
@@ -406,7 +415,7 @@ export default function QuotesListPage() {
                           </span>
                           {isExpired && (
                             <span className="text-[10px] bg-rose-50 text-rose-600 font-bold px-1.5 py-0.2 rounded border border-rose-200">
-                              Hết hạn
+                              Expired
                             </span>
                           )}
                         </div>
@@ -415,10 +424,10 @@ export default function QuotesListPage() {
                       {/* Items Count & Preview */}
                       <td className="py-4 px-4 text-center">
                         <div className="inline-flex items-center space-x-1 bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-700">
-                          <span>{quote.items.length} món</span>
+                          <span>{quote.items.length} items</span>
                           <span className="text-slate-400">|</span>
                           <span className="text-slate-500">
-                            {quote.items.reduce((s, it) => s + it.quantity, 0)} cái
+                            {quote.items.reduce((s, it) => s + it.quantity, 0)} pcs
                           </span>
                         </div>
                       </td>
@@ -431,13 +440,18 @@ export default function QuotesListPage() {
                       {/* Status */}
                       <td className="py-4 px-4 text-center">{getStatusBadge(quote.status)}</td>
 
+                      {/* Sales Rep */}
+                      <td className="py-4 px-4 text-center text-xs font-medium text-slate-700">
+                        {quote.createdUser || "Johnny Tran"}
+                      </td>
+
                       {/* Actions */}
                       <td className="py-4 px-4 text-right">
                         <div className="flex items-center justify-end space-x-1">
                           {/* View Detail */}
                           <Link
                             href={`/quotes/${quote.id}`}
-                            title="Xem chi tiết & Preview"
+                            title="View / Edit Quote Details"
                             className="p-1.5 text-slate-500 hover:text-[#253c68] hover:bg-slate-100 rounded-lg transition"
                           >
                             <Eye className="w-4 h-4" />
@@ -448,7 +462,7 @@ export default function QuotesListPage() {
                             href={`/api/quotes/${quote.id}/pdf`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            title="Tải file PDF báo giá"
+                            title="Download PDF"
                             className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
                           >
                             <Download className="w-4 h-4" />
@@ -457,7 +471,7 @@ export default function QuotesListPage() {
                           {/* Send Quo SMS */}
                           <button
                             onClick={() => handleOpenSmsModal(quote)}
-                            title="Gửi qua Quo SMS (+1-713-330-6165)"
+                            title="Send SMS via Quo (+1-713-330-6165)"
                             className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
                           >
                             <MessageSquare className="w-4 h-4" />
@@ -466,7 +480,7 @@ export default function QuotesListPage() {
                           {/* Change Status */}
                           <button
                             onClick={() => setStatusModalQuote(quote)}
-                            title="Đổi trạng thái báo giá"
+                            title="Update Status"
                             className="p-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition"
                           >
                             <CheckCircle className="w-4 h-4" />
@@ -492,8 +506,8 @@ export default function QuotesListPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-base">Gửi Báo Giá Qua Quo SMS</h3>
-                  <p className="text-xs text-slate-500">Từ số tổng đài Houston Hub: +1 (713) 330-6165</p>
+                  <h3 className="font-extrabold text-slate-900 text-base">Send Quote via Quo SMS</h3>
+                  <p className="text-xs text-slate-500">From Houston Hub Hotline: +1 (713) 330-6165</p>
                 </div>
               </div>
               <button
@@ -506,7 +520,7 @@ export default function QuotesListPage() {
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Gửi tới khách hàng / Salon:</label>
+                <label className="font-bold text-slate-700 block mb-1">Recipient Customer / Salon:</label>
                 <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
                   <div>
                     <span className="font-bold text-slate-800">{smsModalQuote.customer.businessName}</span>
@@ -519,7 +533,7 @@ export default function QuotesListPage() {
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Nội dung SMS:</label>
+                <label className="font-bold text-slate-700 block mb-1">SMS Message Content:</label>
                 <textarea
                   rows={4}
                   value={smsContent}
@@ -531,7 +545,7 @@ export default function QuotesListPage() {
               {smsSuccess && (
                 <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 flex items-center space-x-2 font-bold">
                   <Check className="w-4 h-4 text-emerald-600" />
-                  <span>Đã gửi SMS thành công & cập nhật trạng thái báo giá thành ĐÃ GỬI (SENT)!</span>
+                  <span>SMS sent successfully! Quote status updated to SENT.</span>
                 </div>
               )}
             </div>
@@ -542,7 +556,7 @@ export default function QuotesListPage() {
                 onClick={() => setSmsModalQuote(null)}
                 className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold text-xs hover:bg-slate-200 transition"
               >
-                Đóng
+                Close
               </button>
               <button
                 disabled={sendingSms || smsSuccess}
@@ -552,12 +566,12 @@ export default function QuotesListPage() {
                 {sendingSms ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Đang gửi qua Quo...</span>
+                    <span>Sending via Quo...</span>
                   </>
                 ) : (
                   <>
                     <Send className="w-3.5 h-3.5" />
-                    <span>Bấm Gửi SMS Ngay</span>
+                    <span>Send SMS Now</span>
                   </>
                 )}
               </button>
@@ -571,7 +585,7 @@ export default function QuotesListPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-slate-900 text-base">Cập Nhật Trạng Thái Báo Giá</h3>
+              <h3 className="font-extrabold text-slate-900 text-base">Update Quote Status</h3>
               <button
                 onClick={() => setStatusModalQuote(null)}
                 className="text-slate-400 hover:text-slate-600 p-1"
@@ -581,16 +595,16 @@ export default function QuotesListPage() {
             </div>
 
             <p className="text-xs text-slate-500">
-              Báo giá <strong className="text-slate-800">{statusModalQuote.quoteNumber}</strong> của{" "}
+              Quote <strong className="text-slate-800">{statusModalQuote.quoteNumber}</strong> for{" "}
               <strong>{statusModalQuote.customer.businessName}</strong>.
             </p>
 
             <div className="grid grid-cols-1 gap-2 pt-1">
               {[
-                { status: "DRAFT", label: "Bản Nháp (Draft)", desc: "Đang soạn thảo nội bộ" },
-                { status: "SENT", label: "Đã Gửi (Sent)", desc: "Đã gửi PDF / SMS tới chủ tiệm" },
-                { status: "ACCEPTED", label: "Đã Chốt (Accepted)", desc: "Khách đồng ý đặt hàng" },
-                { status: "REJECTED", label: "Từ Chối (Rejected)", desc: "Khách từ chối hoặc hoãn" },
+                { status: "DRAFT", label: "Draft", desc: "Internal draft in preparation" },
+                { status: "SENT", label: "Sent", desc: "Official PDF / SMS dispatched to client" },
+                { status: "ACCEPTED", label: "Accepted", desc: "Client confirmed wholesale order" },
+                { status: "REJECTED", label: "Rejected", desc: "Client declined or postponed" },
               ].map((opt) => (
                 <button
                   key={opt.status}
@@ -616,7 +630,7 @@ export default function QuotesListPage() {
                 onClick={() => setStatusModalQuote(null)}
                 className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold text-xs hover:bg-slate-200 transition"
               >
-                Hủy
+                Cancel
               </button>
             </div>
           </div>

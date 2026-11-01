@@ -53,14 +53,14 @@ export async function POST(req: Request) {
 
     if (!customerId) {
       return NextResponse.json(
-        { success: false, error: "Vui lòng chọn hoặc nhập thông tin khách hàng" },
+        { success: false, error: "Please select or provide customer information" },
         { status: 400 }
       );
     }
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
-        { success: false, error: "Báo giá phải có ít nhất 1 sản phẩm" },
+        { success: false, error: "Quote must include at least one product" },
         { status: 400 }
       );
     }
@@ -81,13 +81,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Tạo báo giá thành công",
+      message: "Quote created successfully",
       quote: newQuote,
     });
   } catch (error: any) {
     console.error("POST /api/quotes Error:", error);
     return NextResponse.json(
-      { success: false, error: error?.message || "Lỗi khi tạo báo giá mới" },
+      { success: false, error: error?.message || "Failed to create new quote" },
       { status: 500 }
     );
   }

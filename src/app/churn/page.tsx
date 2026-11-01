@@ -96,7 +96,7 @@ export default function ChurnDefensePage() {
   );
   const [saleNotes, setSaleNotes] = useState<string>("");
   const [actionPlan, setActionPlan] = useState<string>("");
-  const [saleRep, setSaleRep] = useState<string>("Sơn Nguyễn");
+  const [saleRep, setSaleRep] = useState<string>("Johnny Tran");
   const [isResolved, setIsResolved] = useState<boolean>(false);
   const [isSavingPlan, setIsSavingPlan] = useState<boolean>(false);
 
@@ -144,7 +144,7 @@ export default function ChurnDefensePage() {
     setSelectedReason(item.reason || "HIGH_INVENTORY_REMAINING");
     setSaleNotes(item.saleNotes || "");
     setActionPlan(item.actionPlan || "");
-    setSaleRep(item.saleRep || item.customer?.assignedSale || "Sơn Nguyễn");
+    setSaleRep(item.saleRep || item.customer?.assignedSale || "Johnny Tran");
     setIsResolved(Boolean(item.isResolved));
   };
 
@@ -173,15 +173,15 @@ export default function ChurnDefensePage() {
       const resData = await res.json();
       if (resData.success) {
         showToast(
-          `Đã lưu kế hoạch giữ chân cho ${selectedCustomerForPlan.customer?.businessName}!`
+          `Retention plan saved successfully for ${selectedCustomerForPlan.customer?.businessName}!`
         );
         setSelectedCustomerForPlan(null);
         await fetchChurnData();
       } else {
-        showToast(resData.error || "Không thể lưu kế hoạch", "error");
+        showToast(resData.error || "Failed to save retention plan", "error");
       }
     } catch (err: any) {
-      showToast(err?.message || "Lỗi lưu dữ liệu", "error");
+      showToast(err?.message || "Data saving error", "error");
     } finally {
       setIsSavingPlan(false);
     }
@@ -191,15 +191,15 @@ export default function ChurnDefensePage() {
   const handleOpenSmsModal = (item: FlaggedCustomer) => {
     setSelectedForSms(item);
     const contact =
-      item.customer?.contactPerson || item.customer?.businessName || "anh/chị";
+      item.customer?.contactPerson || item.customer?.businessName || "Valued Customer";
 
     let message = "";
     if (item.reason === "HIGH_INVENTORY_REMAINING") {
-      message = `Hi ${contact}, em Sơn bên JKIOCEAN Houston hỏi thăm tình hình salon mình đợt này. Lô cọ Kolinsky tháng trước thợ dùng vẫn êm chứ ạ? Hiện kho Houston đang về thêm dòng nước rửa cọ chuyên dụng Brush Cleaner và Liquid Monomer loại mới, em gửi tặng tiệm 1 chai dùng thử nhé!`;
+      message = `Hi ${contact}, this is Johnny from JKIOCEAN Houston checking in. How are your nail technicians liking the Kolinsky brushes from last month? Our Houston Hub just received our new specialized Brush Cleaner and Liquid Monomer formula—we'd love to send your salon a complimentary bottle to test out!`;
     } else if (item.reason === "PRICE_COMPETITION") {
-      message = `Hi ${contact}, JKIOCEAN Houston đang có chương trình tri ân salon VIP tháng này: Khi đặt từ 25 cây cọ Z-Brush Kolinsky bất kỳ, tiệm được tặng thêm 5 cây cọ oval đắp bột + Free UPS Express ship trong Texas. Anh/chị xem cần lấy thêm size nào để em hỗ trợ nhé!`;
+      message = `Hi ${contact}, JKIOCEAN Houston is running an exclusive VIP salon appreciation special this month: Order any 25 Kolinsky Z-Brushes, receive 5 complimentary acrylic oval brushes + Free UPS Express shipping across Texas. Let us know which sizes your technicians need!`;
     } else {
-      message = `Hi ${contact}, em Sơn từ JKIOCEAN Houston (+1 713-330-6165). Lâu rồi không thấy salon đặt thêm cọ và đồ bột, bên em rất trân trọng đóng góp của anh/chị. Salon có cần hỗ trợ gì thêm về chất lượng sản phẩm hay bảng giá sỉ mới không ạ?`;
+      message = `Hi ${contact}, this is Johnny from JKIOCEAN Houston (+1 713-330-6165). We value your salon partnership and noticed you haven't placed a brush replenishment order recently. How can we support your team with our wholesale pricing or specialized bristle options?`;
     }
 
     setSmsContent(message);
@@ -225,14 +225,14 @@ export default function ChurnDefensePage() {
       const resData = await res.json();
       if (resData.success) {
         showToast(
-          `Đã gửi Quo SMS chăm sóc đến ${selectedForSms.customer?.businessName} (${selectedForSms.customer?.phone})!`
+          `Quo SMS sent successfully to ${selectedForSms.customer?.businessName} (${selectedForSms.customer?.phone})!`
         );
         setSelectedForSms(null);
       } else {
-        showToast(resData.error || "Không thể gửi SMS", "error");
+        showToast(resData.error || "Failed to send SMS via Quo", "error");
       }
     } catch (err: any) {
-      showToast(err?.message || "Lỗi kết nối Quo", "error");
+      showToast(err?.message || "Quo connection error", "error");
     } finally {
       setIsSendingSms(false);
     }
@@ -243,37 +243,37 @@ export default function ChurnDefensePage() {
     switch (reason) {
       case "HIGH_INVENTORY_REMAINING":
         return {
-          label: "Tồn kho còn nhiều",
+          label: "High existing inventory",
           badgeClass: "bg-amber-100 text-amber-800 border-amber-300",
           icon: PackageCheck,
         };
       case "PRICE_COMPETITION":
         return {
-          label: "Cạnh tranh giá",
+          label: "Competitor pricing pressure",
           badgeClass: "bg-rose-100 text-rose-800 border-rose-300",
           icon: Tag,
         };
       case "PRODUCT_QUALITY_FEEDBACK":
         return {
-          label: "Chất lượng sản phẩm",
+          label: "Product quality issue / feedback",
           badgeClass: "bg-sky-100 text-sky-800 border-sky-300",
           icon: ThumbsDown,
         };
       case "DELIVERY_DELAY":
         return {
-          label: "Giao hàng chậm",
+          label: "Delivery delay",
           badgeClass: "bg-orange-100 text-orange-800 border-orange-300",
           icon: Truck,
         };
       case "STORE_TEMPORARILY_CLOSED":
         return {
-          label: "Tiệm sửa / Tạm đóng",
+          label: "Store temporarily closed / Renovation",
           badgeClass: "bg-slate-100 text-slate-800 border-slate-300",
           icon: Store,
         };
       default:
         return {
-          label: "Lý do khác",
+          label: "Other (Vacation, seasonal slowdown)",
           badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300",
           icon: HelpCircle,
         };
@@ -331,10 +331,10 @@ export default function ChurnDefensePage() {
               </div>
               <div>
                 <h1 className="text-2xl font-black tracking-tight">
-                  Purchase Dip & Churn Defense (Phòng Ngừa Rời Bỏ)
+                  Customer Churn & Purchase Dip Detection
                 </h1>
                 <p className="text-sm text-slate-300 italic mt-0.5">
-                  &quot;Khách tháng trước mua nhiều nhưng tháng sau mua ít thì phải biết vì sao&quot;
+                  AI-driven anomaly detection identifying salons with &gt;40% order drop compared to previous months
                 </p>
               </div>
             </div>
@@ -347,11 +347,11 @@ export default function ChurnDefensePage() {
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold backdrop-blur-sm transition-all"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-              <span>Phân tích lại</span>
+              <span>Re-analyze</span>
             </button>
             <div className="flex items-center space-x-2 bg-rose-500/20 border border-rose-400/30 px-3 py-2 rounded-xl text-xs font-bold text-rose-300">
               <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
-              <span>Ngưỡng cảnh báo: Giảm &gt; 40%</span>
+              <span>Alert Threshold: Drop &gt; 40%</span>
             </div>
           </div>
         </div>
@@ -360,38 +360,38 @@ export default function ChurnDefensePage() {
       {/* Metric Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Khách Hàng Cảnh Báo"
+          title="Flagged Accounts"
           value={data?.metrics?.totalFlagged || 0}
-          subtitle="Giảm chi tiêu > 40% hoặc về 0"
+          subtitle="Spend dip > 40% or zero spend"
           icon={TrendingDown}
           color="rose"
           badge="High Dip"
         />
 
         <MetricCard
-          title="Doanh Số Nguy Cơ Mất"
+          title="Revenue at Risk"
           value={`$${(data?.metrics?.totalRevenueAtRisk || 0).toLocaleString("en-US", {
             minimumFractionDigits: 2,
           })}`}
-          subtitle="Tổng độ sụt giảm so với tháng trước"
+          subtitle="Total spend decline vs prior month"
           icon={AlertTriangle}
           color="amber"
           badge="At Risk"
         />
 
         <MetricCard
-          title="Tỷ Lệ Đã Giữ Chân / Xử Lý"
+          title="Resolution Rate"
           value={`${data?.metrics?.resolutionRate || 0}%`}
-          subtitle={`${data?.metrics?.resolvedCount || 0} salon đã có phương án thành công`}
+          subtitle={`${data?.metrics?.resolvedCount || 0} salons with active retention plans`}
           icon={CheckCircle2}
           color="emerald"
           badge="Resolved"
         />
 
         <MetricCard
-          title="Lý Do Hàng Đầu"
-          value="Tồn Kho Nhiều"
-          subtitle="40% khách mua đợt trước còn hàng"
+          title="Primary Churn Driver"
+          value="High Inventory"
+          subtitle="40% of salons still hold prior stock"
           icon={PackageCheck}
           color="navy"
           badge="Key Insight"
@@ -404,14 +404,14 @@ export default function ChurnDefensePage() {
           <div>
             <h2 className="text-base font-extrabold text-slate-900 flex items-center space-x-2">
               <Sparkles className="w-4 h-4 text-[#253c68]" />
-              <span>Phân Bổ Nguyên Nhân Salon Mua Ít Đi (Root Cause Distribution)</span>
+              <span>Root Cause Distribution & Purchase Dip Analysis</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Phân loại dữ liệu thực tế từ khảo sát của Sales Rep sau khi liên hệ trực tiếp chủ tiệm
+              Empirical findings verified by sales representatives through direct salon visits and phone calls
             </p>
           </div>
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-            Tháng 10/2026
+            October 2026
           </span>
         </div>
 
@@ -432,7 +432,7 @@ export default function ChurnDefensePage() {
                     <span className="font-bold text-slate-800">{badge.label}</span>
                   </div>
                   <span className="font-extrabold text-[#253c68] text-sm">
-                    {item.count} salon ({item.percent}%)
+                    {item.count} salons ({item.percent}%)
                   </span>
                 </div>
 
@@ -465,7 +465,7 @@ export default function ChurnDefensePage() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
             type="text"
-            placeholder="Tìm theo Salon, chủ tiệm, phone, city..."
+            placeholder="Search by salon, contact person, phone, city..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:border-transparent transition-all"
@@ -479,13 +479,13 @@ export default function ChurnDefensePage() {
             onChange={(e) => setFilterReason(e.target.value)}
             className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-[#253c68]"
           >
-            <option value="ALL">Mọi nguyên nhân</option>
-            <option value="HIGH_INVENTORY_REMAINING">Tồn kho còn nhiều</option>
-            <option value="PRICE_COMPETITION">Cạnh tranh giá</option>
-            <option value="PRODUCT_QUALITY_FEEDBACK">Chất lượng sản phẩm</option>
-            <option value="DELIVERY_DELAY">Giao hàng chậm</option>
-            <option value="STORE_TEMPORARILY_CLOSED">Tiệm sửa / Đóng cửa</option>
-            <option value="OTHER">Lý do khác</option>
+            <option value="ALL">All Reasons</option>
+            <option value="HIGH_INVENTORY_REMAINING">High existing inventory</option>
+            <option value="PRICE_COMPETITION">Competitor pricing pressure</option>
+            <option value="PRODUCT_QUALITY_FEEDBACK">Quality issue / feedback</option>
+            <option value="DELIVERY_DELAY">Delivery delay</option>
+            <option value="STORE_TEMPORARILY_CLOSED">Store temporarily closed / Renovation</option>
+            <option value="OTHER">Other</option>
           </select>
 
           {/* Status Filter */}
@@ -494,9 +494,9 @@ export default function ChurnDefensePage() {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-[#253c68]"
           >
-            <option value="ALL">Mọi trạng thái xử lý</option>
-            <option value="PENDING">Chưa xử lý (Cần chăm sóc)</option>
-            <option value="RESOLVED">Đã giải quyết / Giữ chân xong</option>
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING">Pending Review (Action Required)</option>
+            <option value="RESOLVED">Resolved / Retained</option>
           </select>
         </div>
       </div>
@@ -507,14 +507,14 @@ export default function ChurnDefensePage() {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
               <tr>
-                <th className="py-3.5 px-4">Salon / Khách Hàng</th>
-                <th className="py-3.5 px-4 text-right">Tháng Trước</th>
-                <th className="py-3.5 px-4 text-right">Tháng Này</th>
-                <th className="py-3.5 px-4 text-center">Tỷ Lệ Giảm (Dip %)</th>
-                <th className="py-3.5 px-4">Nguyên Nhân Xác Định</th>
-                <th className="py-3.5 px-4">Kế Hoạch Giữ Chân (Action Plan)</th>
-                <th className="py-3.5 px-4 text-center">Trạng Thái</th>
-                <th className="py-3.5 px-4 text-right">Hành Động</th>
+                <th className="py-3.5 px-4">Salon / Customer</th>
+                <th className="py-3.5 px-4 text-right">Previous Spend</th>
+                <th className="py-3.5 px-4 text-right">Current Spend</th>
+                <th className="py-3.5 px-4 text-center">Dip %</th>
+                <th className="py-3.5 px-4">Identified Root Cause</th>
+                <th className="py-3.5 px-4">Action Plan / Follow-up Note</th>
+                <th className="py-3.5 px-4 text-center">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -522,7 +522,7 @@ export default function ChurnDefensePage() {
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-400">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#253c68]" />
-                    <span>Đang phân tích dữ liệu mua hàng của khách...</span>
+                    <span>Analyzing customer purchasing patterns...</span>
                   </td>
                 </tr>
               ) : filteredCustomers.length === 0 ? (
@@ -530,10 +530,10 @@ export default function ChurnDefensePage() {
                   <td colSpan={8} className="py-12 text-center text-slate-400">
                     <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
                     <p className="font-semibold text-slate-700">
-                      Không có khách hàng nào bị sụt giảm bất thường!
+                      No accounts flagged with abnormal purchase dips!
                     </p>
                     <p className="text-xs text-slate-400 mt-1">
-                      Toàn bộ salon duy trì nhịp mua đều đặn.
+                      All salon accounts maintain regular purchasing frequency.
                     </p>
                   </td>
                 </tr>
@@ -583,7 +583,7 @@ export default function ChurnDefensePage() {
                           <span>{item.dropPercent}%</span>
                         </div>
                         <div className="text-[10px] text-slate-400 mt-0.5">
-                          Giảm -${item.dropAmount.toFixed(0)}
+                          Dip -${item.dropAmount.toFixed(0)}
                         </div>
                       </td>
 
@@ -607,14 +607,14 @@ export default function ChurnDefensePage() {
                         <p className="text-xs text-slate-700 line-clamp-2">
                           {item.actionPlan || (
                             <span className="italic text-slate-400">
-                              Chưa ghi nhận kế hoạch giữ chân
+                              No follow-up action plan recorded
                             </span>
                           )}
                         </p>
                         <div className="text-[10px] text-slate-400 mt-0.5">
-                          Sale phụ trách:{" "}
+                          Sales Rep:{" "}
                           <span className="font-semibold text-slate-600">
-                            {item.saleRep || "Sơn Nguyễn"}
+                            {item.saleRep || "Johnny Tran"}
                           </span>
                         </div>
                       </td>
@@ -624,12 +624,12 @@ export default function ChurnDefensePage() {
                         {item.isResolved ? (
                           <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            <span>Đã xử lý</span>
+                            <span>Resolved</span>
                           </span>
                         ) : (
                           <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                             <Clock className="w-3 h-3 text-amber-600" />
-                            <span>Cần chăm sóc</span>
+                            <span>Action Required</span>
                           </span>
                         )}
                       </td>
@@ -640,17 +640,17 @@ export default function ChurnDefensePage() {
                           {/* Log Reason & Plan Button */}
                           <button
                             onClick={() => handleOpenPlanModal(item)}
-                            title="Ghi nhận lý do & lập kế hoạch"
+                            title="Log Follow-up Note & Plan"
                             className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center space-x-1"
                           >
                             <FileEdit className="w-3.5 h-3.5 text-[#253c68]" />
-                            <span>Kế hoạch</span>
+                            <span>Plan</span>
                           </button>
 
                           {/* Quo SMS Retention */}
                           <button
                             onClick={() => handleOpenSmsModal(item)}
-                            title="Gửi Quo SMS chăm sóc"
+                            title="Send Quo Retention SMS"
                             className="px-2.5 py-1.5 rounded-lg bg-[#253c68] hover:bg-[#1a2c4e] text-white text-xs font-bold shadow-sm transition-all flex items-center space-x-1"
                           >
                             <Send className="w-3.5 h-3.5" />
@@ -667,7 +667,7 @@ export default function ChurnDefensePage() {
         </div>
       </div>
 
-      {/* MODAL 1: GHI NHẬN LÝ DO & KẾ HOẠCH GIỮ CHÂN (LOG REASON & RETENTION PLAN) */}
+      {/* MODAL 1: LOG REASON & RETENTION PLAN */}
       {selectedCustomerForPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
@@ -676,10 +676,10 @@ export default function ChurnDefensePage() {
                 <FileEdit className="w-5 h-5 text-[#38bdf8]" />
                 <div>
                   <h3 className="font-extrabold text-base">
-                    Ghi Nhận Lý Do & Kế Hoạch Giữ Chân
+                    Log Follow-up Note & Retention Plan
                   </h3>
                   <p className="text-[11px] text-slate-300">
-                    Khảo sát thực tế từ cuộc gọi / gặp gỡ trực tiếp
+                    Empirical survey from direct call or salon visit
                   </p>
                 </div>
               </div>
@@ -700,12 +700,12 @@ export default function ChurnDefensePage() {
                     {selectedCustomerForPlan.customer?.businessName}
                   </span>
                   <div className="text-[11px] text-slate-500 mt-0.5">
-                    Chủ: {selectedCustomerForPlan.customer?.contactPerson} •{" "}
+                    Contact: {selectedCustomerForPlan.customer?.contactPerson} •{" "}
                     {selectedCustomerForPlan.customer?.phone}
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] text-slate-400">Mức sụt giảm</div>
+                  <div className="text-[10px] text-slate-400">Spend Decline</div>
                   <div className="font-bold text-rose-600 font-mono text-sm">
                     {selectedCustomerForPlan.dropPercent}%
                   </div>
@@ -715,7 +715,7 @@ export default function ChurnDefensePage() {
               {/* Reason select */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Nguyên nhân chính khiến salon mua ít đi
+                  Primary Root Cause for Purchase Dip
                 </label>
                 <select
                   value={selectedReason}
@@ -723,22 +723,22 @@ export default function ChurnDefensePage() {
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#253c68]"
                 >
                   <option value="HIGH_INVENTORY_REMAINING">
-                    📦 Tồn kho còn nhiều (Lô cọ trước thợ chưa dùng hết)
+                    📦 High existing inventory (Technicians still using prior brush batch)
                   </option>
                   <option value="PRICE_COMPETITION">
-                    🏷️ Cạnh tranh giá (Đối thủ chào giá thấp hơn hoặc chiết khấu cao)
+                    🏷️ Competitor pricing pressure (Competitor offered lower quotes / discounts)
                   </option>
                   <option value="PRODUCT_QUALITY_FEEDBACK">
-                    ⭐ Phản hồi chất lượng sản phẩm (Lông cọ cứng/mềm, cán cầm...)
+                    ⭐ Quality feedback / issue (Bristle softness, handle balance, etc.)
                   </option>
                   <option value="DELIVERY_DELAY">
-                    🚚 Chậm trễ giao hàng (Đơn trước bị chậm trễ gây ảnh hưởng salon)
+                    🚚 Delivery delay (Prior order logistics affected salon operations)
                   </option>
                   <option value="STORE_TEMPORARILY_CLOSED">
-                    🏪 Tiệm tạm đóng cửa / Sửa chữa / Đổi chủ sở hữu
+                    🏪 Store temporarily closed / Remodeling / Ownership transfer
                   </option>
                   <option value="OTHER">
-                    ❓ Lý do khác (Chủ đi vắng, chuyển địa điểm, thời vụ...)
+                    ❓ Other reason (Owner traveling, seasonal slowdown, relocation)
                   </option>
                 </select>
               </div>
@@ -746,12 +746,12 @@ export default function ChurnDefensePage() {
               {/* Sale Notes */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Tình hình thực tế (Chủ salon chia sẻ gì?)
+                  Observed Situation & Salon Feedback
                 </label>
                 <textarea
                   rows={3}
                   required
-                  placeholder="Ghi chú chi tiết trao đổi: số lượng tồn còn lại, phản ánh của thợ nail, đối thủ đang chào giá bao nhiêu..."
+                  placeholder="Detailed notes: remaining inventory count, technician feedback, competitor price quoted..."
                   value={saleNotes}
                   onChange={(e) => setSaleNotes(e.target.value)}
                   className="w-full p-3 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-[#253c68] resize-none"
@@ -761,12 +761,12 @@ export default function ChurnDefensePage() {
               {/* Action Plan */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Kế hoạch hành động giữ chân (Action Plan)
+                  Action Plan / Retention Strategy
                 </label>
                 <textarea
                   rows={3}
                   required
-                  placeholder="Ví dụ: Tặng 5 cây cọ mẫu thử lông siêu mềm, ưu đãi combo sỉ, tạm hoãn chào cọ chuyển sang chào Brush Cleaner và bột nhúng..."
+                  placeholder="e.g. Provide 5 ultra-soft sample brushes, offer wholesale combo discount, pitch Brush Cleaner & dipping powder..."
                   value={actionPlan}
                   onChange={(e) => setActionPlan(e.target.value)}
                   className="w-full p-3 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-[#253c68] resize-none"
@@ -777,7 +777,7 @@ export default function ChurnDefensePage() {
               <div className="grid grid-cols-2 gap-3 items-center">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Sale Phụ Trách
+                    Sales Representative
                   </label>
                   <input
                     type="text"
@@ -795,7 +795,7 @@ export default function ChurnDefensePage() {
                       onChange={(e) => setIsResolved(e.target.checked)}
                       className="w-4 h-4 text-[#253c68] rounded border-slate-300 focus:ring-[#253c68]"
                     />
-                    <span>Đã giải quyết / Giữ chân xong</span>
+                    <span>Mark Resolved / Retained</span>
                   </label>
                 </div>
               </div>
@@ -807,7 +807,7 @@ export default function ChurnDefensePage() {
                   onClick={() => setSelectedCustomerForPlan(null)}
                   className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50 transition-colors"
                 >
-                  Đóng
+                  Close
                 </button>
                 <button
                   type="submit"
@@ -819,7 +819,7 @@ export default function ChurnDefensePage() {
                   ) : (
                     <CheckCircle2 className="w-4 h-4" />
                   )}
-                  <span>Lưu kế hoạch phòng thủ</span>
+                  <span>Save Retention Plan</span>
                 </button>
               </div>
             </form>
@@ -827,7 +827,7 @@ export default function ChurnDefensePage() {
         </div>
       )}
 
-      {/* MODAL 2: GỬI QUO SMS CHĂM SÓC (RETENTION SMS) */}
+      {/* MODAL 2: SEND QUO RETENTION SMS */}
       {selectedForSms && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
@@ -836,10 +836,10 @@ export default function ChurnDefensePage() {
                 <Send className="w-5 h-5 text-[#38bdf8]" />
                 <div>
                   <h3 className="font-extrabold text-base">
-                    Gửi Quo SMS Chăm Sóc & Giữ Chân
+                    Send Quo Retention & Care SMS
                   </h3>
                   <p className="text-[11px] text-slate-300">
-                    Hotline gửi: +1 (713) 330-6165 (Quo US)
+                    Sending Hotline: +1 (713) 330-6165 (Quo US)
                   </p>
                 </div>
               </div>
@@ -854,7 +854,7 @@ export default function ChurnDefensePage() {
             <div className="p-6 space-y-4">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-slate-500 font-medium">Người nhận: </span>
+                  <span className="text-slate-500 font-medium">Recipient: </span>
                   <span className="font-bold text-slate-900">
                     {selectedForSms.customer?.businessName} (
                     {selectedForSms.customer?.contactPerson})
@@ -867,7 +867,7 @@ export default function ChurnDefensePage() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                  Nội dung tin nhắn chăm sóc
+                  SMS Message Content
                 </label>
                 <textarea
                   rows={5}
@@ -877,11 +877,11 @@ export default function ChurnDefensePage() {
                 />
                 <div className="flex justify-between items-center text-[11px] text-slate-400 mt-1">
                   <span>
-                    Ký tự: {smsContent.length} (~{Math.ceil(smsContent.length / 160)}{" "}
+                    Characters: {smsContent.length} (~{Math.ceil(smsContent.length / 160)}{" "}
                     SMS)
                   </span>
                   <span className="text-emerald-600 font-semibold">
-                    Lưu tự động vào nhật ký SMS
+                    Automatically logged to customer history
                   </span>
                 </div>
               </div>
@@ -892,7 +892,7 @@ export default function ChurnDefensePage() {
                   onClick={() => setSelectedForSms(null)}
                   className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50 transition-colors"
                 >
-                  Đóng
+                  Close
                 </button>
                 <button
                   type="button"
@@ -905,7 +905,7 @@ export default function ChurnDefensePage() {
                   ) : (
                     <Send className="w-3.5 h-3.5" />
                   )}
-                  <span>Gửi SMS qua Quo</span>
+                  <span>Send SMS via Quo</span>
                 </button>
               </div>
             </div>

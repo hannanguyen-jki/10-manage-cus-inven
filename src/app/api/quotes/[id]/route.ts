@@ -14,7 +14,7 @@ export async function GET(
 
     if (!quote) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy báo giá" },
+        { success: false, error: "Quote not found" },
         { status: 404 }
       );
     }
@@ -26,7 +26,7 @@ export async function GET(
   } catch (error: any) {
     console.error(`GET /api/quotes/${params.id} Error:`, error);
     return NextResponse.json(
-      { success: false, error: error?.message || "Lỗi lấy chi tiết báo giá" },
+      { success: false, error: error?.message || "Failed to retrieve quote details" },
       { status: 500 }
     );
   }
@@ -45,7 +45,7 @@ export async function PATCH(
     const validStatuses: QuoteData["status"][] = ["DRAFT", "SENT", "ACCEPTED", "REJECTED"];
     if (!status || !validStatuses.includes(status)) {
       return NextResponse.json(
-        { success: false, error: "Trạng thái không hợp lệ (DRAFT, SENT, ACCEPTED, REJECTED)" },
+        { success: false, error: "Invalid status (must be DRAFT, SENT, ACCEPTED, or REJECTED)" },
         { status: 400 }
       );
     }
@@ -54,20 +54,20 @@ export async function PATCH(
 
     if (!updated) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy báo giá để cập nhật" },
+        { success: false, error: "Quote not found for status update" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: `Đã cập nhật trạng thái báo giá thành ${status}`,
+      message: `Quote status updated to ${status}`,
       quote: updated,
     });
   } catch (error: any) {
     console.error(`PATCH /api/quotes/${params.id} Error:`, error);
     return NextResponse.json(
-      { success: false, error: error?.message || "Lỗi cập nhật trạng thái báo giá" },
+      { success: false, error: error?.message || "Failed to update quote status" },
       { status: 500 }
     );
   }

@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     let customersData: any[] = [];
 
     try {
-      // 1. Thử lấy từ PostgreSQL qua Prisma
+      // 1. Query from PostgreSQL via Prisma
       const whereClause: any = {};
 
       if (search) {
@@ -102,7 +102,7 @@ export async function GET(req: Request) {
       console.warn("[CRM API] Prisma DB query error/offline, using fallback store:", dbErr);
     }
 
-    // 2. Nếu DB rỗng hoặc offline, dùng Mock Data Store
+    // 2. If DB is empty or offline, use Mock Data Store
     if (customersData.length === 0) {
       const mockList = getMockCustomers();
       let filtered = [...mockList];
@@ -159,7 +159,7 @@ export async function GET(req: Request) {
   } catch (error: any) {
     console.error("[GET /api/customers] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi lấy danh sách khách hàng" },
+      { success: false, error: error.message || "Failed to fetch customer list" },
       { status: 500 }
     );
   }
@@ -186,7 +186,7 @@ export async function POST(req: Request) {
 
     if (!businessName || !contactPerson || !phone) {
       return NextResponse.json(
-        { success: false, error: "Vui lòng nhập Tên Salon, Người đại diện và Số điện thoại" },
+        { success: false, error: "Please provide Business Name, Contact Person, and Phone Number" },
         { status: 400 }
       );
     }
@@ -194,7 +194,7 @@ export async function POST(req: Request) {
     let createdCustomer: any = null;
 
     try {
-      // 1. Lưu vào PostgreSQL qua Prisma
+      // 1. Save to PostgreSQL via Prisma
       createdCustomer = await prisma.customer.create({
         data: {
           businessName,
@@ -214,11 +214,11 @@ export async function POST(req: Request) {
       });
     } catch (dbErr: any) {
       console.warn("[CRM API POST] DB write failed, storing into mock store:", dbErr.message);
-      // Kiểm tra trùng số điện thoại trong mock store
+      // Check for duplicate phone number in mock store
       const existing = getMockCustomers().find((c) => c.phone === phone);
       if (existing) {
         return NextResponse.json(
-          { success: false, error: "Số điện thoại này đã tồn tại trong hệ thống" },
+          { success: false, error: "This phone number already exists in the system" },
           { status: 400 }
         );
       }
@@ -242,13 +242,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Tạo khách hàng mới thành công",
+      message: "Customer created successfully",
       customer: createdCustomer,
     });
   } catch (error: any) {
     console.error("[POST /api/customers] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi tạo khách hàng" },
+      { success: false, error: error.message || "Failed to create customer" },
       { status: 500 }
     );
   }

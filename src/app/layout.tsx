@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "JKIOCEAN Management Hub - CRM & Inventory",
-  description: "Hệ thống quản trị khách hàng B2B, bán hàng, tồn kho và công nợ JKIOCEAN",
+  description: "JKIOCEAN B2B Customer Management, Sales, Inventory & Accounts Receivable ERP Hub",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="en">
       <body className="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex">
         <Sidebar />
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

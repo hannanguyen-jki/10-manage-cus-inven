@@ -26,6 +26,7 @@ import {
   Send,
   X,
   PhoneCall,
+  Download,
 } from "lucide-react";
 
 interface CustomerItem {
@@ -81,7 +82,7 @@ export default function CustomersPage() {
     state: "TX",
     zipCode: "",
     birthday: "",
-    assignedSale: "admin",
+    assignedSale: "johnny",
     tier: "STANDARD",
     status: "ACTIVE",
     notes: "",
@@ -117,11 +118,11 @@ export default function CustomersPage() {
       if (data.success) {
         setCustomers(data.customers || []);
       } else {
-        setError(data.error || "Không thể tải danh sách khách hàng");
+        setError(data.error || "Failed to load customer list");
       }
     } catch (err: any) {
       console.error("Fetch customers error:", err);
-      setError("Lỗi kết nối tới máy chủ");
+      setError("Failed to connect to server");
     } finally {
       setLoading(false);
     }
@@ -151,11 +152,60 @@ export default function CustomersPage() {
     return { total, vipCount, wholesaleCount, atRiskCount, totalRevenue, totalDebt };
   }, [customers]);
 
+  // Export CSV
+  const exportCsv = () => {
+    if (customers.length === 0) return;
+    const headers = [
+      "Customer ID",
+      "Salon / Business Name",
+      "Contact Person",
+      "Phone",
+      "Email",
+      "Address",
+      "City",
+      "State",
+      "ZIP Code",
+      "Tier",
+      "Status",
+      "Assigned Sales Rep",
+      "Total Orders",
+      "Total Revenue",
+      "AR Debt Amount",
+    ];
+    const rows = customers.map((c) => [
+      c.id,
+      `"${(c.businessName || "").replace(/"/g, '""')}"`,
+      `"${(c.contactPerson || "").replace(/"/g, '""')}"`,
+      c.phone,
+      c.email || "",
+      `"${(c.address || "").replace(/"/g, '""')}"`,
+      c.city || "",
+      c.state || "",
+      c.zipCode || "",
+      c.tier,
+      c.status,
+      c.assignedSale || "",
+      c.orderCount || 0,
+      c.totalSpent || 0,
+      c.debtAmount || 0,
+    ]);
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `b2b_customers_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Handle Add Customer Form Submit
   const handleAddCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.businessName || !formData.contactPerson || !formData.phone) {
-      showToast("Vui lòng điền đủ Tên Tiệm, Chủ Tiệm và Số Điện Thoại", "error");
+      showToast("Please fill in Business Name, Contact Person, and Phone Number", "error");
       return;
     }
 
@@ -169,7 +219,7 @@ export default function CustomersPage() {
       const data = await res.json();
 
       if (data.success) {
-        showToast("Thêm khách hàng B2B mới thành công!");
+        showToast("New B2B customer added successfully!");
         setIsAddModalOpen(false);
         setFormData({
           businessName: "",
@@ -181,17 +231,17 @@ export default function CustomersPage() {
           state: "TX",
           zipCode: "",
           birthday: "",
-          assignedSale: "admin",
+          assignedSale: "johnny",
           tier: "STANDARD",
           status: "ACTIVE",
           notes: "",
         });
         fetchCustomers();
       } else {
-        showToast(data.error || "Không thể thêm khách hàng", "error");
+        showToast(data.error || "Unable to add customer", "error");
       }
     } catch (err) {
-      showToast("Lỗi kết nối máy chủ", "error");
+      showToast("Failed to connect to server", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -202,7 +252,7 @@ export default function CustomersPage() {
     setSelectedCustomerForSms(customer);
     setSmsData({
       type: "FOLLOW_UP",
-      content: `JKIOCEAN xin chào ${customer.contactPerson} (${customer.businessName}). Em là ${customer.assignedSale} từ kho sỉ JKI Houston...`,
+      content: `JKIOCEAN: Hi ${customer.contactPerson} (${customer.businessName}). This is ${customer.assignedSale} from our Houston Wholesale Hub...`,
     });
     setIsSmsModalOpen(true);
   };
@@ -211,7 +261,7 @@ export default function CustomersPage() {
   const handleSendSmsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCustomerForSms || !smsData.content.trim()) {
-      showToast("Vui lòng nhập nội dung tin nhắn", "error");
+      showToast("Please enter message content", "error");
       return;
     }
 
@@ -230,13 +280,13 @@ export default function CustomersPage() {
       const data = await res.json();
 
       if (data.success) {
-        showToast(data.message || "Đã gửi SMS qua Quo thành công!");
+        showToast(data.message || "Quo SMS sent successfully!");
         setIsSmsModalOpen(false);
       } else {
-        showToast(data.error || "Gửi tin nhắn thất bại", "error");
+        showToast(data.error || "Failed to send SMS", "error");
       }
     } catch (err) {
-      showToast("Lỗi gửi SMS qua tổng đài", "error");
+      showToast("Failed to send SMS via phone carrier", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -249,17 +299,29 @@ export default function CustomersPage() {
 
     let text = "";
     if (type === "PROMOTION") {
-      text = `JKIOCEAN: Chào ${name} ơi, đợt cọ Z-Kolinsky Master #14 và cọ Ombre vừa về kho Houston! Em ưu tiên giữ slot giá sỉ VIP cho tiệm ${salon}. Chị cần lấy bao nhiêu cây nhắn em giao hỏa tốc nhé!`;
+      text = `JKIOCEAN: Hi ${name}, our fresh batch of Z-Kolinsky Master #14 and Ombre brushes just arrived at our Houston Hub! We reserved a VIP wholesale allocation for ${salon}. Let us know how many you need for express delivery!`;
     } else if (type === "BIRTHDAY") {
-      text = `JKIOCEAN kính chúc ${name} (${salon}) có một ngày sinh nhật thật ấm áp, nhiều sức khỏe và tiệm luôn đông khách hồng phát!`;
+      text = `JKIOCEAN wishes ${name} (${salon}) a wonderful birthday filled with happiness, health, and continued business success!`;
     } else if (type === "AR_REMINDER") {
-      const debt = selectedCustomerForSms.debtAmount > 0 ? `$${selectedCustomerForSms.debtAmount.toLocaleString()}` : "khoản";
-      text = `JKIOCEAN thân gửi ${name}: Tiệm ${salon} hiện còn ${debt} công nợ đơn hàng phụ liệu cọ. Anh/Chị hỗ trợ thanh toán qua Zelle/Check giúp tụi em nhé ạ. Cảm ơn Anh/Chị!`;
+      const debt = selectedCustomerForSms.debtAmount > 0 ? `$${selectedCustomerForSms.debtAmount.toLocaleString()}` : "the outstanding";
+      text = `JKIOCEAN friendly reminder for ${name}: ${salon} currently has an open balance of ${debt} for your brush supplies order. Please assist with payment via Zelle or Check at your earliest convenience. Thank you!`;
     } else {
-      text = `JKIOCEAN xin chào ${name} (${salon})! Đơn hàng cọ đợt trước thợ tiệm mình đắp bột và vẽ có ưng ý không ạ? Cần hỗ trợ thêm phụ liệu gì chị cứ nhắn em nhé!`;
+      text = `JKIOCEAN follow-up for ${name} (${salon}): How are your nail technicians liking the latest batch of brushes? Let us know if you need any restocks or support!`;
     }
 
     setSmsData({ type, content: text });
+  };
+
+  const formatSalesRep = (rep: string) => {
+    if (!rep) return "Johnny Tran";
+    const low = rep.toLowerCase();
+    if (low === "johnny" || low === "johnny tran") return "Johnny Tran";
+    if (low === "hanna" || low === "hanna nguyen") return "Hanna Nguyen";
+    if (low === "alice" || low === "alice nguyen") return "Alice Nguyen";
+    if (low === "tan" || low === "tan ho") return "Tan Ho";
+    if (low === "kate") return "Kate";
+    if (low === "admin") return "Admin";
+    return rep;
   };
 
   return (
@@ -287,16 +349,16 @@ export default function CustomersPage() {
         <div>
           <div className="flex items-center space-x-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#253c68]/10 text-[#253c68]">
-              CRM & Khách Hàng B2B
+              B2B CRM & Accounts
             </span>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs text-slate-500 font-medium">Texas & Sunbelt Salons</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#253c68] mt-1 tracking-tight">
-            Quản Lý Khách Hàng B2B
+            B2B Customers & Salons
           </h1>
           <p className="text-sm text-slate-500 mt-0.5">
-            Theo dõi hồ sơ tiệm Nail, lịch sử nhập cọ Z-Brushes, tích lũy doanh số và CSKH tự động.
+            Manage salon accounts, wholesale pricing tiers, order history & Quo SMS
           </p>
         </div>
 
@@ -304,9 +366,18 @@ export default function CustomersPage() {
           <button
             onClick={() => fetchCustomers()}
             className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 btn-press transition"
-            title="Làm mới dữ liệu"
+            title="Refresh customer data"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+          </button>
+
+          <button
+            onClick={exportCsv}
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 btn-press transition"
+            title="Export filtered customers to CSV"
+          >
+            <Download className="w-4 h-4 text-slate-500" />
+            <span>Export CSV</span>
           </button>
 
           <button
@@ -314,7 +385,7 @@ export default function CustomersPage() {
             className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#253c68] text-white font-semibold hover:bg-[#1a2c4e] shadow-md shadow-[#253c68]/20 btn-press transition"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Thêm Khách Hàng Mới</span>
+            <span>Add Customer</span>
           </button>
         </div>
       </div>
@@ -324,7 +395,7 @@ export default function CustomersPage() {
         {/* Total Customers */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-slate-400">Tổng Khách Hàng</span>
+            <span className="text-xs font-bold uppercase text-slate-400">Total Customers</span>
             <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#253c68] flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
@@ -342,25 +413,25 @@ export default function CustomersPage() {
             </div>
           </div>
           <p className="text-2xl font-black text-amber-800 mt-2">{metrics.vipCount}</p>
-          <p className="text-xs text-amber-600/80 mt-1">Chuỗi tiệm lớn & Học viện</p>
+          <p className="text-xs text-amber-600/80 mt-1">High-volume chains & academies</p>
         </div>
 
         {/* Wholesale Customers */}
         <div className="bg-white p-5 rounded-2xl border border-indigo-200/70 shadow-sm card-hover bg-gradient-to-br from-white to-indigo-50/30">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-indigo-600">Bán Sỉ (Wholesale)</span>
+            <span className="text-xs font-bold uppercase text-indigo-600">Wholesale Accounts</span>
             <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
           <p className="text-2xl font-black text-indigo-900 mt-2">{metrics.wholesaleCount}</p>
-          <p className="text-xs text-indigo-600/80 mt-1">Đại lý & Nhà phân phối</p>
+          <p className="text-xs text-indigo-600/80 mt-1">Distributors & wholesale stores</p>
         </div>
 
         {/* At-Risk Salons */}
         <div className="bg-white p-5 rounded-2xl border border-rose-200/80 shadow-sm card-hover bg-gradient-to-br from-white to-rose-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-rose-600">Cần Chăm Sóc (At Risk)</span>
+            <span className="text-xs font-bold uppercase text-rose-600">At-Risk Accounts</span>
             <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4" />
             </div>
@@ -374,13 +445,13 @@ export default function CustomersPage() {
               </span>
             )}
           </div>
-          <p className="text-xs text-rose-600/80 mt-1">Sụt giảm đơn hàng cần gọi</p>
+          <p className="text-xs text-rose-600/80 mt-1">Declining volume, call needed</p>
         </div>
 
         {/* Total Lifetime Sales */}
         <div className="bg-white p-5 rounded-2xl border border-[#253c68]/20 shadow-sm card-hover bg-gradient-to-br from-white to-blue-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase text-[#253c68]">Doanh Số Tích Lũy</span>
+            <span className="text-xs font-bold uppercase text-[#253c68]">Cumulative Revenue</span>
             <div className="w-8 h-8 rounded-lg bg-[#253c68]/10 text-[#253c68] flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
@@ -389,7 +460,7 @@ export default function CustomersPage() {
             ${metrics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </p>
           <p className="text-xs text-slate-500 mt-1">
-            Nợ đọng: <span className="font-semibold text-rose-600">${metrics.totalDebt.toLocaleString()}</span>
+            Outstanding AR: <span className="font-semibold text-rose-600">${metrics.totalDebt.toLocaleString()}</span>
           </p>
         </div>
       </div>
@@ -404,7 +475,7 @@ export default function CustomersPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo Tên Tiệm, Chủ Tiệm, Số ĐT..."
+              placeholder="Search salon name, phone, city, or VIP tier..."
               className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] focus:ring-2 focus:ring-[#253c68]/10 bg-slate-50/50"
             />
             {search && (
@@ -424,10 +495,10 @@ export default function CustomersPage() {
               onChange={(e) => setSelectedTier(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 text-slate-700 font-medium"
             >
-              <option value="ALL">Tất cả Phân Hạng (Tier)</option>
+              <option value="ALL">All Tiers</option>
               <option value="VIP">⭐ VIP</option>
-              <option value="WHOLESALE">🏢 WHOLESALE</option>
-              <option value="STANDARD">📦 STANDARD</option>
+              <option value="WHOLESALE">🏢 Wholesale</option>
+              <option value="STANDARD">📦 Standard</option>
             </select>
           </div>
 
@@ -438,7 +509,7 @@ export default function CustomersPage() {
               onChange={(e) => setSelectedState(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 text-slate-700 font-medium"
             >
-              <option value="ALL">Tất cả Tiểu Bang (State)</option>
+              <option value="ALL">All States</option>
               <option value="TX">Texas (TX)</option>
               <option value="CA">California (CA)</option>
               <option value="FL">Florida (FL)</option>
@@ -454,7 +525,7 @@ export default function CustomersPage() {
               onChange={(e) => setSelectedSale(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 text-slate-700 font-medium"
             >
-              <option value="ALL">Tất cả Sale phụ trách</option>
+              <option value="ALL">All Sales Reps</option>
               <option value="admin">Admin</option>
               <option value="hanna">Hanna Nguyen</option>
               <option value="johnny">Johnny Tran</option>
@@ -471,10 +542,10 @@ export default function CustomersPage() {
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-[#253c68] bg-slate-50/50 text-slate-700 font-medium"
             >
-              <option value="ALL">Tất cả Trạng Thái</option>
-              <option value="ACTIVE">Hoạt Động (Active)</option>
-              <option value="AT_RISK">Nguy Cơ Rời Bỏ (At Risk)</option>
-              <option value="INACTIVE">Tạm Ngưng (Inactive)</option>
+              <option value="ALL">All Statuses</option>
+              <option value="ACTIVE">Active</option>
+              <option value="AT_RISK">At Risk</option>
+              <option value="INACTIVE">Inactive</option>
             </select>
           </div>
         </div>
@@ -485,7 +556,7 @@ export default function CustomersPage() {
         {loading ? (
           <div className="p-12 text-center">
             <RefreshCw className="w-8 h-8 text-[#253c68] animate-spin mx-auto mb-3" />
-            <p className="text-slate-500 font-medium text-sm">Đang tải hồ sơ khách hàng...</p>
+            <p className="text-slate-500 font-medium text-sm">Loading customer profiles...</p>
           </div>
         ) : error ? (
           <div className="p-8 text-center text-rose-600">
@@ -495,20 +566,20 @@ export default function CustomersPage() {
               onClick={() => fetchCustomers()}
               className="mt-3 px-4 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-200"
             >
-              Thử lại
+              Retry
             </button>
           </div>
         ) : customers.length === 0 ? (
           <div className="p-12 text-center text-slate-500">
             <Users className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-            <p className="font-semibold text-base text-slate-700">Chưa có khách hàng nào phù hợp bộ lọc</p>
-            <p className="text-xs text-slate-400 mt-1">Hãy thử xóa từ khóa tìm kiếm hoặc thêm khách hàng mới</p>
+            <p className="font-semibold text-base text-slate-700">No customers match your filter</p>
+            <p className="text-xs text-slate-400 mt-1">Try adjusting your search criteria or add a new customer</p>
             <button
               onClick={() => setIsAddModalOpen(true)}
               className="mt-4 inline-flex items-center space-x-2 px-4 py-2 bg-[#253c68] text-white rounded-xl text-xs font-semibold hover:bg-[#1a2c4e] btn-press transition"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Thêm Khách Hàng B2B</span>
+              <span>Add Customer</span>
             </button>
           </div>
         ) : (
@@ -516,14 +587,14 @@ export default function CustomersPage() {
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
-                  <th className="py-3.5 px-4">Salon / Cửa Hàng</th>
-                  <th className="py-3.5 px-4">Chủ Tiệm & Liên Hệ</th>
-                  <th className="py-3.5 px-4">Khu Vực</th>
-                  <th className="py-3.5 px-4 text-center">Phân Hạng</th>
-                  <th className="py-3.5 px-4 text-right">Tổng Doanh Số</th>
-                  <th className="py-3.5 px-4 text-center">Trạng Thái</th>
-                  <th className="py-3.5 px-4">Sale Phụ Trách</th>
-                  <th className="py-3.5 px-4 text-right">Thao Tác</th>
+                  <th className="py-3.5 px-4">Salon / Business Name</th>
+                  <th className="py-3.5 px-4">Contact Person & Phone</th>
+                  <th className="py-3.5 px-4">Location</th>
+                  <th className="py-3.5 px-4 text-center">Tier & Pricing</th>
+                  <th className="py-3.5 px-4 text-right">Total Orders / Revenue</th>
+                  <th className="py-3.5 px-4 text-center">Status</th>
+                  <th className="py-3.5 px-4">Assigned Sales Rep</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -558,7 +629,7 @@ export default function CustomersPage() {
                           <a
                             href={`tel:${c.phone}`}
                             className="inline-flex items-center space-x-1 text-xs text-sky-700 hover:text-sky-900 bg-sky-50 px-2 py-0.5 rounded-md font-mono"
-                            title="Gọi điện"
+                            title="Call phone"
                           >
                             <Phone className="w-3 h-3" />
                             <span>{c.phone}</span>
@@ -571,7 +642,7 @@ export default function CustomersPage() {
                         )}
                       </td>
 
-                      {/* Region */}
+                      {/* Location */}
                       <td className="py-4 px-4">
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-700">
                           {c.state || "TX"}
@@ -590,7 +661,7 @@ export default function CustomersPage() {
                         {c.tier === "WHOLESALE" && (
                           <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
                             <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-                            <span>SỈ LỚN</span>
+                            <span>WHOLESALE</span>
                           </span>
                         )}
                         {c.tier === "STANDARD" && (
@@ -606,11 +677,11 @@ export default function CustomersPage() {
                           ${c.totalSpent.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                         </div>
                         <div className="text-xs text-slate-500 mt-0.5">
-                          {c.orderCount} đơn hàng
+                          {c.orderCount} orders
                         </div>
                         {c.debtAmount > 0 && (
                           <div className="text-[11px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded inline-block mt-0.5">
-                            Nợ: ${c.debtAmount.toLocaleString()}
+                            AR: ${c.debtAmount.toLocaleString()}
                           </div>
                         )}
                       </td>
@@ -620,27 +691,27 @@ export default function CustomersPage() {
                         {c.status === "ACTIVE" && (
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                            Hoạt động
+                            Active
                           </span>
                         )}
                         {c.status === "AT_RISK" && (
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5 animate-pulse"></span>
-                            Nguy cơ
+                            At Risk
                           </span>
                         )}
                         {c.status === "INACTIVE" && (
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                            Tạm ngưng
+                            Inactive
                           </span>
                         )}
                       </td>
 
-                      {/* Assigned Sale */}
+                      {/* Assigned Sales Rep */}
                       <td className="py-4 px-4">
                         <span className="inline-flex items-center space-x-1.5 text-xs font-medium text-slate-700 bg-slate-100/80 px-2 py-1 rounded-lg">
                           <span className="w-2 h-2 rounded-full bg-[#253c68]"></span>
-                          <span className="capitalize">{c.assignedSale || "admin"}</span>
+                          <span>{formatSalesRep(c.assignedSale)}</span>
                         </span>
                       </td>
 
@@ -651,7 +722,7 @@ export default function CustomersPage() {
                           <button
                             onClick={() => openSmsModal(c)}
                             className="p-1.5 rounded-lg text-sky-600 hover:bg-sky-50 hover:text-sky-800 transition"
-                            title="Gửi tin nhắn Quo SMS"
+                            title="Send Quo SMS"
                           >
                             <MessageSquare className="w-4 h-4" />
                           </button>
@@ -660,7 +731,7 @@ export default function CustomersPage() {
                           <Link
                             href={`/customers/${c.id}`}
                             className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-[#253c68]/10 text-[#253c68] hover:bg-[#253c68] hover:text-white font-semibold text-xs transition"
-                            title="Xem chi tiết hồ sơ 360"
+                            title="View Customer 360° Profile"
                           >
                             <Eye className="w-3.5 h-3.5" />
                             <span>360°</span>
@@ -676,7 +747,7 @@ export default function CustomersPage() {
         )}
       </div>
 
-      {/* MODAL: Thêm Khách Hàng Mới */}
+      {/* MODAL: Add Customer */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -687,8 +758,8 @@ export default function CustomersPage() {
                   <Plus className="w-5 h-5 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-[#253c68]">Thêm Khách Hàng B2B Mới</h3>
-                  <p className="text-xs text-slate-500">Tạo hồ sơ tiệm nail / đại lý phân phối cọ JKIOCEAN</p>
+                  <h3 className="text-lg font-extrabold text-[#253c68]">Add Customer</h3>
+                  <p className="text-xs text-slate-500">Create profile for nail salon or wholesale supply store</p>
                 </div>
               </div>
               <button
@@ -705,12 +776,12 @@ export default function CustomersPage() {
                 {/* Salon Name */}
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Tên Tiệm Nail / Đại Lý <span className="text-rose-500">*</span>
+                    Business / Salon Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: Venetian Nail Spa - Houston"
+                    placeholder="e.g. Venetian Nail Spa - Houston"
                     value={formData.businessName}
                     onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] focus:ring-1 focus:ring-[#253c68]"
@@ -720,12 +791,12 @@ export default function CustomersPage() {
                 {/* Owner Name */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Chủ Tiệm / Đại Diện <span className="text-rose-500">*</span>
+                    Contact Person <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: Jennifer Tran (Chị Thảo)"
+                    placeholder="e.g. Jennifer Tran"
                     value={formData.contactPerson}
                     onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] focus:ring-1 focus:ring-[#253c68]"
@@ -735,12 +806,12 @@ export default function CustomersPage() {
                 {/* Phone */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Số Điện Thoại Mỹ (+1) <span className="text-rose-500">*</span>
+                    Phone Number <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="VD: +17135550192"
+                    placeholder="e.g. +17135550192"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] focus:ring-1 focus:ring-[#253c68] font-mono"
@@ -752,7 +823,7 @@ export default function CustomersPage() {
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
                   <input
                     type="email"
-                    placeholder="contact@salon.com"
+                    placeholder="orders@salon.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
@@ -762,7 +833,7 @@ export default function CustomersPage() {
                 {/* Birthday */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Ngày Sinh Chủ Tiệm
+                    Birthday
                   </label>
                   <input
                     type="date"
@@ -775,11 +846,11 @@ export default function CustomersPage() {
                 {/* Address */}
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Địa Chỉ Đường Phố
+                    Address
                   </label>
                   <input
                     type="text"
-                    placeholder="VD: 5015 Westheimer Rd, Ste 2200"
+                    placeholder="e.g. 5015 Westheimer Rd, Ste 2200"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
@@ -788,7 +859,7 @@ export default function CustomersPage() {
 
                 {/* City */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Thành Phố</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
                   <input
                     type="text"
                     placeholder="Houston"
@@ -801,7 +872,7 @@ export default function CustomersPage() {
                 {/* State & Zip */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Tiểu Bang</label>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">State</label>
                     <select
                       value={formData.state}
                       onChange={(e) => setFormData({ ...formData, state: e.target.value })}
@@ -816,56 +887,55 @@ export default function CustomersPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Zip Code</label>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">ZIP Code</label>
                     <input
                       type="text"
                       placeholder="77056"
                       value={formData.zipCode}
                       onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                       className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                    >
-                    </input>
+                    />
                   </div>
                 </div>
 
                 {/* Tier & Sale Rep */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phân Hạng</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Customer Tier</label>
                   <select
                     value={formData.tier}
-                    onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, tier: e.target.value as any })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] font-semibold text-[#253c68]"
                   >
                     <option value="STANDARD">Standard</option>
-                    <option value="WHOLESALE">Wholesale (Đại lý)</option>
-                    <option value="VIP">VIP (Chuỗi lớn)</option>
+                    <option value="WHOLESALE">Wholesale</option>
+                    <option value="VIP">VIP</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Sale Phụ Trách
+                    Assigned Sales Rep
                   </label>
                   <select
                     value={formData.assignedSale}
                     onChange={(e) => setFormData({ ...formData, assignedSale: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
                   >
-                    <option value="admin">Admin</option>
-                    <option value="hanna">Hanna Nguyen (Sales)</option>
-                    <option value="johnny">Johnny Tran (Sếp)</option>
+                    <option value="johnny">Johnny Tran</option>
+                    <option value="hanna">Hanna Nguyen</option>
                     <option value="alice">Alice Nguyen</option>
                     <option value="tan">Tan Ho</option>
                     <option value="kate">Kate</option>
+                    <option value="admin">Admin</option>
                   </select>
                 </div>
 
                 {/* Notes */}
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ghi Chú</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Notes / Preferences</label>
                   <textarea
                     rows={2}
-                    placeholder="Đặc điểm tiệm, số lượng thợ, thói quen đặt cọ Z-Brushes..."
+                    placeholder="Salon specialty, technician count, Z-Brushes order preferences..."
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
@@ -880,14 +950,14 @@ export default function CustomersPage() {
                   onClick={() => setIsAddModalOpen(false)}
                   className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="px-6 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md shadow-[#253c68]/20 btn-press disabled:opacity-50"
                 >
-                  {isSubmitting ? "Đang lưu..." : "Lưu Khách Hàng"}
+                  {isSubmitting ? "Saving..." : "Save Customer"}
                 </button>
               </div>
             </form>
@@ -895,7 +965,7 @@ export default function CustomersPage() {
         </div>
       )}
 
-      {/* MODAL: Gửi Quo SMS */}
+      {/* MODAL: Send Quo SMS */}
       {isSmsModalOpen && selectedCustomerForSms && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full overflow-hidden">
@@ -906,9 +976,9 @@ export default function CustomersPage() {
                   <MessageSquare className="w-5 h-5 text-sky-300" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold">Gửi Quo SMS Trực Tiếp</h3>
+                  <h3 className="text-base font-extrabold">Send Quo SMS</h3>
                   <p className="text-xs text-sky-200">
-                    Đến: {selectedCustomerForSms.contactPerson} • {selectedCustomerForSms.phone}
+                    To: {selectedCustomerForSms.contactPerson} • {selectedCustomerForSms.phone}
                   </p>
                 </div>
               </div>
@@ -925,7 +995,7 @@ export default function CustomersPage() {
               {/* Sender Info Banner */}
               <div className="flex items-center justify-between px-3 py-2 bg-slate-50 rounded-xl text-xs text-slate-600 border border-slate-200/80">
                 <span className="font-medium">
-                  Đầu số gửi: <strong className="text-[#253c68]">+1 (713) 330-6165</strong> (JKIOCEAN Houston)
+                  Outbound Number: <strong className="text-[#253c68]">+1 (713) 330-6165</strong> (JKIOCEAN Houston)
                 </span>
                 <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">
                   QUO CONNECTED
@@ -935,7 +1005,7 @@ export default function CustomersPage() {
               {/* Quick Template Selector */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                  Chọn mẫu tin nhắn mẫu (Quo Templates):
+                  Select Message Template (Quo Templates):
                 </label>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
@@ -947,7 +1017,7 @@ export default function CustomersPage() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    🎉 Khuyến mãi cọ Z-Brushes
+                    🎉 Z-Brushes Promotion
                   </button>
 
                   <button
@@ -959,7 +1029,7 @@ export default function CustomersPage() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    💬 Hỏi thăm trải nghiệm cọ
+                    💬 Brush Experience Follow-up
                   </button>
 
                   <button
@@ -971,7 +1041,7 @@ export default function CustomersPage() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    💳 Nhắc thanh toán công nợ
+                    💳 Payment / AR Reminder
                   </button>
 
                   <button
@@ -983,7 +1053,7 @@ export default function CustomersPage() {
                         : "border-slate-200 hover:bg-slate-50 text-slate-600"
                     }`}
                   >
-                    🎂 Chúc mừng sinh nhật
+                    🎂 Birthday Greeting
                   </button>
                 </div>
               </div>
@@ -991,7 +1061,7 @@ export default function CustomersPage() {
               {/* Content Textarea */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Nội Dung Tin Nhắn
+                  Message Content
                 </label>
                 <textarea
                   rows={4}
@@ -999,13 +1069,13 @@ export default function CustomersPage() {
                   value={smsData.content}
                   onChange={(e) => setSmsData({ ...smsData, content: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] focus:ring-1 focus:ring-[#253c68]"
-                  placeholder="Nhập nội dung tin nhắn gửi khách..."
+                  placeholder="Enter message text..."
                 />
                 <div className="flex items-center justify-between text-[11px] text-slate-400 mt-1">
                   <span>
-                    Độ dài: {smsData.content.length} ký tự (~{Math.ceil(smsData.content.length / 160)} SMS segment)
+                    Length: {smsData.content.length} characters (~{Math.ceil(smsData.content.length / 160)} SMS segment)
                   </span>
-                  <span>Người nhận: {selectedCustomerForSms.phone}</span>
+                  <span>Recipient: {selectedCustomerForSms.phone}</span>
                 </div>
               </div>
 
@@ -1016,7 +1086,7 @@ export default function CustomersPage() {
                   onClick={() => setIsSmsModalOpen(false)}
                   className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
                 >
-                  Hủy
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -1024,7 +1094,7 @@ export default function CustomersPage() {
                   className="flex items-center space-x-2 px-5 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md shadow-[#253c68]/20 btn-press disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
-                  <span>{isSubmitting ? "Đang gửi..." : "Gửi Quo SMS Ngay"}</span>
+                  <span>{isSubmitting ? "Sending..." : "Send Quo SMS Now"}</span>
                 </button>
               </div>
             </form>

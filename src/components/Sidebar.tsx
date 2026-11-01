@@ -11,7 +11,6 @@ import {
   Receipt,
   TrendingDown,
   PhoneCall,
-  Settings,
   ChevronRight,
 } from "lucide-react";
 
@@ -25,12 +24,12 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { title: "Khách Hàng B2B", href: "/customers", icon: Users },
+  { title: "B2B Customers", href: "/customers", icon: Users },
   { title: "B2B Leads AI", href: "/leads", icon: Target, badge: "AI", badgeColor: "bg-sky-500 text-white" },
-  { title: "Kho & Sản Phẩm", href: "/inventory", icon: Package },
-  { title: "Báo Giá PDF", href: "/quotes", icon: FileText },
-  { title: "Công Nợ (AR)", href: "/ar", icon: Receipt },
-  { title: "Cảnh Báo Sụt Giảm", href: "/churn", icon: TrendingDown, badge: "Alert", badgeColor: "bg-rose-500 text-white" },
+  { title: "Inventory & Products", href: "/inventory", icon: Package },
+  { title: "PDF Quotes", href: "/quotes", icon: FileText },
+  { title: "Accounts Receivable (AR)", href: "/ar", icon: Receipt },
+  { title: "Churn Alerts", href: "/churn", icon: TrendingDown, badge: "Alert", badgeColor: "bg-rose-500 text-white" },
 ];
 
 export default function Sidebar() {
@@ -57,7 +56,7 @@ export default function Sidebar() {
       {/* Navigation Links */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-          Quản Lý Nghiệp Vụ
+          OPERATIONS & MANAGEMENT
         </div>
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href));
@@ -90,8 +89,6 @@ export default function Sidebar() {
             </Link>
           );
         })}
-
-
       </nav>
 
       {/* Footer System Status */}

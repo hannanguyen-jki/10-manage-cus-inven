@@ -51,7 +51,7 @@ async function launchBrowser() {
     console.warn("Sparticuz chromium fallback failed:", err);
   }
 
-  throw new Error("Không tìm thấy trình duyệt headless (Chrome/Edge) để tạo PDF");
+  throw new Error("Headless browser (Chrome/Edge) not found for PDF rendering");
 }
 
 // Generate the high-end branded HTML template for JKIOCEAN
@@ -105,7 +105,7 @@ function renderQuoteHtml(quote: QuoteData): string {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JKIOCEAN Wholesale Quotation - ${quote.quoteNumber}</title>
+  <title>OFFICIAL WHOLESALE PRICE QUOTE - ${quote.quoteNumber}</title>
   <style>
     @page {
       size: letter;
@@ -434,7 +434,7 @@ function renderQuoteHtml(quote: QuoteData): string {
           <span>JKIOCEAN</span>
         </div>
         <div class="brand-slogan">Let Beauty Begin</div>
-        <div class="hub-badge">★ Houston Logistics & Distribution Hub ★</div>
+        <div class="hub-badge">★ JKIOCEAN LLC - Houston Distribution Hub ★</div>
       </div>
       <div class="hub-contact">
         <strong>JKIOCEAN GLOBAL LLC</strong><br>
@@ -450,14 +450,14 @@ function renderQuoteHtml(quote: QuoteData): string {
     <div class="info-grid">
       <!-- Bill To -->
       <div class="info-card">
-        <div class="card-title">Bill To (Khách Hàng B2B / Salon)</div>
+        <div class="card-title">Prepared For (B2B Customer / Salon)</div>
         <div class="customer-name">${quote.customer.businessName}</div>
         <div class="info-row">
-          <span class="info-label">Người đại diện:</span>
+          <span class="info-label">Contact Person:</span>
           <span class="info-value">${quote.customer.contactPerson}</span>
         </div>
         <div class="info-row">
-          <span class="info-label">Điện thoại:</span>
+          <span class="info-label">Phone:</span>
           <span class="info-value font-mono font-bold">${quote.customer.phone}</span>
         </div>
         ${quote.customer.email ? `
@@ -466,32 +466,32 @@ function renderQuoteHtml(quote: QuoteData): string {
           <span class="info-value">${quote.customer.email}</span>
         </div>` : ""}
         <div class="info-row">
-          <span class="info-label">Địa chỉ salon:</span>
+          <span class="info-label">Salon Address:</span>
           <span class="info-value">${quote.customer.address || "10606 Bellaire Blvd"}, ${quote.customer.city || "Houston"}, ${quote.customer.state || "TX"} ${quote.customer.zipCode || "77036"}</span>
         </div>
       </div>
 
       <!-- Quote Meta -->
       <div class="info-card">
-        <div class="card-title">Chi Tiết Báo Giá (Quotation Info)</div>
+        <div class="card-title">Quote Details</div>
         <div class="info-row">
-          <span class="info-label">Số báo giá:</span>
+          <span class="info-label">Quote #:</span>
           <span class="info-value font-mono font-bold" style="color: #253c68;">${quote.quoteNumber}</span>
         </div>
         <div class="info-row">
-          <span class="info-label">Ngày phát hành:</span>
+          <span class="info-label">Issue Date:</span>
           <span class="info-value">${formattedCreated}</span>
         </div>
         <div class="info-row">
-          <span class="info-label">Hiệu lực đến (Valid Until):</span>
+          <span class="info-label">Valid Until:</span>
           <span class="info-value font-bold" style="color: #b45309;">${formattedValid}</span>
         </div>
         <div class="info-row">
-          <span class="info-label">Phụ trách kinh doanh:</span>
+          <span class="info-label">Sales Representative:</span>
           <span class="info-value">${quote.createdUser || "Johnny Tran"} (Houston Hub)</span>
         </div>
         <div class="info-row" style="margin-top: 8px;">
-          <span class="info-label">Trạng thái:</span>
+          <span class="info-label">Status:</span>
           <span class="status-badge status-${quote.status}">${quote.status}</span>
         </div>
       </div>
@@ -501,13 +501,13 @@ function renderQuoteHtml(quote: QuoteData): string {
     <table class="quote-table">
       <thead>
         <tr>
-          <th style="text-align: center;">#</th>
-          <th style="text-align: center;">Hình Ảnh</th>
-          <th style="text-align: left;">Sản Phẩm & SKU</th>
-          <th style="text-align: center;">SL</th>
-          <th style="text-align: right;">Đơn Giá Sỉ</th>
-          <th style="text-align: right;">CK (%)</th>
-          <th style="text-align: right;">Thành Tiền</th>
+          <th style="text-align: center;">Item #</th>
+          <th style="text-align: center;">Image</th>
+          <th style="text-align: left;">Description</th>
+          <th style="text-align: center;">Qty</th>
+          <th style="text-align: right;">Unit Price</th>
+          <th style="text-align: right;">Discount %</th>
+          <th style="text-align: right;">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -518,34 +518,34 @@ function renderQuoteHtml(quote: QuoteData): string {
     <!-- Totals & Notes -->
     <div class="summary-section">
       <div class="notes-card">
-        <div class="card-title">Ghi Chú Đơn Hàng & Vận Chuyển</div>
+        <div class="card-title">Special Notes & Shipping Terms</div>
         <p style="font-size: 12px; color: #334155; margin-bottom: 8px;">
-          ${quote.notes || "Giao hàng tận nơi miễn phí cho salon khu vực Greater Houston."}
+          ${quote.notes || "Free local delivery for wholesale orders in Greater Houston Hub."}
         </p>
         <div style="font-size: 11.5px; color: #64748b; line-height: 1.5; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
-          <strong style="color: #253c68;">Chính sách chất lượng:</strong> 100% cọ JKIOCEAN được kiểm định chất lượng lông cọ Kolinsky nguyên chất, bảo hành lỗi sản xuất đổi mới 1:1 trong 30 ngày đầu tiên.
+          <strong style="color: #253c68;">Quality Guarantee:</strong> 100% genuine Kolinsky bristles, 30-day full replacement warranty against manufacturing defects.
         </div>
       </div>
 
       <div class="totals-card">
         <div class="total-row">
-          <span>Tổng tiền hàng (Subtotal):</span>
+          <span>Subtotal:</span>
           <span style="font-weight: 600;">$${quote.subtotal.toFixed(2)}</span>
         </div>
         <div class="total-row">
-          <span>Chiết khấu sỉ (Wholesale Discount):</span>
+          <span>Wholesale Discount:</span>
           <span style="font-weight: 600; color: #d97706;">-$${quote.totalDiscount.toFixed(2)}</span>
         </div>
         <div class="total-row">
-          <span>Vận chuyển (Houston Local Delivery):</span>
+          <span>Shipping / Handling:</span>
           <span style="font-weight: 600; color: #16a34a;">${quote.shipping === 0 ? "FREE ($0.00)" : `$${quote.shipping.toFixed(2)}`}</span>
         </div>
         <div class="total-row">
-          <span>Thuế B2B (Resale Exemption):</span>
+          <span>Tax (Resale Exempt):</span>
           <span style="font-weight: 600;">$0.00</span>
         </div>
         <div class="total-row grand-total">
-          <span>TỔNG CỘNG (USD):</span>
+          <span>Grand Total (USD):</span>
           <span class="grand-badge">$${quote.totalAmount.toFixed(2)}</span>
         </div>
       </div>
@@ -553,15 +553,15 @@ function renderQuoteHtml(quote: QuoteData): string {
 
     <!-- Payment Terms -->
     <div class="terms-box">
-      <h4>Phương Thức Thanh Toán & Điều Khoản (Payment Terms)</h4>
+      <h4>Payment Terms (Net 15, Net 30, Due upon receipt)</h4>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
         <div>
           • <strong>Zelle:</strong> <span style="font-family: monospace; font-weight: 700;">pay@jkiocean.com</span> (JKIOCEAN LLC)<br>
-          • <strong>Check:</strong> Payable to <em>"JKIOCEAN LLC"</em>
+          • <strong>Company Check:</strong> Payable to <em>"JKIOCEAN LLC"</em> (Houston Hub)
         </div>
         <div>
-          • <strong>Credit Card:</strong> Visa / Mastercard / Amex (Thanh toán online)<br>
-          • <strong>Giao hàng:</strong> Xe chuyên dụng Houston Hub giao trong 24h
+          • <strong>Credit Card:</strong> Visa / Mastercard / Amex (Online Invoice Portal)<br>
+          • <strong>Local Delivery:</strong> Dedicated Houston Hub fleet delivery within 24 business hours
         </div>
       </div>
     </div>
@@ -569,19 +569,19 @@ function renderQuoteHtml(quote: QuoteData): string {
     <!-- Signatures -->
     <div class="signature-section">
       <div class="signature-box">
-        <div style="font-size: 11.5px; font-weight: 700; color: #475569;">ĐẠI DIỆN JKIOCEAN GLOBAL</div>
+        <div style="font-size: 11.5px; font-weight: 700; color: #475569;">AUTHORIZED SIGNATURE</div>
         <div class="signature-line">${quote.createdUser || "Johnny Tran"}</div>
         <div class="signature-sub">Houston Distribution Hub Manager</div>
       </div>
       <div class="signature-box">
-        <div style="font-size: 11.5px; font-weight: 700; color: #475569;">XÁC NHẬN CỦA KHÁCH HÀNG / SALON</div>
+        <div style="font-size: 11.5px; font-weight: 700; color: #475569;">CUSTOMER ACCEPTANCE</div>
         <div class="signature-line">${quote.customer.contactPerson}</div>
         <div class="signature-sub">${quote.customer.businessName}</div>
       </div>
     </div>
 
     <div class="footer-notice">
-      Báo giá này được tạo tự động bởi Hệ Thống ERP JKIOCEAN Houston Hub • Hotline: +1 (713) 330-6165 • Email: support@jkiocean.com
+      Thank you for your business! This official wholesale price quote is generated by JKIOCEAN LLC - Houston Distribution Hub • Tel: +1 (713) 330-6165 • Email: support@jkiocean.com
     </div>
   </div>
 </body>
@@ -603,7 +603,7 @@ export async function GET(
 
     if (!quote) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy báo giá" },
+        { success: false, error: "Quote not found" },
         { status: 404 }
       );
     }
@@ -667,7 +667,7 @@ export async function GET(
   } catch (error: any) {
     console.error(`PDF Generation Error for ${params.id}:`, error);
     return NextResponse.json(
-      { success: false, error: error?.message || "Lỗi tạo file PDF báo giá" },
+      { success: false, error: error?.message || "Failed to generate PDF quotation" },
       { status: 500 }
     );
   }

@@ -42,21 +42,21 @@ export default function QuoteDetailPage() {
   const handleCopyQuoteText = () => {
     if (!quote) return;
     const lines = [
-      `[BÁO GIÁ JKIOCEAN] #${quote.quoteNumber}`,
-      `Kính gửi: ${quote.customer.contactPerson} (${quote.customer.businessName})`,
-      `Điện thoại: ${quote.customer.phone}`,
-      `Địa chỉ: ${quote.customer.address || ""}, ${quote.customer.city || ""}, ${quote.customer.state || ""}`,
-      `Hiệu lực đến: ${new Date(quote.validUntil).toLocaleDateString("en-US")}`,
+      `[JKIOCEAN WHOLESALE PRICE QUOTE] #${quote.quoteNumber}`,
+      `Prepared For: ${quote.customer.contactPerson} (${quote.customer.businessName})`,
+      `Phone: ${quote.customer.phone}`,
+      `Address: ${quote.customer.address || ""}, ${quote.customer.city || ""}, ${quote.customer.state || ""}`,
+      `Valid Until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}`,
       `------------------------------------------`,
-      ...quote.items.map((it, idx) => `${idx + 1}. ${it.productName} [${it.sku}]\n   SL: ${it.quantity} x $${it.unitPrice.toFixed(2)}${it.discount > 0 ? ` (-${it.discount}%)` : ""} = $${it.lineTotal.toFixed(2)}`),
+      ...quote.items.map((it, idx) => `${idx + 1}. ${it.productName} [${it.sku}]\n   Qty: ${it.quantity} x $${it.unitPrice.toFixed(2)}${it.discount > 0 ? ` (-${it.discount}%)` : ""} = $${it.lineTotal.toFixed(2)}`),
       `------------------------------------------`,
-      `Tổng tiền hàng: $${quote.subtotal.toFixed(2)}`,
-      quote.totalDiscount > 0 ? `Chiết khấu: -$${quote.totalDiscount.toFixed(2)}` : null,
-      quote.shipping > 0 ? `Phí ship: $${quote.shipping.toFixed(2)}` : `Giao hàng: Miễn phí nội thành Houston Hub`,
-      `TỔNG THANH TOÁN: $${quote.totalAmount.toFixed(2)}`,
+      `Subtotal: $${quote.subtotal.toFixed(2)}`,
+      quote.totalDiscount > 0 ? `Wholesale Discount: -$${quote.totalDiscount.toFixed(2)}` : null,
+      quote.shipping > 0 ? `Shipping: $${quote.shipping.toFixed(2)}` : `Delivery: Free Greater Houston Hub delivery`,
+      `GRAND TOTAL: $${quote.totalAmount.toFixed(2)}`,
       `------------------------------------------`,
-      `Thanh toán Zelle: payments@jkiocean.com`,
-      `Hotline hỗ trợ: +1 (713) 330-6165`,
+      `Zelle Payment: pay@jkiocean.com (JKIOCEAN LLC)`,
+      `Customer Service Hotline: +1 (713) 330-6165`,
     ].filter(Boolean).join("\n");
 
     navigator.clipboard.writeText(lines);
@@ -66,7 +66,7 @@ export default function QuoteDetailPage() {
 
   const handleExportCsv = () => {
     if (!quote) return;
-    const headers = ["STT", "Mã SKU", "Tên Sản Phẩm", "Danh Mục", "Số Lượng", "Đơn Giá ($)", "Chiết Khấu (%)", "Thành Tiền ($)"];
+    const headers = ["Item #", "SKU", "Product Name", "Category", "Quantity", "Unit Price ($)", "Discount (%)", "Line Total ($)"];
     const rows = quote.items.map((it, idx) => [
       idx + 1,
       `"${it.sku}"`,
@@ -79,9 +79,9 @@ export default function QuoteDetailPage() {
     ]);
     const summaryRows = [
       [],
-      ["", "", "", "", "", "Tổng tiền hàng:", "", quote.subtotal.toFixed(2)],
-      ["", "", "", "", "", "Tổng chiết khấu:", "", quote.totalDiscount.toFixed(2)],
-      ["", "", "", "", "", "TỔNG CỘNG:", "", quote.totalAmount.toFixed(2)]
+      ["", "", "", "", "", "Subtotal:", "", quote.subtotal.toFixed(2)],
+      ["", "", "", "", "", "Total Discount:", "", quote.totalDiscount.toFixed(2)],
+      ["", "", "", "", "", "GRAND TOTAL:", "", quote.totalAmount.toFixed(2)]
     ];
 
     const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(",")), ...summaryRows.map(r => r.join(","))].join("\r\n");
@@ -89,7 +89,7 @@ export default function QuoteDetailPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Bao_Gia_${quote.quoteNumber}.csv`;
+    a.download = `Quote_${quote.quoteNumber}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -128,9 +128,9 @@ export default function QuoteDetailPage() {
   const handleOpenSms = () => {
     if (!quote) return;
     setSmsContent(
-      `JKIOCEAN: Chào chị ${quote.customer.contactPerson} (${quote.customer.businessName}), JKIOCEAN xin gửi báo giá chính thức #${quote.quoteNumber}. Tổng tiền: $${quote.totalAmount.toFixed(
+      `JKIOCEAN Houston Hub: Hi ${quote.customer.contactPerson} (${quote.customer.businessName}), here is your official wholesale price quote #${quote.quoteNumber}. Total: $${quote.totalAmount.toFixed(
         2
-      )}. Hiệu lực đến: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Miễn phí giao hàng nội thành Houston Hub. Chị bấm vào link tải PDF hoặc liên hệ hotline +1-713-330-6165.`
+      )}. Valid until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Free local delivery from Houston Hub. Download PDF or call our hotline at +1 (713) 330-6165.`
     );
     setSmsSuccess(false);
     setShowSmsModal(true);
@@ -200,7 +200,7 @@ export default function QuoteDetailPage() {
     return (
       <div className="py-24 flex flex-col items-center justify-center space-y-3">
         <RefreshCw className="w-8 h-8 animate-spin text-[#253c68]" />
-        <span className="text-sm font-semibold text-slate-600">Đang tải chi tiết báo giá...</span>
+        <span className="text-sm font-semibold text-slate-600">Loading quote details...</span>
       </div>
     );
   }
@@ -209,14 +209,14 @@ export default function QuoteDetailPage() {
     return (
       <div className="py-16 text-center space-y-4">
         <AlertCircle className="w-12 h-12 text-rose-500 mx-auto" />
-        <h2 className="text-lg font-bold text-slate-800">Không tìm thấy báo giá</h2>
-        <p className="text-xs text-slate-500">Mã báo giá không tồn tại hoặc đã bị xóa</p>
+        <h2 className="text-lg font-bold text-slate-800">Quote Not Found</h2>
+        <p className="text-xs text-slate-500">The requested quote does not exist or has been removed.</p>
         <Link
           href="/quotes"
           className="inline-flex items-center space-x-2 px-4 py-2 bg-[#253c68] text-white rounded-xl text-xs font-bold"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Quay lại danh sách</span>
+          <span>Return to Quotes List</span>
         </Link>
       </div>
     );
@@ -246,7 +246,7 @@ export default function QuoteDetailPage() {
           </Link>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold text-slate-400">Báo Giá:</span>
+              <span className="text-xs font-bold text-slate-400">Quote:</span>
               <span className="text-lg font-black text-slate-900 font-mono">{quote.quoteNumber}</span>
               <span
                 className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
@@ -262,7 +262,7 @@ export default function QuoteDetailPage() {
                 {quote.status}
               </span>
             </div>
-            <p className="text-xs text-slate-500">Khách hàng: {quote.customer.businessName}</p>
+            <p className="text-xs text-slate-500">Customer: {quote.customer.businessName}</p>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ export default function QuoteDetailPage() {
               className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5"
             >
               <CheckCircle className="w-3.5 h-3.5" />
-              <span>Đánh Dấu Đã Chốt</span>
+              <span>Mark as Accepted</span>
             </button>
           )}
 
@@ -286,10 +286,10 @@ export default function QuoteDetailPage() {
             className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm shadow-emerald-600/20"
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>Gửi Quo SMS</span>
+            <span>Send Quo SMS</span>
           </button>
 
-          {/* 1-Click Copy Text for Zalo/SMS */}
+          {/* 1-Click Copy Text for SMS */}
           <button
             onClick={handleCopyQuoteText}
             className={`px-3.5 py-2 border rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm ${
@@ -299,7 +299,7 @@ export default function QuoteDetailPage() {
             }`}
           >
             {copiedToast ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-sky-600" />}
-            <span>{copiedToast ? "Đã Copy Báo Giá!" : "Copy Báo Giá (Zalo/SMS)"}</span>
+            <span>{copiedToast ? "Quote Copied!" : "Copy Quote (SMS/Text)"}</span>
           </button>
 
           {/* Export Excel */}
@@ -308,7 +308,7 @@ export default function QuoteDetailPage() {
             className="px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Xuất Excel</span>
+            <span>Export CSV</span>
           </button>
 
           {/* Print / Save PDF Fast */}
@@ -317,7 +317,7 @@ export default function QuoteDetailPage() {
             className="px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>In / Lưu PDF Nhanh</span>
+            <span>Print / Fast PDF</span>
           </button>
 
           {/* Download PDF */}
@@ -329,12 +329,12 @@ export default function QuoteDetailPage() {
             {downloadingPdf ? (
               <>
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Đang tạo PDF...</span>
+                <span>Generating PDF...</span>
               </>
             ) : (
               <>
                 <Download className="w-3.5 h-3.5" />
-                <span>Tải File PDF Chuẩn</span>
+                <span>Download Official PDF</span>
               </>
             )}
           </button>
@@ -378,7 +378,7 @@ export default function QuoteDetailPage() {
           {/* Bill To */}
           <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-2">
             <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-dashed border-slate-300 pb-1.5 flex items-center justify-between">
-              <span>Bill To (Khách Hàng B2B / Salon)</span>
+              <span>Prepared For (B2B Customer / Salon)</span>
               {quote.customer.tier && (
                 <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-bold">
                   {quote.customer.tier}
@@ -388,11 +388,11 @@ export default function QuoteDetailPage() {
             <div className="text-base font-extrabold text-[#253c68]">{quote.customer.businessName}</div>
             <div className="text-xs text-slate-600 space-y-1">
               <div className="flex justify-between">
-                <span className="text-slate-400">Người phụ trách:</span>
+                <span className="text-slate-400">Contact Person:</span>
                 <span className="font-semibold text-slate-800">{quote.customer.contactPerson}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Điện thoại:</span>
+                <span className="text-slate-400">Phone:</span>
                 <span className="font-mono font-bold text-slate-900">{quote.customer.phone}</span>
               </div>
               {quote.customer.email && (
@@ -402,7 +402,7 @@ export default function QuoteDetailPage() {
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-slate-400">Địa chỉ salon:</span>
+                <span className="text-slate-400">Salon Address:</span>
                 <span className="text-slate-800 font-medium text-right">
                   {quote.customer.address || "10606 Bellaire Blvd"}, {quote.customer.city || "Houston"},{" "}
                   {quote.customer.state || "TX"} {quote.customer.zipCode || "77036"}
@@ -414,27 +414,27 @@ export default function QuoteDetailPage() {
           {/* Quotation Info */}
           <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-2">
             <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-dashed border-slate-300 pb-1.5">
-              Chi Tiết Báo Giá (Quotation Info)
+              Quote Details
             </div>
             <div className="text-xs text-slate-600 space-y-1.5 pt-1">
               <div className="flex justify-between">
-                <span className="text-slate-400">Mã số báo giá:</span>
+                <span className="text-slate-400">Quote #:</span>
                 <span className="font-mono font-bold text-[#253c68] text-sm">{quote.quoteNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Ngày phát hành:</span>
+                <span className="text-slate-400">Issue Date:</span>
                 <span className="font-medium text-slate-800">{formattedCreated}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Hiệu lực đến (Valid Until):</span>
+                <span className="text-slate-400">Valid Until:</span>
                 <span className="font-bold text-amber-700">{formattedValid}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Phụ trách kinh doanh:</span>
-                <span className="font-semibold text-slate-800">{quote.createdUser} (Houston Hub)</span>
+                <span className="text-slate-400">Sales Representative:</span>
+                <span className="font-semibold text-slate-800">{quote.createdUser || "Johnny Tran"} (Houston Hub)</span>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span className="text-slate-400">Trạng thái hiện tại:</span>
+                <span className="text-slate-400">Status:</span>
                 <span
                   className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                     quote.status === "ACCEPTED"
@@ -459,23 +459,23 @@ export default function QuoteDetailPage() {
             <thead>
               <tr className="bg-[#253c68] text-white text-[11px] font-bold uppercase tracking-wider">
                 <th className="py-3 px-3 text-center" style={{ width: "40px" }}>
-                  #
+                  Item #
                 </th>
                 <th className="py-3 px-3 text-center" style={{ width: "90px" }}>
-                  Hình Ảnh
+                  Image
                 </th>
-                <th className="py-3 px-3">Sản Phẩm & SKU</th>
+                <th className="py-3 px-3">Description & SKU</th>
                 <th className="py-3 px-3 text-center" style={{ width: "70px" }}>
-                  SL
+                  Qty
                 </th>
                 <th className="py-3 px-3 text-right" style={{ width: "100px" }}>
-                  Đơn Giá Sỉ
+                  Unit Price
                 </th>
                 <th className="py-3 px-3 text-right" style={{ width: "80px" }}>
-                  CK (%)
+                  Discount %
                 </th>
                 <th className="py-3 px-3 text-right" style={{ width: "110px" }}>
-                  Thành Tiền
+                  Total
                 </th>
               </tr>
             </thead>
@@ -525,41 +525,41 @@ export default function QuoteDetailPage() {
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 mb-6">
           <div className="sm:col-span-7 bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-3">
             <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-dashed border-slate-300 pb-1.5">
-              Ghi Chú Đơn Hàng & Vận Chuyển
+              Special Notes & Shipping Terms
             </div>
             <p className="text-xs text-slate-700 leading-relaxed">
-              {quote.notes || "Giao hàng tận nơi miễn phí cho salon khu vực Greater Houston."}
+              {quote.notes || "Free local delivery for wholesale salon orders in Greater Houston Hub."}
             </p>
             <div className="pt-2 border-t border-dashed border-slate-200 text-[11px] text-slate-500 leading-relaxed">
-              <strong className="text-[#253c68]">Chính sách chất lượng:</strong> 100% cọ JKIOCEAN được kiểm định
-              chất lượng lông cọ Kolinsky nguyên chất, bảo hành lỗi sản xuất đổi mới 1:1 trong 30 ngày đầu tiên.
+              <strong className="text-[#253c68]">Quality Guarantee:</strong> 100% genuine Kolinsky bristles,
+              30-day full replacement warranty against manufacturing defects.
             </div>
           </div>
 
           <div className="sm:col-span-5 bg-white border border-slate-300 rounded-xl p-4 shadow-sm space-y-2 text-xs">
             <div className="flex justify-between text-slate-600">
-              <span>Tổng tiền hàng (Subtotal):</span>
+              <span>Subtotal:</span>
               <span className="font-bold text-slate-800">${quote.subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-amber-600 font-semibold">
-              <span>Chiết khấu sỉ (Savings):</span>
+              <span>Wholesale Discount:</span>
               <span>-${quote.totalDiscount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-slate-600">
-              <span>Vận chuyển (Houston Local):</span>
+              <span>Shipping / Handling (Houston Local):</span>
               <span className="font-bold text-emerald-600">
                 {quote.shipping === 0 ? "FREE ($0.00)" : `$${quote.shipping.toFixed(2)}`}
               </span>
             </div>
             <div className="flex justify-between text-slate-600">
-              <span>Thuế Resale (Tax Exempt):</span>
+              <span>Tax (Resale Exempt):</span>
               <span className="font-bold text-slate-800">$0.00</span>
             </div>
 
             {/* Grand Total */}
             <div className="pt-3 border-t-2 border-[#253c68] flex justify-between items-center">
               <div>
-                <span className="text-xs font-black text-slate-900 uppercase block">TỔNG CỘNG (USD)</span>
+                <span className="text-xs font-black text-slate-900 uppercase block">Grand Total (USD)</span>
               </div>
               <span className="bg-[#253c68] text-white px-3 py-1 rounded-lg font-mono font-black text-lg">
                 ${quote.totalAmount.toFixed(2)}
@@ -572,16 +572,16 @@ export default function QuoteDetailPage() {
         <div className="bg-sky-50/70 border border-sky-200 rounded-xl p-4 mb-6 text-xs text-sky-900 space-y-2">
           <div className="font-extrabold uppercase tracking-wider text-sky-800 flex items-center space-x-1.5">
             <ShieldCheck className="w-4 h-4 text-sky-600" />
-            <span>Phương Thức Thanh Toán & Cam Kết (Payment Terms)</span>
+            <span>Payment Terms (Net 15, Net 30, Due upon receipt)</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] leading-relaxed pt-1">
             <div>
               • <strong>Zelle:</strong> <span className="font-mono font-bold">pay@jkiocean.com</span> (JKIOCEAN LLC)
-              <br />• <strong>Company Check:</strong> Kính gửi <em>"JKIOCEAN LLC"</em> (Houston Hub)
+              <br />• <strong>Company Check:</strong> Payable to <em>"JKIOCEAN LLC"</em> (Houston Hub)
             </div>
             <div>
-              • <strong>Credit Card:</strong> Visa / Mastercard / Amex (Hóa đơn điện tử)
-              <br />• <strong>Giao hàng:</strong> Xe kho Houston Hub giao trực tiếp trong 24 giờ làm việc
+              • <strong>Credit Card:</strong> Visa / Mastercard / Amex (Online Invoice Portal)
+              <br />• <strong>Delivery:</strong> Dedicated Houston Hub local fleet delivery within 24 business hours
             </div>
           </div>
         </div>
@@ -589,16 +589,16 @@ export default function QuoteDetailPage() {
         {/* Signatures */}
         <div className="grid grid-cols-2 gap-8 pt-4 border-t border-slate-200 text-center">
           <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">ĐẠI DIỆN JKIOCEAN GLOBAL</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">AUTHORIZED SIGNATURE</div>
             <div className="mt-14 border-b border-dashed border-slate-400 pb-1 font-bold text-slate-900 text-xs">
-              {quote.createdUser}
+              {quote.createdUser || "Johnny Tran"}
             </div>
             <div className="text-[11px] text-slate-400 mt-1">Houston Distribution Hub Manager</div>
           </div>
 
           <div>
             <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              XÁC NHẬN CỦA KHÁCH HÀNG / SALON
+              CUSTOMER ACCEPTANCE
             </div>
             <div className="mt-14 border-b border-dashed border-slate-400 pb-1 font-bold text-slate-900 text-xs">
               {quote.customer.contactPerson}
@@ -608,8 +608,7 @@ export default function QuoteDetailPage() {
         </div>
 
         <div className="mt-8 text-center text-[10px] text-slate-400 pt-4 border-t border-slate-100">
-          Báo giá này được tạo tự động bởi Hệ Thống ERP JKIOCEAN Houston Hub • Hotline: +1 (713) 330-6165 • Email:
-          support@jkiocean.com
+          Thank you for your business! This official wholesale price quote is generated by JKIOCEAN LLC - Houston Distribution Hub • Tel: +1 (713) 330-6165 • Email: support@jkiocean.com
         </div>
       </div>
 
@@ -623,8 +622,8 @@ export default function QuoteDetailPage() {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-base">Gửi Báo Giá Qua Quo SMS</h3>
-                  <p className="text-xs text-slate-500">Tổng đài Houston Hub: +1 (713) 330-6165</p>
+                  <h3 className="font-extrabold text-slate-900 text-base">Send Quote via Quo SMS</h3>
+                  <p className="text-xs text-slate-500">Houston Hub Hotline: +1 (713) 330-6165</p>
                 </div>
               </div>
               <button onClick={() => setShowSmsModal(false)} className="text-slate-400 hover:text-slate-600 p-1">
@@ -634,7 +633,7 @@ export default function QuoteDetailPage() {
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Số điện thoại Salon nhận tin:</label>
+                <label className="font-bold text-slate-700 block mb-1">Recipient Salon Phone:</label>
                 <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
                   <span className="font-bold text-slate-800">{quote.customer.businessName}</span>
                   <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -644,7 +643,7 @@ export default function QuoteDetailPage() {
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Nội dung tin nhắn:</label>
+                <label className="font-bold text-slate-700 block mb-1">SMS Message Content:</label>
                 <textarea
                   rows={4}
                   value={smsContent}
@@ -656,7 +655,7 @@ export default function QuoteDetailPage() {
               {smsSuccess && (
                 <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 flex items-center space-x-2 font-bold">
                   <Check className="w-4 h-4 text-emerald-600" />
-                  <span>Đã gửi SMS thành công & cập nhật trạng thái báo giá thành ĐÃ GỬI (SENT)!</span>
+                  <span>SMS sent successfully! Quote status updated to SENT.</span>
                 </div>
               )}
             </div>
@@ -667,7 +666,7 @@ export default function QuoteDetailPage() {
                 onClick={() => setShowSmsModal(false)}
                 className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold text-xs hover:bg-slate-200 transition"
               >
-                Đóng
+                Close
               </button>
               <button
                 disabled={sendingSms || smsSuccess}
@@ -677,12 +676,12 @@ export default function QuoteDetailPage() {
                 {sendingSms ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Đang gửi qua Quo SMS...</span>
+                    <span>Sending via Quo SMS...</span>
                   </>
                 ) : (
                   <>
                     <Send className="w-3.5 h-3.5" />
-                    <span>Xác Nhận Gửi SMS</span>
+                    <span>Send SMS via Quo</span>
                   </>
                 )}
               </button>

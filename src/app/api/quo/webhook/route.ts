@@ -124,33 +124,55 @@ export async function POST(req: NextRequest) {
       ? customer.contactPerson
       : customer?.businessName
       ? customer.businessName
-      : "anh/chị";
+      : "valued customer";
 
     const lowerText = textContent.toLowerCase();
     let replyIntent = "general";
 
-    if (lowerText.includes("giá") || lowerText.includes("price") || lowerText.includes("quote") || lowerText.includes("báo giá")) {
+    if (
+      lowerText.includes("price") ||
+      lowerText.includes("quote") ||
+      lowerText.includes("cost") ||
+      lowerText.includes("rate") ||
+      lowerText.includes("gia") ||
+      lowerText.includes("bao gia")
+    ) {
       replyIntent = "pricing";
-    } else if (lowerText.includes("còn hàng") || lowerText.includes("stock") || lowerText.includes("brush") || lowerText.includes("cọ")) {
+    } else if (
+      lowerText.includes("stock") ||
+      lowerText.includes("inventory") ||
+      lowerText.includes("brush") ||
+      lowerText.includes("available") ||
+      lowerText.includes("con hang") ||
+      lowerText.includes("co")
+    ) {
       replyIntent = "inventory";
-    } else if (lowerText.includes("trả tiền") || lowerText.includes("chuyển khoản") || lowerText.includes("pay") || lowerText.includes("zelle")) {
+    } else if (
+      lowerText.includes("pay") ||
+      lowerText.includes("payment") ||
+      lowerText.includes("zelle") ||
+      lowerText.includes("check") ||
+      lowerText.includes("invoice") ||
+      lowerText.includes("tra tien") ||
+      lowerText.includes("chuyen khoan")
+    ) {
       replyIntent = "payment";
     }
 
     const productBullets = topProducts
       .map(
         (p) =>
-          `• ${p.name} (${p.sku}): $${p.wholesalePrice.toFixed(2)}/cây (Sẵn kho: ${p.currentStock} pcs)`
+          `• ${p.name} (${p.sku}): $${p.wholesalePrice.toFixed(2)}/pc (In Stock: ${p.currentStock} pcs)`
       )
       .join("\n");
 
     let smartReply = "";
     if (replyIntent === "pricing" || replyIntent === "inventory") {
-      smartReply = `Dạ em chào ${greetingName}! Em là đại diện từ JKIOCEAN Houston.\nHiện tại kho bên em đang có sẵn các mẫu cọ bán chạy nhất với giá sỉ tốt cho salon:\n${productBullets}\nAnh/chị cần lấy mấy set để bên em giữ hàng và chuẩn bị xuất kho gửi UPS ngay hôm nay ạ?`;
+      smartReply = `Hi ${greetingName}! This is Johnny from JKIOCEAN Houston.\nWe currently have our top-selling professional brushes in stock with exclusive wholesale pricing for your salon:\n${productBullets}\nHow many sets would you like us to reserve and prepare for UPS dispatch today?`;
     } else if (replyIntent === "payment") {
-      smartReply = `Dạ em chào ${greetingName}! Dạ JKIOCEAN nhận thanh toán qua Zelle số +1(713) 330-6165 (Tên: JKIOCEAN LLC) hoặc Check. Khi gửi xong anh/chị nhắn giúp em biên nhận để kế toán gạch sổ công nợ ngay nhé. Em cảm ơn anh/chị nhiều!`;
+      smartReply = `Hi ${greetingName}! JKIOCEAN accepts payments via Zelle to +1(713) 330-6165 (JKIOCEAN LLC) or Company Check. Please reply with your transaction reference once sent so our accounting team can update your ledger immediately. Thank you!`;
     } else {
-      smartReply = `Dạ em chào ${greetingName}! Em đã nhận được tin nhắn từ anh/chị qua hotline JKIOCEAN Houston (+1 713-330-6165). Anh/chị cần bên em hỗ trợ tư vấn dòng sản phẩm cọ đắp bột Kolinsky hay đặt thêm đơn hàng mới cho salon ạ?`;
+      smartReply = `Hi ${greetingName}! We received your message via JKIOCEAN Houston hotline (+1 713-330-6165). How can we assist you today with Kolinsky acrylic brushes or placing a new wholesale order for your salon?`;
     }
 
     return NextResponse.json({

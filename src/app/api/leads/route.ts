@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     let leadsData: any[] = [];
 
     try {
-      // 1. Thử truy vấn Prisma
+      // 1. Query Prisma
       const whereClause: any = {};
 
       if (search) {
@@ -94,7 +94,7 @@ export async function GET(req: Request) {
   } catch (error: any) {
     console.error("[GET /api/leads] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi lấy danh sách Leads" },
+      { success: false, error: error.message || "Failed to fetch Leads list" },
       { status: 500 }
     );
   }
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
 
     if (!salonName || !phone) {
       return NextResponse.json(
-        { success: false, error: "Vui lòng nhập Tên Salon và Số điện thoại Lead" },
+        { success: false, error: "Please provide Salon Name and Phone Number" },
         { status: 400 }
       );
     }
@@ -165,13 +165,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Thêm B2B Lead mới thành công",
+      message: "New B2B Lead added successfully",
       lead: createdLead,
     });
   } catch (error: any) {
     console.error("[POST /api/leads] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi thêm B2B Lead" },
+      { success: false, error: error.message || "Failed to add B2B Lead" },
       { status: 500 }
     );
   }
@@ -184,12 +184,12 @@ export async function PATCH(req: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { success: false, error: "Thiếu Lead ID" },
+        { success: false, error: "Missing Lead ID" },
         { status: 400 }
       );
     }
 
-    // 1. Chuyển đổi Lead thành Customer chính thức trong DB
+    // 1. Convert Lead to official Customer in DB
     if (action === "CONVERT_TO_CUSTOMER" || status === "CONVERTED") {
       let leadInfo: any = null;
 
@@ -202,7 +202,7 @@ export async function PATCH(req: Request) {
 
       if (!leadInfo) {
         return NextResponse.json(
-          { success: false, error: "Không tìm thấy Lead để chuyển đổi" },
+          { success: false, error: "Lead not found for conversion" },
           { status: 404 }
         );
       }
@@ -210,11 +210,11 @@ export async function PATCH(req: Request) {
       let createdCustomer: any = null;
 
       try {
-        // Tạo customer trong Prisma
+        // Create customer in Prisma
         createdCustomer = await prisma.customer.create({
           data: {
             businessName: leadInfo.salonName,
-            contactPerson: leadInfo.ownerName || "Chủ Tiệm",
+            contactPerson: leadInfo.ownerName || "Salon Owner",
             phone: leadInfo.phone,
             city: leadInfo.city || "Houston",
             state: leadInfo.state || "TX",
@@ -222,11 +222,11 @@ export async function PATCH(req: Request) {
             assignedSale: leadInfo.assignedSale || assignedSale || "admin",
             tier: "STANDARD",
             status: "ACTIVE",
-            notes: `Chuyển đổi từ B2B Lead AI. ICP Score: ${leadInfo.icpScore}đ. Hook: ${leadInfo.personalizedHook || "N/A"}`,
+            notes: `Converted from AI B2B Lead. ICP Score: ${leadInfo.icpScore}. Hook: ${leadInfo.personalizedHook || "N/A"}`,
           },
         });
 
-        // Cập nhật trạng thái lead thành CONVERTED
+        // Update lead status to CONVERTED
         await prisma.b2BLead.update({
           where: { id },
           data: { status: "CONVERTED" },
@@ -235,7 +235,7 @@ export async function PATCH(req: Request) {
         console.warn("[Leads Convert] DB write failed, performing conversion in mock store:", dbErr.message);
         createdCustomer = addMockCustomer({
           businessName: leadInfo.salonName,
-          contactPerson: leadInfo.ownerName || "Chủ Tiệm",
+          contactPerson: leadInfo.ownerName || "Salon Owner",
           phone: leadInfo.phone,
           city: leadInfo.city || "Houston",
           state: leadInfo.state || "TX",
@@ -243,7 +243,7 @@ export async function PATCH(req: Request) {
           assignedSale: leadInfo.assignedSale || assignedSale || "admin",
           tier: "STANDARD",
           status: "ACTIVE",
-          notes: `Chuyển đổi từ B2B Lead AI. ICP Score: ${leadInfo.icpScore}đ.`,
+          notes: `Converted from AI B2B Lead. ICP Score: ${leadInfo.icpScore}.`,
         });
 
         updateMockLead(id, { status: "CONVERTED" });
@@ -251,14 +251,14 @@ export async function PATCH(req: Request) {
 
       return NextResponse.json({
         success: true,
-        message: `Đã chuyển đổi thành công Salon "${leadInfo.salonName}" thành Khách Hàng B2B!`,
+        message: `Successfully converted salon "${leadInfo.salonName}" to B2B Customer!`,
         leadId: id,
         customerId: createdCustomer.id,
         customer: createdCustomer,
       });
     }
 
-    // 2. Cập nhật trạng thái Lead bình thường (NEW, CONTACTED, QUALIFIED, REJECTED)
+    // 2. Normal Lead status update (NEW, CONTACTED, QUALIFIED, REJECTED)
     let updatedLead: any = null;
 
     try {
@@ -279,20 +279,20 @@ export async function PATCH(req: Request) {
 
     if (!updatedLead) {
       return NextResponse.json(
-        { success: false, error: "Không tìm thấy Lead để cập nhật" },
+        { success: false, error: "Lead not found for update" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Cập nhật trạng thái Lead thành công",
+      message: "Lead status updated successfully",
       lead: updatedLead,
     });
   } catch (error: any) {
     console.error("[PATCH /api/leads] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi cập nhật Lead" },
+      { success: false, error: error.message || "Failed to update Lead" },
       { status: 500 }
     );
   }

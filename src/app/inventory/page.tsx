@@ -15,14 +15,9 @@ import {
   Edit3,
   Trash2,
   History,
-  Eye,
   RefreshCw,
   X,
-  Check,
   AlertCircle,
-  ExternalLink,
-  ChevronRight,
-  Filter,
 } from "lucide-react";
 import MetricCard from "@/components/MetricCard";
 
@@ -63,11 +58,12 @@ interface InventoryMetrics {
 }
 
 const DEFAULT_CATEGORIES = [
-  "Tất cả",
+  "All Categories",
+  "Acrylic Brushes",
+  "Nail Nippers & Tools",
+  "Gel & Lacquer",
+  "Accessories & Supplies",
   "Z Brushes",
-  "Kềm cắt da",
-  "Dụng cụ nail",
-  "Phụ liệu",
 ];
 
 export default function InventoryPage() {
@@ -86,7 +82,7 @@ export default function InventoryPage() {
 
   // Filters
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [stockStatus, setStockStatus] = useState<"all" | "in-stock" | "low-stock" | "out-of-stock">("all");
   const [selectedLocation, setSelectedLocation] = useState("all");
 
@@ -107,7 +103,7 @@ export default function InventoryPage() {
   // Form states for Add/Edit
   const [formSku, setFormSku] = useState("");
   const [formName, setFormName] = useState("");
-  const [formCategory, setFormCategory] = useState("Z Brushes");
+  const [formCategory, setFormCategory] = useState("Acrylic Brushes");
   const [formWholesale, setFormWholesale] = useState("");
   const [formRetail, setFormRetail] = useState("");
   const [formStock, setFormStock] = useState("0");
@@ -132,7 +128,7 @@ export default function InventoryPage() {
       const res = await fetch("/api/inventory");
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Không thể tải danh sách tồn kho");
+        throw new Error(data.error || "Failed to load inventory stock list");
       }
       setProducts(data.products || []);
       if (data.metrics) setMetrics(data.metrics);
@@ -143,7 +139,7 @@ export default function InventoryPage() {
       setCategories(mergedCats);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Lỗi tải dữ liệu");
+      setError(err.message || "Error loading inventory data");
     } finally {
       setLoading(false);
     }
@@ -157,14 +153,18 @@ export default function InventoryPage() {
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       // Category filter
-      if (selectedCategory !== "Tất cả" && p.category !== selectedCategory) {
+      if (
+        selectedCategory !== "All Categories" &&
+        selectedCategory !== "All" &&
+        p.category !== selectedCategory
+      ) {
         return false;
       }
 
       // Stock status filter
-      const alert = p.minStockAlert || 10;
+      const alertThreshold = p.minStockAlert || 10;
       if (stockStatus === "in-stock" && p.currentStock <= 0) return false;
-      if (stockStatus === "low-stock" && (p.currentStock <= 0 || p.currentStock > alert)) return false;
+      if (stockStatus === "low-stock" && (p.currentStock <= 0 || p.currentStock > alertThreshold)) return false;
       if (stockStatus === "out-of-stock" && p.currentStock > 0) return false;
 
       // Location filter
@@ -193,7 +193,7 @@ export default function InventoryPage() {
     setEditingProduct(null);
     setFormSku("");
     setFormName("");
-    setFormCategory("Z Brushes");
+    setFormCategory("Acrylic Brushes");
     setFormWholesale("");
     setFormRetail("");
     setFormStock("0");
@@ -209,9 +209,9 @@ export default function InventoryPage() {
     setEditingProduct(p);
     setFormSku(p.sku);
     setFormName(p.name);
-    setFormCategory(p.category || "Z Brushes");
+    setFormCategory(p.category || "Acrylic Brushes");
     setFormWholesale(p.wholesalePrice.toString());
-    setFormRetail(p.retailPrice ? p.retailPrice.toString() : "");
+    setFormRetail(p.retailPrice !== null && p.retailPrice !== undefined ? p.retailPrice.toString() : "");
     setFormStock(p.currentStock.toString());
     setFormMinAlert(p.minStockAlert.toString());
     setFormLocation(p.location || "Houston Hub");
@@ -224,7 +224,7 @@ export default function InventoryPage() {
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formSku.trim() || !formName.trim() || !formWholesale) {
-      alert("Vui lòng điền đủ SKU, Tên sản phẩm và Giá sỉ");
+      alert("Please provide SKU, Product Name, and Wholesale Price");
       return;
     }
 
@@ -260,13 +260,13 @@ export default function InventoryPage() {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Thao tác không thành công");
+        throw new Error(data.error || "Operation failed");
       }
 
       setIsAddEditOpen(false);
       await fetchInventory();
     } catch (err: any) {
-      alert(err.message || "Lỗi lưu sản phẩm");
+      alert(err.message || "Error saving product");
     } finally {
       setSubmittingProduct(false);
     }
@@ -274,7 +274,7 @@ export default function InventoryPage() {
 
   // Delete product
   const handleDeleteProduct = async (p: Product) => {
-    if (!confirm(`Bạn có chắc muốn xóa sản phẩm ${p.sku} - ${p.name}?`)) {
+    if (!confirm(`Are you sure you want to delete product ${p.sku} - ${p.name}? This action cannot be undone.`)) {
       return;
     }
 
@@ -284,36 +284,46 @@ export default function InventoryPage() {
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Không thể xóa sản phẩm");
+        throw new Error(data.error || "Failed to delete product");
       }
       await fetchInventory();
     } catch (err: any) {
-      alert(err.message || "Lỗi khi xóa");
+      alert(err.message || "Error deleting product");
     }
   };
 
-  // Export Inventory to CSV / Excel
+  // Export Inventory to CSV / Stock Sheet
   const handleExportInventoryCsv = () => {
     if (products.length === 0) return;
-    const headers = ["Mã SKU", "Tên Sản Phẩm", "Danh Mục", "Giá Sỉ ($)", "Giá Lẻ ($)", "Tồn Kho", "Cảnh Báo Min", "Giá Trị Tồn ($)", "Vị Trí Kho"];
+    const headers = [
+      "SKU",
+      "Product Name",
+      "Category",
+      "Wholesale Price ($)",
+      "Retail / MSRP ($)",
+      "Current Stock",
+      "Min Stock Alert",
+      "Stock Value ($)",
+      "Warehouse Location",
+    ];
     const rows = products.map((p) => [
       `"${p.sku}"`,
       `"${p.name.replace(/"/g, '""')}"`,
-      `"${(p.category || '').replace(/"/g, '""')}"`,
+      `"${(p.category || "").replace(/"/g, '""')}"`,
       p.wholesalePrice.toFixed(2),
-      p.retailPrice ? p.retailPrice.toFixed(2) : "",
+      p.retailPrice !== null && p.retailPrice !== undefined ? p.retailPrice.toFixed(2) : "",
       p.currentStock,
       p.minStockAlert,
       (p.currentStock * p.wholesalePrice).toFixed(2),
-      `"${(p.location || 'Houston Hub').replace(/"/g, '""')}"`
+      `"${(p.location || "Houston Hub").replace(/"/g, '""')}"`,
     ]);
 
-    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\r\n");
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Bao_Cao_Ton_Kho_JKIOCEAN_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `JKIOCEAN_Stock_Sheet_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -334,7 +344,7 @@ export default function InventoryPage() {
           type: delta > 0 ? "INBOUND" : "OUTBOUND",
           quantity: Math.abs(delta),
           referenceNo: `QUICK-${delta > 0 ? "IN" : "OUT"}`,
-          notes: `Điều chỉnh nhanh ${delta > 0 ? "+" : ""}${delta} trực tiếp tại kho`,
+          notes: `Quick floor adjustment ${delta > 0 ? "+" : ""}${delta} units`,
         }),
       });
     } catch {
@@ -356,12 +366,12 @@ export default function InventoryPage() {
   const handleSubmitMovement = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!movementProduct) {
-      alert("Vui lòng chọn sản phẩm");
+      alert("Please select a product");
       return;
     }
     const qty = parseInt(movQuantity, 10);
     if (isNaN(qty) || qty <= 0) {
-      alert("Số lượng phải là số nguyên dương");
+      alert("Quantity must be a positive integer");
       return;
     }
 
@@ -381,13 +391,13 @@ export default function InventoryPage() {
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Giao dịch kho không thành công");
+        throw new Error(data.error || "Warehouse stock movement transaction failed");
       }
 
       setIsMovementOpen(false);
       await fetchInventory();
     } catch (err: any) {
-      alert(err.message || "Lỗi thực hiện xuất nhập kho");
+      alert(err.message || "Error processing warehouse stock movement");
     } finally {
       setSubmittingMovement(false);
     }
@@ -421,13 +431,13 @@ export default function InventoryPage() {
         <div>
           <div className="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-[#253c68]">
             <Package className="w-4 h-4 text-[#38bdf8]" />
-            <span>Hệ Thống Quản Trị Tồn Kho</span>
+            <span>Warehouse & Inventory Control</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 mt-1 tracking-tight">
-            Kho Hàng & Sản Phẩm JKIOCEAN
+            Inventory & Warehouse Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Theo dõi tồn kho thời gian thực, xuất nhập kho và nhập hàng loạt từ tài liệu Word (.docx).
+            Track stock levels, wholesale pricing, reorder thresholds & warehouse movements at Houston Hub
           </p>
         </div>
 
@@ -439,16 +449,16 @@ export default function InventoryPage() {
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-[#253c68] to-[#1e3054] hover:from-[#1a2c4e] hover:to-[#16243e] text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-[#253c68]/20 transition-all card-hover btn-press border border-[#3a568c]/30"
           >
             <FileSpreadsheet className="w-4 h-4 text-[#38bdf8]" />
-            <span>Import Word (.docx)</span>
+            <span>Import from Word (.docx)</span>
           </Link>
 
-          {/* Export Excel */}
+          {/* Export Excel / Stock Sheet */}
           <button
             onClick={handleExportInventoryCsv}
             className="inline-flex items-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all btn-press"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-            <span>Xuất Excel Kiểm Kê</span>
+            <span>Export Stock Sheet</span>
           </button>
 
           {/* Quick Movement */}
@@ -457,7 +467,7 @@ export default function InventoryPage() {
             className="inline-flex items-center space-x-2 bg-slate-100 hover:bg-slate-200/80 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all btn-press border border-slate-200"
           >
             <ArrowDownToLine className="w-4 h-4 text-emerald-600" />
-            <span>Nhập / Xuất Kho</span>
+            <span>Stock Adjustment</span>
           </button>
 
           {/* Add Product */}
@@ -466,13 +476,13 @@ export default function InventoryPage() {
             className="inline-flex items-center space-x-2 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all btn-press"
           >
             <Plus className="w-4 h-4" />
-            <span>Thêm Sản Phẩm</span>
+            <span>Add Product</span>
           </button>
 
           {/* Reload */}
           <button
             onClick={fetchInventory}
-            title="Làm mới dữ liệu"
+            title="Refresh inventory data"
             className="p-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-[#253c68]" : ""}`} />
@@ -483,36 +493,37 @@ export default function InventoryPage() {
       {/* 4 Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Tổng Mã SKU"
+          title="Total SKUs"
           value={metrics.totalSkus.toLocaleString()}
-          subtitle={`${metrics.inStockCount} mã đang có hàng`}
+          subtitle={`${metrics.inStockCount} active in stock`}
           icon={Package}
           color="navy"
         />
 
         <MetricCard
-          title="Giá Trị Tồn Kho"
-          value={`$${metrics.totalStockValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
-          subtitle="Tính theo giá sỉ (Wholesale)"
+          title="Total Inventory Value"
+          value={`$${metrics.totalStockValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          subtitle="Based on wholesale pricing"
           icon={DollarSign}
           color="emerald"
         />
 
         <MetricCard
-          title="Cảnh Báo Sắp Hết"
+          title="Low Stock Alerts"
           value={metrics.lowStockCount}
-          subtitle={`Tồn kho ≤ mức cảnh báo`}
+          subtitle="Stock ≤ minimum threshold"
           icon={AlertTriangle}
           color="amber"
-          badge={metrics.lowStockCount > 0 ? "Cần Đặt Thêm" : "An Toàn"}
+          badge={metrics.lowStockCount > 0 ? "Reorder Required" : "Optimal"}
         />
 
         <MetricCard
-          title="Kho Houston Hub"
-          value={metrics.houstonHubStock.toLocaleString()}
-          subtitle="Tổng số lượng sản phẩm tại TX"
+          title="Out of Stock"
+          value={metrics.outOfStockCount}
+          subtitle={`${metrics.houstonHubStock.toLocaleString()} total units at Houston Hub`}
           icon={Warehouse}
           color="sky"
+          badge={metrics.outOfStockCount > 0 ? "Replenish" : "Clear"}
         />
       </div>
 
@@ -533,7 +544,7 @@ export default function InventoryPage() {
                 }`}
               >
                 {cat}
-                {cat === "Tất cả" ? ` (${products.length})` : ""}
+                {cat === "All Categories" ? ` (${products.length})` : ""}
               </button>
             );
           })}
@@ -546,7 +557,7 @@ export default function InventoryPage() {
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Tìm theo SKU, tên sản phẩm, danh mục, kho..."
+              placeholder="Search by SKU, product name, or category..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#253c68]/30 focus:border-[#253c68] text-sm text-slate-900"
@@ -569,10 +580,10 @@ export default function InventoryPage() {
               onChange={(e: any) => setStockStatus(e.target.value)}
               className="px-3 py-2 bg-white rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#253c68]/20"
             >
-              <option value="all">Tất Cả Trạng Thái</option>
-              <option value="in-stock">Còn Hàng (&gt;0)</option>
-              <option value="low-stock">Cảnh Báo Sắp Hết (≤ Mức Min)</option>
-              <option value="out-of-stock">Hết Hàng (=0)</option>
+              <option value="all">All Stock</option>
+              <option value="in-stock">In Stock (&gt;0)</option>
+              <option value="low-stock">Low Stock (≤ Alert Level)</option>
+              <option value="out-of-stock">Out of Stock (=0)</option>
             </select>
 
             {/* Location dropdown */}
@@ -581,13 +592,13 @@ export default function InventoryPage() {
               onChange={(e) => setSelectedLocation(e.target.value)}
               className="px-3 py-2 bg-white rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#253c68]/20"
             >
-              <option value="all">Tất Cả Vị Trí Kho</option>
+              <option value="all">All Locations</option>
               <option value="Houston Hub">Houston Hub (TX)</option>
               <option value="Vietnam">Vietnam Hub</option>
             </select>
 
             <span className="text-xs text-slate-400 font-medium pl-2 hidden lg:inline">
-              Hiển thị <span className="font-bold text-slate-700">{filteredProducts.length}</span> sản phẩm
+              Showing <span className="font-bold text-slate-700">{filteredProducts.length}</span> products
             </span>
           </div>
         </div>
@@ -597,15 +608,15 @@ export default function InventoryPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-100/75 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider select-none">
-                <th className="py-3 px-4 w-16 text-center">Hình Ảnh</th>
-                <th className="py-3 px-4">Mã SKU</th>
-                <th className="py-3 px-4">Tên Sản Phẩm</th>
-                <th className="py-3 px-4">Danh Mục</th>
-                <th className="py-3 px-4 text-right">Giá Sỉ (Wholesale)</th>
-                <th className="py-3 px-4 text-right">Giá Lẻ (Retail)</th>
-                <th className="py-3 px-4 text-center">Tồn Kho</th>
-                <th className="py-3 px-4">Vị Trí</th>
-                <th className="py-3 px-4 text-right">Thao Tác</th>
+                <th className="py-3 px-4 w-16 text-center">Image</th>
+                <th className="py-3 px-4">Product / SKU</th>
+                <th className="py-3 px-4">Category</th>
+                <th className="py-3 px-4 text-right">Wholesale Price</th>
+                <th className="py-3 px-4 text-right">Retail / MSRP</th>
+                <th className="py-3 px-4 text-center">Current Stock</th>
+                <th className="py-3 px-4 text-center">Min Alert Level</th>
+                <th className="py-3 px-4 text-right">Stock Value</th>
+                <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
@@ -613,14 +624,14 @@ export default function InventoryPage() {
                 <tr>
                   <td colSpan={9} className="py-16 text-center text-slate-400">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#253c68] mb-2" />
-                    Đang tải dữ liệu kho hàng...
+                    Loading inventory data...
                   </td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-16 text-center text-slate-400">
                     <Package className="w-10 h-10 mx-auto text-slate-300 mb-2" />
-                    Không tìm thấy sản phẩm nào phù hợp với bộ lọc.
+                    No products found matching the criteria.
                   </td>
                 </tr>
               ) : (
@@ -628,6 +639,7 @@ export default function InventoryPage() {
                   const alertThreshold = p.minStockAlert || 10;
                   const isOut = p.currentStock <= 0;
                   const isLow = !isOut && p.currentStock <= alertThreshold;
+                  const stockVal = p.currentStock * p.wholesalePrice;
 
                   return (
                     <tr
@@ -650,7 +662,6 @@ export default function InventoryPage() {
                               alt={p.name}
                               className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-200"
                               onError={(e) => {
-                                // fallback if broken
                                 (e.target as HTMLElement).style.display = "none";
                               }}
                             />
@@ -660,26 +671,27 @@ export default function InventoryPage() {
                         </div>
                       </td>
 
-                      {/* SKU */}
-                      <td className="py-3 px-4 font-mono font-bold text-xs text-slate-800">
-                        <span className="bg-slate-100 px-2 py-1 rounded border border-slate-200 group-hover:border-[#253c68]/40 group-hover:text-[#253c68] transition-colors">
-                          {p.sku}
-                        </span>
-                      </td>
-
-                      {/* Name */}
+                      {/* Product / SKU */}
                       <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900 line-clamp-1">{p.name}</div>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-mono font-bold text-xs bg-slate-100 px-2 py-0.5 rounded border border-slate-200 group-hover:border-[#253c68]/40 group-hover:text-[#253c68] transition-colors">
+                            {p.sku}
+                          </span>
+                        </div>
+                        <div className="font-semibold text-slate-900 line-clamp-1 mt-1">{p.name}</div>
                         {p.description && (
                           <div className="text-xs text-slate-400 line-clamp-1 mt-0.5">
                             {p.description}
                           </div>
                         )}
+                        <div className="text-[11px] text-slate-400 mt-0.5">
+                          Location: <span className="text-slate-600 font-medium">{p.location || "Houston Hub"}</span>
+                        </div>
                       </td>
 
                       {/* Category */}
                       <td className="py-3 px-4">
-                        <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
+                        <span className="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
                           {p.category}
                         </span>
                       </td>
@@ -701,7 +713,7 @@ export default function InventoryPage() {
                         <div className="inline-flex items-center space-x-1.5">
                           <button
                             onClick={() => handleQuickAdjust(p, -5)}
-                            title="Xuất nhanh 5 cây/sản phẩm"
+                            title="Quick dispatch -5 units"
                             className="w-5 h-5 rounded bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 font-bold text-xs flex items-center justify-center transition shadow-xs"
                           >
                             -
@@ -719,7 +731,7 @@ export default function InventoryPage() {
                           </span>
                           <button
                             onClick={() => handleQuickAdjust(p, 10)}
-                            title="Nhập thêm 10 cây/sản phẩm"
+                            title="Quick restock +10 units"
                             className="w-5 h-5 rounded bg-slate-100 hover:bg-emerald-100 text-slate-500 hover:text-emerald-600 font-bold text-xs flex items-center justify-center transition shadow-xs"
                           >
                             +
@@ -727,19 +739,24 @@ export default function InventoryPage() {
                         </div>
                         {isLow && (
                           <div className="text-[10px] text-amber-600 font-semibold mt-0.5">
-                            Min: {p.minStockAlert}
+                            Low Stock
                           </div>
                         )}
                         {isOut && (
                           <div className="text-[10px] text-rose-600 font-semibold mt-0.5">
-                            Hết hàng
+                            Out of Stock
                           </div>
                         )}
                       </td>
 
-                      {/* Location */}
-                      <td className="py-3 px-4 text-xs text-slate-600 font-medium">
-                        {p.location || "Houston Hub"}
+                      {/* Min Alert Level */}
+                      <td className="py-3 px-4 text-center font-mono text-xs text-slate-600">
+                        {p.minStockAlert}
+                      </td>
+
+                      {/* Stock Value */}
+                      <td className="py-3 px-4 text-right font-mono font-semibold text-slate-800">
+                        ${stockVal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
 
                       {/* Actions */}
@@ -748,7 +765,7 @@ export default function InventoryPage() {
                           {/* Quick In/Out */}
                           <button
                             onClick={() => openMovementModal(p)}
-                            title="Nhập / Xuất kho nhanh"
+                            title="Stock Movement Adjustment"
                             className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                           >
                             <ArrowDownToLine className="w-4 h-4" />
@@ -757,7 +774,7 @@ export default function InventoryPage() {
                           {/* Movements history */}
                           <button
                             onClick={() => openHistoryModal(p)}
-                            title="Lịch sử xuất nhập kho"
+                            title="Stock Movement History"
                             className="p-1.5 text-slate-500 hover:text-[#253c68] hover:bg-slate-100 rounded-lg transition-colors"
                           >
                             <History className="w-4 h-4" />
@@ -766,7 +783,7 @@ export default function InventoryPage() {
                           {/* Edit */}
                           <button
                             onClick={() => openEditModal(p)}
-                            title="Chỉnh sửa sản phẩm"
+                            title="Edit Product"
                             className="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
                           >
                             <Edit3 className="w-4 h-4" />
@@ -775,7 +792,7 @@ export default function InventoryPage() {
                           {/* Delete */}
                           <button
                             onClick={() => handleDeleteProduct(p)}
-                            title="Xóa sản phẩm"
+                            title="Delete Product"
                             className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -802,10 +819,10 @@ export default function InventoryPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    {editingProduct ? `Cập Nhật Sản Phẩm (${editingProduct.sku})` : "Thêm Sản Phẩm Mới"}
+                    {editingProduct ? `Edit Product (${editingProduct.sku})` : "Add New Product"}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Thông tin định danh, giá thành và quản lý tồn kho tại kho hàng.
+                    Product identification, wholesale/retail pricing, and inventory management.
                   </p>
                 </div>
               </div>
@@ -822,12 +839,12 @@ export default function InventoryPage() {
                 {/* SKU */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Mã SKU <span className="text-rose-500">*</span>
+                    SKU Code <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: ZB-001, KEM-14"
+                    placeholder="e.g. ZB-001, NIP-14"
                     value={formSku}
                     onChange={(e) => setFormSku(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
@@ -837,30 +854,31 @@ export default function InventoryPage() {
                 {/* Category */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Danh Mục <span className="text-rose-500">*</span>
+                    Category <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
                   >
+                    <option value="Acrylic Brushes">Acrylic Brushes</option>
+                    <option value="Nail Nippers & Tools">Nail Nippers & Tools</option>
+                    <option value="Gel & Lacquer">Gel & Lacquer</option>
+                    <option value="Accessories & Supplies">Accessories & Supplies</option>
                     <option value="Z Brushes">Z Brushes</option>
-                    <option value="Kềm cắt da">Kềm cắt da</option>
-                    <option value="Dụng cụ nail">Dụng cụ nail</option>
-                    <option value="Phụ liệu">Phụ liệu</option>
-                    <option value="Khác">Khác</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
                 {/* Name */}
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Tên Sản Phẩm <span className="text-rose-500">*</span>
+                    Product Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: Cọ Ombre Z Brushes #8 Lông Chồn"
+                    placeholder="e.g. Kolinsky Ombre Acrylic Brush #8"
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
@@ -870,7 +888,7 @@ export default function InventoryPage() {
                 {/* Wholesale Price */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Giá Sỉ (Wholesale $) <span className="text-rose-500">*</span>
+                    Wholesale Price ($) <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
@@ -890,7 +908,7 @@ export default function InventoryPage() {
                 {/* Retail Price */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Giá Lẻ (Retail $)
+                    Retail / MSRP ($)
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
@@ -909,7 +927,7 @@ export default function InventoryPage() {
                 {/* Current Stock */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    {editingProduct ? "Tồn Kho Hiện Tại" : "Số Lượng Ban Đầu"}
+                    {editingProduct ? "Current Stock Level" : "Initial Stock Quantity"}
                   </label>
                   <input
                     type="number"
@@ -920,7 +938,7 @@ export default function InventoryPage() {
                   />
                   {editingProduct && (
                     <p className="text-[11px] text-amber-600 mt-1">
-                      * Thay đổi trực tiếp sẽ ghi nhận bản ghi kiểm kê cân kho (ADJUSTMENT).
+                      * Direct modifications will automatically record an inventory count adjustment (ADJUSTMENT).
                     </p>
                   )}
                 </div>
@@ -928,7 +946,7 @@ export default function InventoryPage() {
                 {/* Min Alert */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Mức Cảnh Báo Sắp Hết (Min Alert)
+                    Min Stock Alert Threshold
                   </label>
                   <input
                     type="number"
@@ -942,7 +960,7 @@ export default function InventoryPage() {
                 {/* Location */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Vị Trí Kho
+                    Warehouse Location
                   </label>
                   <input
                     type="text"
@@ -956,11 +974,11 @@ export default function InventoryPage() {
                 {/* Image URL */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Đường Dẫn Hình Ảnh (URL / Path)
+                    Image URL / File Path
                   </label>
                   <input
                     type="text"
-                    placeholder="/uploads/products/image.png hoặc link URL"
+                    placeholder="/uploads/products/image.png or web URL"
                     value={formImageUrl}
                     onChange={(e) => setFormImageUrl(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
@@ -970,11 +988,11 @@ export default function InventoryPage() {
                 {/* Description */}
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Mô Tả / Đặc Điểm Kỹ Thuật
+                    Description & Specifications
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="Chất liệu lông chồn tự nhiên Kolinsky, độ bung tốt..."
+                    placeholder="100% pure Kolinsky sable hair, smooth blend, durable ferrule..."
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
@@ -988,7 +1006,7 @@ export default function InventoryPage() {
                   onClick={() => setIsAddEditOpen(false)}
                   className="px-4 py-2 border border-slate-300 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50"
                 >
-                  Hủy Bỏ
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -996,7 +1014,7 @@ export default function InventoryPage() {
                   className="px-6 py-2 bg-[#253c68] hover:bg-[#1a2c4e] text-white font-bold rounded-xl text-sm shadow-md transition-all flex items-center space-x-2"
                 >
                   {submittingProduct && <RefreshCw className="w-4 h-4 animate-spin" />}
-                  <span>{editingProduct ? "Lưu Thay Đổi" : "Tạo Sản Phẩm"}</span>
+                  <span>{editingProduct ? "Save Changes" : "Create Product"}</span>
                 </button>
               </div>
             </form>
@@ -1004,7 +1022,7 @@ export default function InventoryPage() {
         </div>
       )}
 
-      {/* MODAL 2: QUICK INBOUND / OUTBOUND / ADJUSTMENT */}
+      {/* MODAL 2: ADJUST STOCK MOVEMENT */}
       {isMovementOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden">
@@ -1029,13 +1047,9 @@ export default function InventoryPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    {movType === "INBOUND"
-                      ? "Nhập Kho (Inbound)"
-                      : movType === "OUTBOUND"
-                      ? "Xuất Kho (Outbound)"
-                      : "Kiểm Kê Cân Kho (Adjustment)"}
+                    Adjust Stock Movement
                   </h3>
-                  <p className="text-xs text-slate-500">Ghi nhận giao dịch tồn kho tức thì vào hệ thống</p>
+                  <p className="text-xs text-slate-500">Record inventory inbound, outbound, or audit movements</p>
                 </div>
               </div>
               <button
@@ -1058,7 +1072,7 @@ export default function InventoryPage() {
                       : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  Nhập Kho (+)
+                  Stock Inbound (+)
                 </button>
                 <button
                   type="button"
@@ -1069,7 +1083,7 @@ export default function InventoryPage() {
                       : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  Xuất Kho (-)
+                  Stock Outbound (-)
                 </button>
                 <button
                   type="button"
@@ -1080,14 +1094,14 @@ export default function InventoryPage() {
                       : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  Kiểm Kê (±)
+                  Audit Count (±)
                 </button>
               </div>
 
               {/* Product Selector */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Chọn Sản Phẩm
+                  Select Product
                 </label>
                 <select
                   value={movementProduct?.id || ""}
@@ -1099,7 +1113,7 @@ export default function InventoryPage() {
                 >
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>
-                      [{p.sku}] {p.name} (Hiện có: {p.currentStock})
+                      [{p.sku}] {p.name} (In stock: {p.currentStock})
                     </option>
                   ))}
                 </select>
@@ -1108,9 +1122,9 @@ export default function InventoryPage() {
               {/* Current stock status */}
               {movementProduct && (
                 <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Tồn kho hiện tại:</span>
+                  <span className="text-slate-500 font-medium">Current Stock Level:</span>
                   <span className="font-mono font-bold text-base text-slate-800">
-                    {movementProduct.currentStock.toLocaleString()} sp
+                    {movementProduct.currentStock.toLocaleString()} units
                   </span>
                 </div>
               )}
@@ -1118,7 +1132,7 @@ export default function InventoryPage() {
               {/* Quantity */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Số Lượng {movType === "INBOUND" ? "Nhập" : movType === "OUTBOUND" ? "Xuất" : "Điều Chỉnh"}{" "}
+                  Quantity {movType === "INBOUND" ? "In" : movType === "OUTBOUND" ? "Out" : "Adjustment"}{" "}
                   <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -1131,14 +1145,14 @@ export default function InventoryPage() {
                 />
               </div>
 
-              {/* Reference No */}
+              {/* Reference No / Reason */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Mã Tham Chiếu / Số Đơn (Reference No)
+                  Reason / Reference No (Purchase Order, Sale Order, Damage, Inventory Count Adjustment)
                 </label>
                 <input
                   type="text"
-                  placeholder="VD: PO-2026-001, SO-4819, INV-092"
+                  placeholder="e.g. PO-2026-001, SO-4819, DAMAGE-01, AUDIT-092"
                   value={movRefNo}
                   onChange={(e) => setMovRefNo(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
@@ -1148,11 +1162,11 @@ export default function InventoryPage() {
               {/* Notes */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Ghi Chú
+                  Notes
                 </label>
                 <input
                   type="text"
-                  placeholder="Ghi chú lý do xuất nhập kho..."
+                  placeholder="Reason or transaction details..."
                   value={movNotes}
                   onChange={(e) => setMovNotes(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-[#253c68]/20 focus:border-[#253c68]"
@@ -1165,7 +1179,7 @@ export default function InventoryPage() {
                   onClick={() => setIsMovementOpen(false)}
                   className="px-4 py-2 border border-slate-300 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50"
                 >
-                  Đóng
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -1179,7 +1193,7 @@ export default function InventoryPage() {
                   }`}
                 >
                   {submittingMovement && <RefreshCw className="w-4 h-4 animate-spin" />}
-                  <span>Xác Nhận Thực Hiện</span>
+                  <span>Confirm Movement</span>
                 </button>
               </div>
             </form>
@@ -1198,7 +1212,7 @@ export default function InventoryPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    Lịch Sử Xuất Nhập: {historyProduct.sku}
+                    Stock Movement History: {historyProduct.sku}
                   </h3>
                   <p className="text-xs text-slate-500">{historyProduct.name}</p>
                 </div>
@@ -1215,15 +1229,15 @@ export default function InventoryPage() {
               {/* Product quick summary bar */}
               <div className="grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
                 <div>
-                  <span className="text-[11px] text-slate-500 font-bold uppercase">Tồn kho hiện tại</span>
+                  <span className="text-[11px] text-slate-500 font-bold uppercase">Current Stock</span>
                   <p className="text-xl font-black text-slate-900 mt-0.5">{historyProduct.currentStock}</p>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-500 font-bold uppercase">Giá sỉ</span>
+                  <span className="text-[11px] text-slate-500 font-bold uppercase">Wholesale Price</span>
                   <p className="text-xl font-black text-[#253c68] mt-0.5">${historyProduct.wholesalePrice}</p>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-500 font-bold uppercase">Vị trí</span>
+                  <span className="text-[11px] text-slate-500 font-bold uppercase">Location</span>
                   <p className="text-sm font-bold text-slate-700 mt-1">{historyProduct.location || "Houston Hub"}</p>
                 </div>
               </div>
@@ -1233,12 +1247,12 @@ export default function InventoryPage() {
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="bg-slate-100 text-slate-500 font-bold uppercase border-b border-slate-200">
-                      <th className="py-2.5 px-3">Thời Gian</th>
-                      <th className="py-2.5 px-3">Loại Giao Dịch</th>
-                      <th className="py-2.5 px-3 text-right">Số Lượng</th>
-                      <th className="py-2.5 px-3">Số Tham Chiếu</th>
-                      <th className="py-2.5 px-3">Ghi Chú</th>
-                      <th className="py-2.5 px-3">Người Tạo</th>
+                      <th className="py-2.5 px-3">Date & Time</th>
+                      <th className="py-2.5 px-3">Movement Type</th>
+                      <th className="py-2.5 px-3 text-right">Quantity</th>
+                      <th className="py-2.5 px-3">Reference / Reason</th>
+                      <th className="py-2.5 px-3">Notes</th>
+                      <th className="py-2.5 px-3">Recorded By</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -1246,20 +1260,20 @@ export default function InventoryPage() {
                       <tr>
                         <td colSpan={6} className="py-8 text-center text-slate-400">
                           <RefreshCw className="w-5 h-5 animate-spin mx-auto text-[#253c68] mb-1" />
-                          Đang tải lịch sử kho...
+                          Loading stock movement history...
                         </td>
                       </tr>
                     ) : productMovements.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="py-8 text-center text-slate-400">
-                          Chưa có phát sinh giao dịch xuất nhập kho nào.
+                          No stock movement records found for this product.
                         </td>
                       </tr>
                     ) : (
                       productMovements.map((m) => (
                         <tr key={m.id} className="hover:bg-slate-50/80">
                           <td className="py-2.5 px-3 text-slate-500 font-mono">
-                            {new Date(m.createdAt).toLocaleString("vi-VN")}
+                            {new Date(m.createdAt).toLocaleString("en-US")}
                           </td>
                           <td className="py-2.5 px-3">
                             <span
@@ -1272,10 +1286,10 @@ export default function InventoryPage() {
                               }`}
                             >
                               {m.type === "INBOUND"
-                                ? "Nhập Kho"
+                                ? "Inbound"
                                 : m.type === "OUTBOUND"
-                                ? "Xuất Kho"
-                                : "Kiểm Kê"}
+                                ? "Outbound"
+                                : "Adjustment"}
                             </span>
                           </td>
                           <td
@@ -1311,7 +1325,7 @@ export default function InventoryPage() {
                 onClick={() => setIsHistoryOpen(false)}
                 className="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-semibold rounded-xl text-xs hover:bg-slate-100"
               >
-                Đóng
+                Close
               </button>
             </div>
           </div>

@@ -107,7 +107,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $4,024.70",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $4,024.70",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-14T10:00:00.000Z",
     "orders": [
@@ -119,7 +119,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-10-16T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-14T09:00:00.000Z",
         "items": [
           {
@@ -140,7 +140,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-14T08:30:00.000Z",
         "items": [
           {
@@ -159,7 +159,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-1",
         "toPhone": "+1-832-555-0142",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Andy Tran (A to Z Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Andy Tran (A to Z Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-14T14:00:00.000Z"
@@ -181,7 +181,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,352.36",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,352.36",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-04T10:00:00.000Z",
     "orders": [
@@ -193,7 +193,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-06T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-04T09:00:00.000Z",
         "items": [
           {
@@ -214,7 +214,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-04T08:30:00.000Z",
         "items": [
           {
@@ -233,7 +233,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-2",
         "toPhone": "+1-713-555-0188",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Linda Nguyen (Nails Warehouse), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Linda Nguyen (Nails Warehouse), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-04T14:00:00.000Z"
@@ -255,7 +255,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,440.50",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,440.50",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-13T10:00:00.000Z",
     "orders": [
@@ -267,7 +267,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-15T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-13T09:00:00.000Z",
         "items": [
           {
@@ -288,7 +288,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-13T08:30:00.000Z",
         "items": [
           {
@@ -307,7 +307,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-3",
         "toPhone": "+1-214-555-0145",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào David Le (Texas Beauty Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi David Le (Texas Beauty Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-13T14:00:00.000Z"
@@ -329,7 +329,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "VIP",
     "status": "AT_RISK",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,181.74",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,181.74",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-03-16T10:00:00.000Z",
     "orders": [
@@ -341,7 +341,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "OVERDUE",
         "dueDate": "2026-03-18T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-03-16T09:00:00.000Z",
         "items": [
           {
@@ -362,7 +362,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-03-16T08:30:00.000Z",
         "items": [
           {
@@ -381,7 +381,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-4",
         "toPhone": "+1-512-555-0199",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Tina Tran (Monaco Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Tina Tran (Monaco Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-03-16T14:00:00.000Z"
@@ -403,7 +403,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $2,191.82",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $2,191.82",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-05-27T10:00:00.000Z",
     "orders": [
@@ -415,7 +415,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-05-29T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-05-27T09:00:00.000Z",
         "items": [
           {
@@ -436,7 +436,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 67.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-05-27T08:30:00.000Z",
         "items": [
           {
@@ -455,7 +455,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-5",
         "toPhone": "+1-210-555-0123",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Kevin Vu (Invogue Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Kevin Vu (Invogue Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-05-27T14:00:00.000Z"
@@ -477,7 +477,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,347.64",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,347.64",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-09-16T10:00:00.000Z",
     "orders": [
@@ -489,7 +489,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "UNPAID",
         "dueDate": "2026-09-18T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-09-16T09:00:00.000Z",
         "items": [
           {
@@ -510,7 +510,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 67.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-09-16T08:30:00.000Z",
         "items": [
           {
@@ -529,7 +529,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-6",
         "toPhone": "+1-414-555-0812",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Jenny Hoang (Sunny Nail Supply - Milwaukee), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Jenny Hoang (Sunny Nail Supply - Milwaukee), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-09-16T14:00:00.000Z"
@@ -551,7 +551,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,263.10",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,263.10",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-19T10:00:00.000Z",
     "orders": [
@@ -563,7 +563,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-21T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-19T09:00:00.000Z",
         "items": [
           {
@@ -584,7 +584,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 67.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-19T08:30:00.000Z",
         "items": [
           {
@@ -603,7 +603,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-7",
         "toPhone": "+1-407-555-0391",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Brian Pham (Nailmark inc), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Brian Pham (Nailmark inc), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-19T14:00:00.000Z"
@@ -625,7 +625,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,512.92",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,512.92",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-09-29T10:00:00.000Z",
     "orders": [
@@ -637,7 +637,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-01T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-09-29T09:00:00.000Z",
         "items": [
           {
@@ -658,7 +658,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-09-29T08:30:00.000Z",
         "items": [
           {
@@ -677,7 +677,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-8",
         "toPhone": "+1-208-555-0211",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Helen Do (Beauty Direct), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Helen Do (Beauty Direct), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-09-29T14:00:00.000Z"
@@ -699,7 +699,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,513.30",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,513.30",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-04T10:00:00.000Z",
     "orders": [
@@ -711,7 +711,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-10-06T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-04T09:00:00.000Z",
         "items": [
           {
@@ -732,7 +732,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 121.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-04T08:30:00.000Z",
         "items": [
           {
@@ -751,7 +751,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-9",
         "toPhone": "+1-714-555-0943",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Sarah Vo (M2M Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Sarah Vo (M2M Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-04T14:00:00.000Z"
@@ -773,7 +773,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "VIP",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,021.03",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $3,021.03",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-09-22T10:00:00.000Z",
     "orders": [
@@ -785,7 +785,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-09-24T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-09-22T09:00:00.000Z",
         "items": [
           {
@@ -806,7 +806,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 121.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-09-22T08:30:00.000Z",
         "items": [
           {
@@ -825,7 +825,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-10",
         "toPhone": "+1-408-555-0761",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Michael Dang (Hollywood Beauty Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Michael Dang (Hollywood Beauty Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-09-22T14:00:00.000Z"
@@ -847,7 +847,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "WHOLESALE",
     "status": "AT_RISK",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $2,800.70",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $2,800.70",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-02-06T10:00:00.000Z",
     "orders": [
@@ -859,7 +859,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "OVERDUE",
         "dueDate": "2026-02-08T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-02-06T09:00:00.000Z",
         "items": [
           {
@@ -880,7 +880,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 81.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-02-06T08:30:00.000Z",
         "items": [
           {
@@ -899,7 +899,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-11",
         "toPhone": "+1-832-555-0456",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Nancy Truong (Boise Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Nancy Truong (Boise Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-02-06T14:00:00.000Z"
@@ -921,7 +921,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $2,577.32",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $2,577.32",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-13T10:00:00.000Z",
     "orders": [
@@ -933,7 +933,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-15T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-13T09:00:00.000Z",
         "items": [
           {
@@ -954,7 +954,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 81.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-13T08:30:00.000Z",
         "items": [
           {
@@ -973,7 +973,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-12",
         "toPhone": "+1-713-555-0824",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Steven Nguyen (Orlando Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Steven Nguyen (Orlando Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-13T14:00:00.000Z"
@@ -995,7 +995,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,854.20",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,854.20",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-08-25T10:00:00.000Z",
     "orders": [
@@ -1007,7 +1007,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-08-27T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-08-25T09:00:00.000Z",
         "items": [
           {
@@ -1028,7 +1028,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 81.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-08-25T08:30:00.000Z",
         "items": [
           {
@@ -1047,7 +1047,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-13",
         "toPhone": "+1-281-555-0378",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Jessica Le (Jasmine Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Jessica Le (Jasmine Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-08-25T14:00:00.000Z"
@@ -1069,7 +1069,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "WHOLESALE",
     "status": "AT_RISK",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,687.00",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,687.00",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-02-02T10:00:00.000Z",
     "orders": [
@@ -1081,7 +1081,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "OVERDUE",
         "dueDate": "2026-02-04T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-02-02T09:00:00.000Z",
         "items": [
           {
@@ -1102,7 +1102,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 22.95,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-02-02T08:30:00.000Z",
         "items": [
           {
@@ -1121,7 +1121,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-14",
         "toPhone": "+1-714-555-0639",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Peter Dinh (Naty Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Peter Dinh (Naty Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-02-02T14:00:00.000Z"
@@ -1143,7 +1143,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "WHOLESALE",
     "status": "AT_RISK",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,215.30",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,215.30",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-03-25T10:00:00.000Z",
     "orders": [
@@ -1155,7 +1155,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "OVERDUE",
         "dueDate": "2026-03-27T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-03-25T09:00:00.000Z",
         "items": [
           {
@@ -1176,7 +1176,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 22.95,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-03-25T08:30:00.000Z",
         "items": [
           {
@@ -1195,7 +1195,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-15",
         "toPhone": "+1-817-555-0482",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Rachel Huynh (Inail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Rachel Huynh (Inail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-03-25T14:00:00.000Z"
@@ -1217,7 +1217,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,160.04",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,160.04",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-12-08T10:00:00.000Z",
     "orders": [
@@ -1229,7 +1229,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "UNPAID",
         "dueDate": "2026-12-10T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-12-08T09:00:00.000Z",
         "items": [
           {
@@ -1250,7 +1250,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 405.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-12-08T08:30:00.000Z",
         "items": [
           {
@@ -1269,7 +1269,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-16",
         "toPhone": "+1-281-555-0917",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Tommy Ta (Cindy Hair Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Tommy Ta (Cindy Hair Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-12-08T14:00:00.000Z"
@@ -1291,7 +1291,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,884.53",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,884.53",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-09-02T10:00:00.000Z",
     "orders": [
@@ -1303,7 +1303,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-09-04T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-09-02T09:00:00.000Z",
         "items": [
           {
@@ -1324,7 +1324,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-09-02T08:30:00.000Z",
         "items": [
           {
@@ -1343,7 +1343,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-17",
         "toPhone": "+1-832-555-0142",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Andy Tran (Golden Sun Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Andy Tran (Golden Sun Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-09-02T14:00:00.000Z"
@@ -1365,7 +1365,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,719.25",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,719.25",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-08-04T10:00:00.000Z",
     "orders": [
@@ -1377,7 +1377,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-08-06T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-08-04T09:00:00.000Z",
         "items": [
           {
@@ -1398,7 +1398,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 94.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-08-04T08:30:00.000Z",
         "items": [
           {
@@ -1417,7 +1417,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-18",
         "toPhone": "+1-713-555-0188",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Linda Nguyen (Elegant Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Linda Nguyen (Elegant Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-08-04T14:00:00.000Z"
@@ -1439,7 +1439,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,321.60",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,321.60",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-12-10T10:00:00.000Z",
     "orders": [
@@ -1451,7 +1451,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-12-12T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-12-10T09:00:00.000Z",
         "items": [
           {
@@ -1472,7 +1472,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 101.25,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-12-10T08:30:00.000Z",
         "items": [
           {
@@ -1491,7 +1491,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-19",
         "toPhone": "+1-214-555-0145",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào David Le (1 Stop Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi David Le (1 Stop Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-12-10T14:00:00.000Z"
@@ -1513,7 +1513,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "WHOLESALE",
     "status": "AT_RISK",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,418.48",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,418.48",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-03-31T10:00:00.000Z",
     "orders": [
@@ -1525,7 +1525,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "OVERDUE",
         "dueDate": "2026-04-02T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-03-31T09:00:00.000Z",
         "items": [
           {
@@ -1546,7 +1546,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 101.25,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-03-31T08:30:00.000Z",
         "items": [
           {
@@ -1565,7 +1565,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-20",
         "toPhone": "+1-512-555-0199",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Tina Tran (Diamond Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Tina Tran (Diamond Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-03-31T14:00:00.000Z"
@@ -1587,7 +1587,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $903.56",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $903.56",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-06-24T10:00:00.000Z",
     "orders": [
@@ -1599,7 +1599,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-06-26T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-06-24T09:00:00.000Z",
         "items": [
           {
@@ -1620,7 +1620,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 101.25,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-06-24T08:30:00.000Z",
         "items": [
           {
@@ -1639,7 +1639,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-21",
         "toPhone": "+1-210-555-0123",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Kevin Vu (Rosie Tech School), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Kevin Vu (Rosie Tech School), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-06-24T14:00:00.000Z"
@@ -1661,7 +1661,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $300.00",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $300.00",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-06-02T10:00:00.000Z",
     "orders": [
@@ -1673,7 +1673,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-06-04T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-06-02T09:00:00.000Z",
         "items": [
           {
@@ -1694,7 +1694,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 101.25,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-06-02T08:30:00.000Z",
         "items": [
           {
@@ -1713,7 +1713,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-22",
         "toPhone": "+1-414-555-0812",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Jenny Hoang (T Spa Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Jenny Hoang (T Spa Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-06-02T14:00:00.000Z"
@@ -1735,7 +1735,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "WHOLESALE",
     "status": "AT_RISK",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,075.00",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $1,075.00",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-03-16T10:00:00.000Z",
     "orders": [
@@ -1747,7 +1747,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "OVERDUE",
         "dueDate": "2026-03-18T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-03-16T09:00:00.000Z",
         "items": [
           {
@@ -1768,7 +1768,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 67.5,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-03-16T08:30:00.000Z",
         "items": [
           {
@@ -1787,7 +1787,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-23",
         "toPhone": "+1-407-555-0391",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Brian Pham (Tgel Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Brian Pham (Tgel Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-03-16T14:00:00.000Z"
@@ -1809,7 +1809,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $855.50",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $855.50",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-09-29T10:00:00.000Z",
     "orders": [
@@ -1821,7 +1821,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-01T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-09-29T09:00:00.000Z",
         "items": [
           {
@@ -1842,7 +1842,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 108.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-09-29T08:30:00.000Z",
         "items": [
           {
@@ -1861,7 +1861,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-24",
         "toPhone": "+1-208-555-0211",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Helen Do (Nail Supply Avenue), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Helen Do (Nail Supply Avenue), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-09-29T14:00:00.000Z"
@@ -1883,7 +1883,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "WHOLESALE",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $638.80",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $638.80",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-08-26T10:00:00.000Z",
     "orders": [
@@ -1895,7 +1895,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-08-28T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-08-26T09:00:00.000Z",
         "items": [
           {
@@ -1916,7 +1916,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 60.75,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-08-26T08:30:00.000Z",
         "items": [
           {
@@ -1935,7 +1935,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-25",
         "toPhone": "+1-714-555-0943",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Sarah Vo (COCONUT - Nail & Beauty Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Sarah Vo (COCONUT - Nail & Beauty Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-08-26T14:00:00.000Z"
@@ -1957,7 +1957,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $910.92",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $910.92",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-08-05T10:00:00.000Z",
     "orders": [
@@ -1969,7 +1969,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "UNPAID",
         "dueDate": "2026-08-07T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-08-05T09:00:00.000Z",
         "items": [
           {
@@ -1990,7 +1990,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 60.75,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-08-05T08:30:00.000Z",
         "items": [
           {
@@ -2009,7 +2009,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-26",
         "toPhone": "+1-408-555-0761",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Michael Dang (NT Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Michael Dang (NT Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-08-05T14:00:00.000Z"
@@ -2031,7 +2031,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $553.10",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $553.10",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-20T10:00:00.000Z",
     "orders": [
@@ -2043,7 +2043,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-22T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-20T09:00:00.000Z",
         "items": [
           {
@@ -2064,7 +2064,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 101.25,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-20T08:30:00.000Z",
         "items": [
           {
@@ -2083,7 +2083,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-27",
         "toPhone": "+1-832-555-0456",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Nancy Truong (Seneca Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Nancy Truong (Seneca Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-20T14:00:00.000Z"
@@ -2105,7 +2105,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $427.68",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $427.68",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-22T10:00:00.000Z",
     "orders": [
@@ -2117,7 +2117,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-24T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-22T09:00:00.000Z",
         "items": [
           {
@@ -2138,7 +2138,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 101.25,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-22T08:30:00.000Z",
         "items": [
           {
@@ -2157,7 +2157,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-28",
         "toPhone": "+1-713-555-0824",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Steven Nguyen (WOO Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Steven Nguyen (WOO Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-22T14:00:00.000Z"
@@ -2179,7 +2179,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $443.00",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $443.00",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-04-22T10:00:00.000Z",
     "orders": [
@@ -2191,7 +2191,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PARTIAL",
         "dueDate": "2026-04-24T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-04-22T09:00:00.000Z",
         "items": [
           {
@@ -2212,7 +2212,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 87.75,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-04-22T08:30:00.000Z",
         "items": [
           {
@@ -2231,7 +2231,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-29",
         "toPhone": "+1-281-555-0378",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Jessica Le (A Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Jessica Le (A Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-04-22T14:00:00.000Z"
@@ -2253,7 +2253,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Alice Nguyen",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $296.50",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $296.50",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-09-01T10:00:00.000Z",
     "orders": [
@@ -2265,7 +2265,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-09-03T00:00:00.000Z",
         "saleRep": "Alice Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-09-01T09:00:00.000Z",
         "items": [
           {
@@ -2286,7 +2286,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 87.75,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-09-01T08:30:00.000Z",
         "items": [
           {
@@ -2305,7 +2305,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-30",
         "toPhone": "+1-714-555-0639",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Peter Dinh (Nail Gurus Spa), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Peter Dinh (Nail Gurus Spa), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-09-01T14:00:00.000Z"
@@ -2327,7 +2327,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Johnny Tran",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $150.60",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $150.60",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-19T10:00:00.000Z",
     "orders": [
@@ -2339,7 +2339,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "UNPAID",
         "dueDate": "2026-10-21T00:00:00.000Z",
         "saleRep": "Johnny Tran",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-19T09:00:00.000Z",
         "items": [
           {
@@ -2360,7 +2360,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 405.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "SENT",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-19T08:30:00.000Z",
         "items": [
           {
@@ -2379,7 +2379,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-31",
         "toPhone": "+1-817-555-0482",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Rachel Huynh (Rossie Tech Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Rachel Huynh (Rossie Tech Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-19T14:00:00.000Z"
@@ -2401,7 +2401,7 @@ export const initialMockCustomers: MockCustomer[] = [
     "assignedSale": "Hanna Nguyen",
     "tier": "STANDARD",
     "status": "ACTIVE",
-    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $100.40",
+    "notes": "Verified B2B wholesale account from JKIOCEAN. Margin contribution: $100.40",
     "createdAt": "2024-03-15T08:00:00.000Z",
     "updatedAt": "2026-10-04T10:00:00.000Z",
     "orders": [
@@ -2413,7 +2413,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "paymentStatus": "PAID",
         "dueDate": "2026-10-06T00:00:00.000Z",
         "saleRep": "Hanna Nguyen",
-        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "notes": "Wholesale order fulfilled from Houston Hub. Payment method: Zelle/Check.",
         "createdAt": "2026-10-04T09:00:00.000Z",
         "items": [
           {
@@ -2434,7 +2434,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "totalAmount": 405.0,
         "validUntil": "2026-11-15T00:00:00.000Z",
         "status": "ACCEPTED",
-        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "notes": "Special wholesale quote delivered from Houston Hub",
         "createdAt": "2026-10-04T08:30:00.000Z",
         "items": [
           {
@@ -2453,7 +2453,7 @@ export const initialMockCustomers: MockCustomer[] = [
         "id": "sms-32",
         "toPhone": "+1-281-555-0917",
         "fromPhone": "+17133306165",
-        "content": "JKIOCEAN: Chào Tommy Ta (LaMi Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "content": "JKIOCEAN: Hi Tommy Ta (LaMi Nail Supply), JKI has sent your October quote. Contact our hotline if you need assistance!",
         "type": "FOLLOW_UP",
         "status": "SENT",
         "createdAt": "2026-10-04T14:00:00.000Z"
@@ -2475,7 +2475,7 @@ export const initialMockLeads: MockLead[] = [
     googleReviewCount: 420,
     rating: 4.8,
     icpScore: 94,
-    personalizedHook: "Tiệm 24 thợ chuyên đắp bột Ombre, nhu cầu cọ Z Brushes cực lớn.",
+    personalizedHook: "High-volume salon with 24 technicians specializing in Ombre powder; massive demand for Z-Brushes.",
     status: "NEW",
     assignedSale: "hanna",
     createdAt: "2026-10-18T08:00:00.000Z",
@@ -2492,7 +2492,7 @@ export const initialMockLeads: MockLead[] = [
     googleReviewCount: 680,
     rating: 4.9,
     icpScore: 91,
-    personalizedHook: "Khu vực Katy giàu có, thợ yêu cầu kềm cắt da Cobalt sắc bén.",
+    personalizedHook: "Affluent Katy area, technicians demand precision Cobalt cuticle nippers.",
     status: "CONTACTED",
     assignedSale: "hanna",
     createdAt: "2026-10-15T09:30:00.000Z",

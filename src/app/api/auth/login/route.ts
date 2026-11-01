@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { signUserToken, UserSession } from "@/lib/auth";
+import { signUserToken, sanitizeFullName, UserSession } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
     if (!identifier || !password) {
       return NextResponse.json(
-        { error: "Vui lòng nhập Email / Mã nhân viên và Mật khẩu" },
+        { error: "Please enter your Email / Employee ID and Password" },
         { status: 400 }
       );
     }
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const trimmed = identifier.trim();
     let authUser: UserSession | null = null;
 
-    // 1. Thử xác thực qua SSO App Điểm Danh JKIOCEAN (attendance.jkioceanhub.com)
+    // 1. Attempt authentication via JKIOCEAN Attendance SSO (attendance.jkioceanhub.com)
     const ssoUrl = process.env.ATTENDANCE_SSO_URL || "https://attendance.jkioceanhub.com/api/auth/verify";
     try {
       const ssoRes = await fetch(ssoUrl, {
@@ -32,24 +32,24 @@ export async function POST(req: Request) {
             userId: data.user.id,
             email: data.user.email,
             employeeCode: data.user.employeeCode || "EMP",
-            fullName: data.user.fullName,
+            fullName: sanitizeFullName(data.user.fullName),
             role: data.user.role || "EMPLOYEE",
             department: data.user.department || "Sales",
           };
         }
       }
     } catch (ssoErr) {
-      console.warn("[SSO Bridge] Không kết nối được attendance SSO, chuyển sang fallback:", ssoErr);
+      console.warn("[SSO Bridge] Could not connect to Attendance SSO, falling back to local credentials:", ssoErr);
     }
 
-    // 2. Fallback dự phòng offline / local cho tài khoản công ty chuẩn
+    // 2. Local fallback credentials
     if (!authUser) {
       const lower = trimmed.toLowerCase();
-      // Danh sách tài khoản chuẩn JKIOCEAN theo DEPLOYMENT_REPORT
+      // Standard JKIOCEAN accounts
       const validCreds: Record<string, { pass: string; name: string; role: string; code: string; dept: string }> = {
         admin: { pass: "3846ffbeb28841019aed", name: "System Administrator", role: "ADMIN", code: "JKI00", dept: "BOD" },
-        johnny: { pass: "Admin@123456", name: "Johnny Tran (Sếp)", role: "ADMIN", code: "JKI01", dept: "BOD" },
-        alice: { pass: "Hr@123456", name: "Alice Nguyen", role: "HR_MANAGER", code: "JKI02", dept: "KeToan" },
+        johnny: { pass: "Admin@123456", name: "Johnny Tran", role: "ADMIN", code: "JKI01", dept: "BOD" },
+        alice: { pass: "Hr@123456", name: "Alice Nguyen", role: "HR_MANAGER", code: "JKI02", dept: "Accounting" },
         hanna: { pass: "Nv@123456", name: "Hanna Nguyen", role: "EMPLOYEE", code: "JKI03", dept: "Sales" },
         tan: { pass: "Nv@123456", name: "Tan Ho", role: "EMPLOYEE", code: "JKI04", dept: "IT" },
         kate: { pass: "Nv@123456", name: "Kate", role: "EMPLOYEE", code: "JKI05", dept: "Marketing" },
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
           userId: `u_${userKey}`,
           email: `${userKey}@jkiocean.com`,
           employeeCode: u.code,
-          fullName: u.name,
+          fullName: sanitizeFullName(u.name),
           role: u.role,
           department: u.dept,
         };
@@ -74,18 +74,21 @@ export async function POST(req: Request) {
 
     if (!authUser) {
       return NextResponse.json(
-        { error: "Tài khoản hoặc mật khẩu không chính xác" },
+        { error: "Invalid username or password" },
         { status: 401 }
       );
     }
 
-    // Tạo JWT Token
+    // Double check sanitization before token signing
+    authUser.fullName = sanitizeFullName(authUser.fullName);
+
+    // Create JWT Token
     const token = signUserToken(authUser, rememberMe ? "365d" : "1d");
     const maxAge = rememberMe ? 365 * 24 * 60 * 60 : 24 * 60 * 60;
 
     const response = NextResponse.json({
       success: true,
-      message: "Đăng nhập thành công",
+      message: "Login successful",
       user: authUser,
     });
 
@@ -100,6 +103,6 @@ export async function POST(req: Request) {
     return response;
   } catch (error) {
     console.error("Login API Error:", error);
-    return NextResponse.json({ error: "Lỗi hệ thống khi đăng nhập" }, { status: 500 });
+    return NextResponse.json({ error: "System error during login" }, { status: 500 });
   }
 }

@@ -61,8 +61,10 @@ function CreateQuoteContent() {
 
   // Quote Metadata
   const [quoteNumber, setQuoteNumber] = useState("");
+  const [issueDate, setIssueDate] = useState("");
   const [validUntil, setValidUntil] = useState("");
-  const [paymentTerms, setPaymentTerms] = useState("Zelle / Company Check (Net 15)");
+  const [salesRep, setSalesRep] = useState("Johnny Tran");
+  const [paymentTerms, setPaymentTerms] = useState("Net 15 (Zelle / Company Check)");
   const [notes, setNotes] = useState(
     "Free local delivery for wholesale orders in Greater Houston Hub. 30-day replacement warranty on Kolinsky bristles."
   );
@@ -77,6 +79,7 @@ function CreateQuoteContent() {
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const rand = Math.floor(1000 + Math.random() * 9000);
     setQuoteNumber(`QT-${yyyy}${mm}-${rand}`);
+    setIssueDate(today.toISOString().split("T")[0]);
 
     const twoWeeksLater = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
     setValidUntil(twoWeeksLater.toISOString().split("T")[0]);
@@ -198,11 +201,11 @@ function CreateQuoteContent() {
   const handleSaveQuote = async (status: "DRAFT" | "SENT") => {
     setErrorMsg("");
     if (!selectedCustomerId) {
-      setErrorMsg("Vui lòng chọn khách hàng B2B / Salon");
+      setErrorMsg("Please select a B2B salon / wholesale customer");
       return;
     }
     if (items.length === 0) {
-      setErrorMsg("Vui lòng thêm ít nhất 1 sản phẩm vào bảng báo giá");
+      setErrorMsg("Please add at least 1 product to the wholesale quotation");
       return;
     }
 
@@ -228,6 +231,7 @@ function CreateQuoteContent() {
           notes,
           paymentTerms,
           status,
+          createdUser: salesRep,
         }),
       });
 
@@ -235,10 +239,10 @@ function CreateQuoteContent() {
       if (data.success && data.quote) {
         router.push(`/quotes/${data.quote.id}`);
       } else {
-        setErrorMsg(data.error || "Không thể tạo báo giá. Vui lòng thử lại.");
+        setErrorMsg(data.error || "Failed to create quote. Please try again.");
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "Lỗi kết nối khi lưu báo giá");
+      setErrorMsg(err.message || "Network error while saving wholesale quotation");
     } finally {
       setSaving(false);
     }
@@ -259,13 +263,13 @@ function CreateQuoteContent() {
           </Link>
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Tạo Báo Giá Mới (Quote Builder)</h1>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Create Wholesale Quote</h1>
               <span className="font-mono text-xs bg-[#253c68] text-white font-extrabold px-2.5 py-0.5 rounded-full">
                 {quoteNumber}
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Soạn thảo báo giá sỉ cọ JKIOCEAN có ảnh chất lượng cao, tính chiết khấu tự động & xuất PDF
+              Draft official JKIOCEAN wholesale price quotes with high-resolution images, automated volume discounts & PDF export
             </p>
           </div>
         </div>
@@ -278,7 +282,7 @@ function CreateQuoteContent() {
             onClick={() => handleSaveQuote("DRAFT")}
             className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 transition shadow-sm disabled:opacity-50"
           >
-            Lưu Bản Nháp (Draft)
+            Save as Draft
           </button>
           <button
             type="button"
@@ -289,12 +293,12 @@ function CreateQuoteContent() {
             {saving ? (
               <>
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Đang Tạo Báo Giá...</span>
+                <span>Creating Quote...</span>
               </>
             ) : (
               <>
                 <FileText className="w-3.5 h-3.5" />
-                <span>Tạo & Xem Báo Giá PDF</span>
+                <span>Generate Official PDF</span>
               </>
             )}
           </button>
@@ -320,8 +324,8 @@ function CreateQuoteContent() {
                   <Building className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm">Thông Tin Khách Hàng / Salon B2B</h3>
-                  <p className="text-[11px] text-slate-400">Chọn salon từ danh mục hoặc tìm kiếm nhanh</p>
+                  <h3 className="font-extrabold text-slate-900 text-sm">Customer Selection</h3>
+                  <p className="text-[11px] text-slate-400">Select customer salon from directory or search</p>
                 </div>
               </div>
               {selectedCustomer?.tier && (
@@ -334,7 +338,7 @@ function CreateQuoteContent() {
             {/* Customer Dropdown with Search */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Chọn Salon / Supply Store:</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Select Customer / Salon:</label>
                 <div className="relative">
                   <select
                     value={selectedCustomerId}
@@ -351,7 +355,7 @@ function CreateQuoteContent() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Hiệu Lực Báo Giá Đến:</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Expiration Date:</label>
                 <div className="relative">
                   <input
                     type="date"
@@ -389,39 +393,39 @@ function CreateQuoteContent() {
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-3 p-5">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h3 className="font-extrabold text-slate-900 text-sm">Danh Sách Sản Phẩm Trong Báo Giá</h3>
+                <h3 className="font-extrabold text-slate-900 text-sm">Line Items</h3>
                 <p className="text-[11px] text-slate-400">
-                  Hình ảnh độ phân giải cao sẽ tự động in vào file PDF chuẩn xuất xưởng
+                  Official products with high-resolution imagery automatically formatted for print
                 </p>
               </div>
               <span className="text-xs font-bold text-[#253c68] bg-[#253c68]/10 px-2.5 py-1 rounded-lg">
-                {items.length} mặt hàng
+                {items.length} items
               </span>
             </div>
 
             {items.length === 0 ? (
               <div className="py-10 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-                <p className="text-xs font-semibold">Chưa có sản phẩm nào trong báo giá</p>
-                <p className="text-[11px] mt-1">Chọn từ bảng sản phẩm bên phải để thêm nhanh</p>
+                <p className="text-xs font-semibold">No items added to quote yet</p>
+                <p className="text-[11px] mt-1">Select products from the catalog on the right to add them</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                      <th className="py-2.5 px-2">Ảnh</th>
-                      <th className="py-2.5 px-2">Sản Phẩm & SKU</th>
+                      <th className="py-2.5 px-2">Image</th>
+                      <th className="py-2.5 px-2">Product & SKU</th>
                       <th className="py-2.5 px-2 text-center" style={{ width: "90px" }}>
-                        Số Lượng
+                        Quantity
                       </th>
                       <th className="py-2.5 px-2 text-right" style={{ width: "100px" }}>
-                        Đơn Giá Sỉ
+                        Unit Price
                       </th>
                       <th className="py-2.5 px-2 text-center" style={{ width: "95px" }}>
-                        CK (%)
+                        Discount %
                       </th>
                       <th className="py-2.5 px-2 text-right" style={{ width: "100px" }}>
-                        Thành Tiền
+                        Line Total
                       </th>
                       <th className="py-2.5 px-2 text-center" style={{ width: "40px" }}></th>
                     </tr>
@@ -528,7 +532,7 @@ function CreateQuoteContent() {
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(idx)}
-                              title="Xóa khỏi báo giá"
+                              title="Remove from quote"
                               className="text-slate-300 hover:text-rose-500 p-1 transition"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -545,35 +549,46 @@ function CreateQuoteContent() {
 
           {/* Notes & Payment Terms */}
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-            <h3 className="font-extrabold text-slate-900 text-sm">Điều Khoản Thanh Toán & Ghi Chú Giao Hàng</h3>
+            <h3 className="font-extrabold text-slate-900 text-sm">Special Notes / Terms</h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Phương Thức Thanh Toán:</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Payment Terms:</label>
                 <select
                   value={paymentTerms}
                   onChange={(e) => setPaymentTerms(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
                 >
-                  <option value="Zelle / Company Check (Net 15)">Zelle / Company Check (Net 15)</option>
-                  <option value="Zelle (Thanh toán trước khi giao)">Zelle (Thanh toán trước khi giao)</option>
-                  <option value="Wire Transfer / Chuyển khoản ngân hàng">Wire Transfer / Chuyển khoản</option>
-                  <option value="Credit Card (Visa/Mastercard/Amex)">Credit Card (Visa/Mastercard/Amex)</option>
-                  <option value="Thanh toán khi nhận hàng (COD Houston)">Thanh toán khi nhận hàng (COD Houston)</option>
+                  <option value="Net 15 (Zelle / Company Check)">Net 15 (Zelle / Company Check)</option>
+                  <option value="Net 30 (Approved Wholesale Account)">Net 30 (Approved Wholesale Account)</option>
+                  <option value="Due upon receipt (Zelle prior to dispatch)">Due upon receipt (Zelle)</option>
+                  <option value="Bank Wire Transfer">Bank Wire Transfer</option>
+                  <option value="Credit Card (Visa / Mastercard / Amex)">Credit Card (Visa / Mastercard / Amex)</option>
+                  <option value="COD (Houston Local Hub)">COD (Houston Local Delivery)</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Cam Kết Giao Hàng Houston Hub:</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Sales Representative:</label>
+                <input
+                  type="text"
+                  value={salesRep}
+                  onChange={(e) => setSalesRep(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Houston Hub Delivery Guarantee:</label>
                 <div className="p-2 bg-sky-50 border border-sky-100 rounded-xl text-xs text-sky-800 flex items-center space-x-2">
                   <Truck className="w-4 h-4 text-sky-600 shrink-0" />
-                  <span>Miễn phí giao hàng tận tiệm nội thành Houston cho đơn sỉ từ $500!</span>
+                  <span>Free local delivery in Greater Houston for orders over $500!</span>
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Ghi Chú Trên Bản In Báo Giá:</label>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Special Notes / Terms Printed on PDF:</label>
               <textarea
                 rows={2}
                 value={notes}
@@ -589,24 +604,24 @@ function CreateQuoteContent() {
           {/* Financial Calculation Summary Card */}
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-md space-y-4 sticky top-6">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span className="font-extrabold text-slate-900 text-sm">Tổng Kết Báo Giá</span>
+              <span className="font-extrabold text-slate-900 text-sm">Quote Details & Summary</span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">USD CURRENCY</span>
             </div>
 
             <div className="space-y-2.5 text-xs text-slate-600">
               <div className="flex justify-between">
-                <span>Tổng giá trị hàng (Subtotal):</span>
+                <span>Subtotal:</span>
                 <span className="font-bold text-slate-900">${subtotal.toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between text-amber-600 font-semibold">
-                <span>Chiết khấu sỉ (Savings):</span>
+                <span>Wholesale Discount:</span>
                 <span>-${totalDiscount.toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between">
                 <span className="flex items-center gap-1">
-                  <span>Phí vận chuyển (Shipping):</span>
+                  <span>Shipping / Handling:</span>
                   {isFreeShipping && (
                     <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-1.5 py-0.2 rounded">
                       FREE HOUSTON
@@ -619,15 +634,15 @@ function CreateQuoteContent() {
               </div>
 
               <div className="flex justify-between">
-                <span>Thuế Resale (Tax Exempt):</span>
+                <span>Tax (Resale Exempt):</span>
                 <span className="font-bold text-slate-900">$0.00</span>
               </div>
 
               {/* Grand Total */}
               <div className="pt-3 border-t-2 border-slate-200 flex justify-between items-center">
                 <div>
-                  <span className="text-xs font-black text-slate-800 uppercase block">TỔNG CỘNG</span>
-                  <span className="text-[10px] text-slate-400">Đã bao gồm chiết khấu</span>
+                  <span className="text-xs font-black text-slate-800 uppercase block">Grand Total</span>
+                  <span className="text-[10px] text-slate-400">Includes applied wholesale discounts</span>
                 </div>
                 <div className="text-right">
                   <span className="text-2xl font-black text-[#253c68] font-mono">
@@ -646,7 +661,7 @@ function CreateQuoteContent() {
                 className="w-full py-3 bg-gradient-to-r from-[#253c68] to-[#1e3054] text-white rounded-xl text-xs font-bold shadow-lg shadow-[#253c68]/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center space-x-2"
               >
                 <FileText className="w-4 h-4" />
-                <span>Hoàn Tất & Tạo File PDF Báo Giá</span>
+                <span>Generate Official PDF</span>
               </button>
 
               <button
@@ -655,7 +670,7 @@ function CreateQuoteContent() {
                 onClick={() => handleSaveQuote("DRAFT")}
                 className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"
               >
-                Lưu Nháp Để Chỉnh Sửa Sau
+                Save as Draft
               </button>
             </div>
           </div>
@@ -664,10 +679,10 @@ function CreateQuoteContent() {
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
             <div>
               <div className="flex items-center justify-between">
-                <h3 className="font-extrabold text-slate-900 text-sm">Kho Cọ JKIOCEAN</h3>
-                <span className="text-[10px] text-slate-400">{products.length} sản phẩm</span>
+                <h3 className="font-extrabold text-slate-900 text-sm">Add Product</h3>
+                <span className="text-[10px] text-slate-400">{products.length} products</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">Click (+) để thêm nhanh vào bảng báo giá</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Click (+) to add item directly to quote</p>
             </div>
 
             {/* Category Filter Pills */}
@@ -693,7 +708,7 @@ function CreateQuoteContent() {
                 type="text"
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
-                placeholder="Tìm SKU hoặc tên cọ..."
+                placeholder="Search SKU or brush name..."
                 className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-[#253c68]"
               />
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
@@ -737,7 +752,7 @@ function CreateQuoteContent() {
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : "bg-slate-100 hover:bg-[#253c68] hover:text-white text-slate-700"
                       }`}
-                      title="Thêm vào báo giá"
+                      title="Add to quote"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       {inQuote && <span className="text-[10px]">({inQuote.quantity})</span>}
@@ -753,10 +768,9 @@ function CreateQuoteContent() {
   );
 }
 
-
 export default function CreateQuotePage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-slate-500 font-semibold">Đang chuẩn bị công cụ báo giá...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-slate-500 font-semibold">Preparing quote builder...</div>}>
       <CreateQuoteContent />
     </Suspense>
   );

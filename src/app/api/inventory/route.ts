@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    if (category && category !== "All" && category !== "all") {
+    if (category && category !== "All" && category !== "all" && category !== "All Categories") {
       where.category = category;
     }
 
-    if (location && location !== "All" && location !== "all") {
+    if (location && location !== "All" && location !== "all" && location !== "All Locations") {
       where.location = location;
     }
 
@@ -52,15 +52,25 @@ export async function GET(request: NextRequest) {
       let filtered = [...SAMPLE_PRODUCTS];
       if (search) {
         const s = search.toLowerCase();
-        filtered = filtered.filter(p => p.sku.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.category.toLowerCase().includes(s));
+        filtered = filtered.filter(
+          (p) =>
+            p.sku.toLowerCase().includes(s) ||
+            p.name.toLowerCase().includes(s) ||
+            p.category.toLowerCase().includes(s)
+        );
       }
-      if (category && category !== "All" && category !== "all" && category !== "Tất cả") {
-        filtered = filtered.filter(p => p.category.toLowerCase() === category.toLowerCase());
+      if (
+        category &&
+        category !== "All" &&
+        category !== "all" &&
+        category !== "All Categories"
+      ) {
+        filtered = filtered.filter((p) => p.category.toLowerCase() === category.toLowerCase());
       }
-      if (location && location !== "All" && location !== "all") {
-        filtered = filtered.filter(p => p.location?.toLowerCase().includes(location.toLowerCase()));
+      if (location && location !== "All" && location !== "all" && location !== "All Locations") {
+        filtered = filtered.filter((p) => p.location?.toLowerCase().includes(location.toLowerCase()));
       }
-      allMatchingProducts = filtered.map(p => ({
+      allMatchingProducts = filtered.map((p) => ({
         ...p,
         minStockAlert: 15,
         updatedAt: new Date().toISOString(),
@@ -71,11 +81,11 @@ export async function GET(request: NextRequest) {
             type: "INBOUND",
             quantity: p.currentStock,
             referenceNo: "INIT-IMPORT",
-            notes: "Nhập kho ban đầu từ file Mix Docx",
+            notes: "Initial warehouse inbound from Mix Docx catalog",
             createdUser: "admin",
-            createdAt: new Date().toISOString()
-          }
-        ]
+            createdAt: new Date().toISOString(),
+          },
+        ],
       }));
     }
 
@@ -142,7 +152,7 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error("Error fetching inventory:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi lấy dữ liệu kho hàng" },
+      { success: false, error: error.message || "Failed to retrieve inventory data" },
       { status: 500 }
     );
   }
@@ -154,7 +164,7 @@ export async function POST(request: NextRequest) {
     const {
       sku,
       name,
-      category = "Z Brushes",
+      category = "Acrylic Brushes",
       description,
       imageUrl,
       wholesalePrice,
@@ -166,14 +176,14 @@ export async function POST(request: NextRequest) {
 
     if (!sku?.trim() || !name?.trim()) {
       return NextResponse.json(
-        { success: false, error: "Mã SKU và Tên sản phẩm là bắt buộc" },
+        { success: false, error: "SKU code and Product Name are required" },
         { status: 400 }
       );
     }
 
     if (wholesalePrice === undefined || wholesalePrice === null || isNaN(Number(wholesalePrice))) {
       return NextResponse.json(
-        { success: false, error: "Giá sỉ (Wholesale Price) không hợp lệ" },
+        { success: false, error: "Valid wholesale price is required" },
         { status: 400 }
       );
     }
@@ -187,7 +197,7 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { success: false, error: `Mã SKU '${cleanSku}' đã tồn tại trong hệ thống` },
+        { success: false, error: `SKU code '${cleanSku}' already exists in inventory system` },
         { status: 409 }
       );
     }
@@ -204,9 +214,10 @@ export async function POST(request: NextRequest) {
           description: description?.trim() || null,
           imageUrl: imageUrl?.trim() || null,
           wholesalePrice: Number(wholesalePrice),
-          retailPrice: retailPrice !== undefined && retailPrice !== null && !isNaN(Number(retailPrice))
-            ? Number(retailPrice)
-            : null,
+          retailPrice:
+            retailPrice !== undefined && retailPrice !== null && !isNaN(Number(retailPrice))
+              ? Number(retailPrice)
+              : null,
           currentStock: initialStock,
           minStockAlert: Math.max(0, parseInt(String(minStockAlert), 10) || 10),
           location: location?.trim() || "Houston Hub",
@@ -220,7 +231,7 @@ export async function POST(request: NextRequest) {
             type: "INBOUND",
             quantity: initialStock,
             referenceNo: "INIT-STOCK",
-            notes: "Tồn kho ban đầu khi tạo sản phẩm",
+            notes: "Initial stock upon product creation",
             createdUser: "admin",
           },
         });
@@ -232,7 +243,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Tạo sản phẩm thành công",
+        message: "Product created successfully",
         product: newProduct,
       },
       { status: 201 }
@@ -240,7 +251,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Error creating product:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi tạo sản phẩm" },
+      { success: false, error: error.message || "Error creating product" },
       { status: 500 }
     );
   }

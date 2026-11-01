@@ -30,19 +30,22 @@ function parsePrice(text: string): number | null {
 // Guess category based on product name
 function guessCategory(name: string): string {
   const lower = name.toLowerCase();
-  if (lower.includes("brush") || lower.includes("cọ") || lower.includes("kolinsky") || lower.includes("ombre")) {
-    return "Z Brushes";
+  if (lower.includes("brush") || lower.includes("cọ") || lower.includes("kolinsky") || lower.includes("ombre") || lower.includes("z brush")) {
+    return "Acrylic Brushes";
   }
   if (lower.includes("kềm") || lower.includes("nipper") || lower.includes("cắt da") || lower.includes("cắt móng")) {
-    return "Kềm cắt da";
+    return "Nail Nippers & Tools";
   }
-  if (lower.includes("dũa") || lower.includes("file") || lower.includes("buffer") || lower.includes("đầu mài") || lower.includes("drill")) {
-    return "Dụng cụ nail";
+  if (lower.includes("dũa") || lower.includes("file") || lower.includes("buffer") || lower.includes("đầu mài") || lower.includes("drill") || lower.includes("tool")) {
+    return "Nail Nippers & Tools";
   }
-  if (lower.includes("gel") || lower.includes("bột") || lower.includes("acrylic") || lower.includes("dip") || lower.includes("liquid") || lower.includes("phụ liệu")) {
-    return "Phụ liệu";
+  if (lower.includes("gel") || lower.includes("lacquer") || lower.includes("polish") || lower.includes("bột") || lower.includes("dip")) {
+    return "Gel & Lacquer";
   }
-  return "Z Brushes";
+  if (lower.includes("acrylic") || lower.includes("liquid") || lower.includes("phụ liệu") || lower.includes("supply") || lower.includes("accessory")) {
+    return "Accessories & Supplies";
+  }
+  return "Acrylic Brushes";
 }
 
 export async function POST(request: NextRequest) {
@@ -52,14 +55,14 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { success: false, error: "Vui lòng chọn file Word (.docx)" },
+        { success: false, error: "Please select a Microsoft Word (.docx) file" },
         { status: 400 }
       );
     }
 
     if (!file.name.toLowerCase().endsWith(".docx")) {
       return NextResponse.json(
-        { success: false, error: "Hệ thống chỉ hỗ trợ định dạng file Word .docx" },
+        { success: false, error: "Only Microsoft Word (.docx) documents are supported" },
         { status: 400 }
       );
     }
@@ -110,7 +113,12 @@ export async function POST(request: NextRequest) {
         const imgBuffer = await zipEntry.async("nodebuffer");
         const baseName = path.basename(fullPath);
         const ext = path.extname(baseName).toLowerCase() || ".png";
-        const mimeType = ext === ".jpg" || ext === ".jpeg" ? "image/jpeg" : ext === ".webp" ? "image/webp" : "image/png";
+        const mimeType =
+          ext === ".jpg" || ext === ".jpeg"
+            ? "image/jpeg"
+            : ext === ".webp"
+            ? "image/webp"
+            : "image/png";
         const uniqueName = `${Date.now()}_${Math.random().toString(36).substring(2, 6)}_${baseName}`;
 
         let finalUrl = "";
@@ -155,10 +163,8 @@ export async function POST(request: NextRequest) {
       // Extract all tables: <w:tbl>...</w:tbl>
       const tableRegex = /<w:tbl[\s\S]*?<\/w:tbl>/gi;
       let tblMatch;
-      let tableIndex = 0;
 
       while ((tblMatch = tableRegex.exec(docXml)) !== null) {
-        tableIndex++;
         const tblXml = tblMatch[0];
 
         // Extract rows: <w:tr>...</w:tr>
@@ -269,7 +275,10 @@ export async function POST(request: NextRequest) {
             }
           });
 
-          if (matched >= 2 || (colMapping.name !== -1 && (colMapping.wholesalePrice !== -1 || colMapping.sku !== -1))) {
+          if (
+            matched >= 2 ||
+            (colMapping.name !== -1 && (colMapping.wholesalePrice !== -1 || colMapping.sku !== -1))
+          ) {
             headerRowIdx = r;
             break;
           }
@@ -333,7 +342,6 @@ export async function POST(request: NextRequest) {
 
           // Heuristic fallback if columns not matched
           if (!name || wholesalePrice === null) {
-            const textCells = cells.filter((c) => c.text.length > 0);
             for (let ci = 0; ci < cells.length; ci++) {
               const cell = cells[ci];
               const price = parsePrice(cell.text);
@@ -344,7 +352,11 @@ export async function POST(request: NextRequest) {
               }
 
               // Check if cell is pure price
-              if (price !== null && cell.text.replace(/[^0-9.]/g, "").length === cell.text.trim().length || cell.text.includes("$")) {
+              if (
+                (price !== null &&
+                  cell.text.replace(/[^0-9.]/g, "").length === cell.text.trim().length) ||
+                cell.text.includes("$")
+              ) {
                 if (wholesalePrice === null) {
                   wholesalePrice = price;
                 } else if (retailPrice === null) {
@@ -384,7 +396,7 @@ export async function POST(request: NextRequest) {
           }
 
           if (!name) {
-            name = `Sản phẩm ${sku}`;
+            name = `Product ${sku}`;
           }
 
           if (!category) {
@@ -428,7 +440,6 @@ export async function POST(request: NextRequest) {
 
         let imgIdx = 0;
         lines.forEach((line, idx) => {
-          // If line has price or product pattern
           const price = parsePrice(line);
           if (line.length > 3) {
             const sku = `JKI-${Date.now().toString().slice(-4)}-${String(idx + 1).padStart(3, "0")}`;
@@ -465,7 +476,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Error processing docx import:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi xử lý file Word" },
+      { success: false, error: error.message || "Error processing Word document" },
       { status: 500 }
     );
   }
