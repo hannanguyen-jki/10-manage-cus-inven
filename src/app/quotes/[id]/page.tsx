@@ -24,6 +24,8 @@ import {
   ExternalLink,
   MessageSquare,
   AlertCircle,
+  Copy,
+  FileSpreadsheet,
 } from "lucide-react";
 import { QuoteData } from "@/lib/quotesData";
 
@@ -35,6 +37,63 @@ export default function QuoteDetailPage() {
   const [quote, setQuote] = useState<QuoteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [copiedToast, setCopiedToast] = useState(false);
+
+  const handleCopyQuoteText = () => {
+    if (!quote) return;
+    const lines = [
+      `[BÁO GIÁ JKIOCEAN] #${quote.quoteNumber}`,
+      `Kính gửi: ${quote.customer.contactPerson} (${quote.customer.businessName})`,
+      `Điện thoại: ${quote.customer.phone}`,
+      `Địa chỉ: ${quote.customer.address || ""}, ${quote.customer.city || ""}, ${quote.customer.state || ""}`,
+      `Hiệu lực đến: ${new Date(quote.validUntil).toLocaleDateString("en-US")}`,
+      `------------------------------------------`,
+      ...quote.items.map((it, idx) => `${idx + 1}. ${it.productName} [${it.sku}]\n   SL: ${it.quantity} x $${it.unitPrice.toFixed(2)}${it.discount > 0 ? ` (-${it.discount}%)` : ""} = $${it.lineTotal.toFixed(2)}`),
+      `------------------------------------------`,
+      `Tổng tiền hàng: $${quote.subtotal.toFixed(2)}`,
+      quote.totalDiscount > 0 ? `Chiết khấu: -$${quote.totalDiscount.toFixed(2)}` : null,
+      quote.shipping > 0 ? `Phí ship: $${quote.shipping.toFixed(2)}` : `Giao hàng: Miễn phí nội thành Houston Hub`,
+      `TỔNG THANH TOÁN: $${quote.totalAmount.toFixed(2)}`,
+      `------------------------------------------`,
+      `Thanh toán Zelle: payments@jkiocean.com`,
+      `Hotline hỗ trợ: +1 (713) 330-6165`,
+    ].filter(Boolean).join("\n");
+
+    navigator.clipboard.writeText(lines);
+    setCopiedToast(true);
+    setTimeout(() => setCopiedToast(false), 2500);
+  };
+
+  const handleExportCsv = () => {
+    if (!quote) return;
+    const headers = ["STT", "Mã SKU", "Tên Sản Phẩm", "Danh Mục", "Số Lượng", "Đơn Giá ($)", "Chiết Khấu (%)", "Thành Tiền ($)"];
+    const rows = quote.items.map((it, idx) => [
+      idx + 1,
+      `"${it.sku}"`,
+      `"${it.productName.replace(/"/g, '""')}"`,
+      `"${(it.category || '').replace(/"/g, '""')}"`,
+      it.quantity,
+      it.unitPrice.toFixed(2),
+      it.discount,
+      it.lineTotal.toFixed(2)
+    ]);
+    const summaryRows = [
+      [],
+      ["", "", "", "", "", "Tổng tiền hàng:", "", quote.subtotal.toFixed(2)],
+      ["", "", "", "", "", "Tổng chiết khấu:", "", quote.totalDiscount.toFixed(2)],
+      ["", "", "", "", "", "TỔNG CỘNG:", "", quote.totalAmount.toFixed(2)]
+    ];
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(",")), ...summaryRows.map(r => r.join(","))].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Bao_Gia_${quote.quoteNumber}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
 
   // SMS Modal
   const [showSmsModal, setShowSmsModal] = useState(false);
@@ -230,13 +289,35 @@ export default function QuoteDetailPage() {
             <span>Gửi Quo SMS</span>
           </button>
 
-          {/* Print */}
+          {/* 1-Click Copy Text for Zalo/SMS */}
+          <button
+            onClick={handleCopyQuoteText}
+            className={`px-3.5 py-2 border rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm ${
+              copiedToast
+                ? "bg-emerald-600 text-white border-emerald-600"
+                : "bg-white border-sky-300 text-sky-800 hover:bg-sky-50"
+            }`}
+          >
+            {copiedToast ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-sky-600" />}
+            <span>{copiedToast ? "Đã Copy Báo Giá!" : "Copy Báo Giá (Zalo/SMS)"}</span>
+          </button>
+
+          {/* Export Excel */}
+          <button
+            onClick={handleExportCsv}
+            className="px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Xuất Excel</span>
+          </button>
+
+          {/* Print / Save PDF Fast */}
           <button
             onClick={handlePrint}
             className="px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>In Bản Giấy</span>
+            <span>In / Lưu PDF Nhanh</span>
           </button>
 
           {/* Download PDF */}

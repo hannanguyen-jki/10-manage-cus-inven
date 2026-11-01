@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   FileText,
   ArrowLeft,
@@ -37,8 +37,10 @@ interface LineItem {
   discount: number; // %
 }
 
-export default function CreateQuotePage() {
+function CreateQuoteContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paramCustomerId = searchParams?.get("customerId");
 
   // Catalog data
   const [customers, setCustomers] = useState<QuoteCustomerData[]>([]);
@@ -87,7 +89,11 @@ export default function CreateQuotePage() {
           setCustomers(data.customers);
           setProducts(data.products);
           if (data.customers.length > 0) {
-            setSelectedCustomerId(data.customers[0].id);
+            if (paramCustomerId && data.customers.some((c: any) => c.id === paramCustomerId)) {
+              setSelectedCustomerId(paramCustomerId);
+            } else {
+              setSelectedCustomerId(data.customers[0].id);
+            }
           }
           // Seed with 2 initial popular items for quick builder UX
           if (data.products.length >= 2) {
@@ -744,5 +750,14 @@ export default function CreateQuotePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+export default function CreateQuotePage() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-slate-500 font-semibold">Đang chuẩn bị công cụ báo giá...</div>}>
+      <CreateQuoteContent />
+    </Suspense>
   );
 }

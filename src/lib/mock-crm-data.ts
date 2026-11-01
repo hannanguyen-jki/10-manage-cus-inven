@@ -92,531 +92,2524 @@ export interface MockLead {
   updatedAt: string;
 }
 
-// Initial Mock Customers (Top Nail Salons & Supply Stores in Texas)
 export const initialMockCustomers: MockCustomer[] = [
   {
-    id: "cus-001",
-    businessName: "Venetian Nail Spa - Galleria Houston",
-    contactPerson: "Jennifer Tran (Chị Thảo)",
-    phone: "+17135550192",
-    email: "thao.tran@venetianhouston.com",
-    address: "5015 Westheimer Rd, Ste 2200",
-    city: "Houston",
-    state: "TX",
-    zipCode: "77056",
-    birthday: "1984-06-18T00:00:00.000Z",
-    assignedSale: "hanna",
-    tier: "VIP",
-    status: "ACTIVE",
-    notes: "Tiệm 32 ghế sang trọng khu Galleria, ưu tiên cọ Kolinsky Z-Brushes #14 và cọ Ombre. Nhập hàng đều mỗi 2 tuần.",
-    createdAt: "2024-01-15T08:30:00.000Z",
-    updatedAt: "2026-10-15T10:00:00.000Z",
-    orders: [
+    "id": "cus-001",
+    "businessName": "A to Z Nail Supply",
+    "contactPerson": "Andy Tran",
+    "phone": "+1-832-555-0142",
+    "email": "orders@atoznailsuppsupply.com",
+    "address": "7211 Regency Square Blvd",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77036",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $4,024.70",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-14T10:00:00.000Z",
+    "orders": [
       {
-        id: "ord-101",
-        orderNumber: "JKI-ORD-2026-088",
-        totalAmount: 3450.0,
-        paidAmount: 3450.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-10-25T00:00:00.000Z",
-        saleRep: "hanna",
-        notes: "Giao hỏa tốc tới chi nhánh Galleria",
-        createdAt: "2026-10-10T09:15:00.000Z",
-        items: [
-          { id: "oi-1", productId: "p-1", productName: "Z-Kolinsky Master Acrylic Brush #14", sku: "ZK-14-GLD", quantity: 30, unitPrice: 65.0 },
-          { id: "oi-2", productId: "p-2", productName: "Z-Ombre Precision Blending Brush", sku: "ZO-08-SLV", quantity: 50, unitPrice: 30.0 }
-        ]
-      },
-      {
-        id: "ord-102",
-        orderNumber: "JKI-ORD-2026-042",
-        totalAmount: 2800.0,
-        paidAmount: 2800.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-09-20T00:00:00.000Z",
-        saleRep: "hanna",
-        createdAt: "2026-09-08T14:30:00.000Z",
-        items: [
-          { id: "oi-3", productId: "p-3", productName: "Z-Fine Liner 3D Gel Art Brush Set", sku: "ZL-SET-3", quantity: 40, unitPrice: 45.0 },
-          { id: "oi-4", productId: "p-1", productName: "Z-Kolinsky Master Acrylic Brush #14", sku: "ZK-14-GLD", quantity: 15, unitPrice: 66.66 }
-        ]
-      },
-      {
-        id: "ord-103",
-        orderNumber: "JKI-ORD-2026-015",
-        totalAmount: 4120.0,
-        paidAmount: 4120.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-08-15T00:00:00.000Z",
-        saleRep: "hanna",
-        createdAt: "2026-08-01T11:00:00.000Z",
-        items: [
-          { id: "oi-5", productId: "p-1", productName: "Z-Kolinsky Master Acrylic Brush #14", sku: "ZK-14-GLD", quantity: 50, unitPrice: 65.0 },
-          { id: "oi-6", productId: "p-2", productName: "Z-Ombre Precision Blending Brush", sku: "ZO-08-SLV", quantity: 29, unitPrice: 30.0 }
+        "id": "ord-1-1",
+        "orderNumber": "INV-202610-1000",
+        "totalAmount": 7090.0,
+        "paidAmount": 4963.0,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-10-16T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-14T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-1-1",
+            "productId": "ACC-001",
+            "productName": "Nail Art Palette Heart Blue",
+            "sku": "ACC-001",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
         ]
       }
     ],
-    quotes: [
+    "quotes": [
       {
-        id: "quo-201",
-        quoteNumber: "JKI-QUO-2026-104",
-        totalAmount: 5200.0,
-        validUntil: "2026-11-15T00:00:00.000Z",
-        status: "SENT",
-        notes: "Gói cọ khuyến mãi mùa Lễ Tạ Ơn & Giáng Sinh 2026",
-        createdAt: "2026-10-18T16:00:00.000Z",
-        items: [
-          { id: "qi-1", productId: "p-1", productName: "Z-Kolinsky Master Acrylic Brush #14", quantity: 60, unitPrice: 62.0, discount: 5.0 },
-          { id: "qi-2", productId: "p-4", productName: "Z-Diamond Oval Builder Gel Brush #8", quantity: 40, unitPrice: 37.0, discount: 0.0 }
+        "id": "qt-1",
+        "quoteNumber": "QT-202610-2000",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-14T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-1-1",
+            "productId": "ACC-001",
+            "productName": "Nail Art Palette Heart Blue",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
         ]
       }
     ],
-    smsLogs: [
+    "smsLogs": [
       {
-        id: "sms-301",
-        toPhone: "+17135550192",
-        fromPhone: "+17133306165",
-        content: "JKIOCEAN: Chị Thảo ơi, lô cọ Z-Kolinsky #14 đợt mới vừa cập bến kho Houston. Em giữ trước cho tiệm 30 cây giá VIP nhé!",
-        type: "PROMOTION",
-        status: "SENT",
-        createdAt: "2026-10-18T09:45:00.000Z"
-      },
-      {
-        id: "sms-302",
-        toPhone: "+17135550192",
-        fromPhone: "+17133306165",
-        content: "JKIOCEAN kính chúc chị Jennifer Tran sinh nhật vui vẻ, hạnh phúc và tiệm Venetian Nail Spa ngày càng hồng phát!",
-        type: "BIRTHDAY",
-        status: "SENT",
-        createdAt: "2026-06-18T08:00:00.000Z"
+        "id": "sms-1",
+        "toPhone": "+1-832-555-0142",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Andy Tran (A to Z Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-14T14:00:00.000Z"
       }
     ],
-    churnSurveys: []
+    "churnSurveys": []
   },
   {
-    id: "cus-002",
-    businessName: "Milano Nail Spa - The Woodlands",
-    contactPerson: "David Nguyen (Anh Dũng)",
-    phone: "+18325550481",
-    email: "woodlands@milanonails.com",
-    address: "19075 I-45 South, Suite 115",
-    city: "The Woodlands",
-    state: "TX",
-    zipCode: "77385",
-    birthday: "1979-11-04T00:00:00.000Z",
-    assignedSale: "johnny",
-    tier: "WHOLESALE",
-    status: "ACTIVE",
-    notes: "Chủ chuỗi Milano 3 tiệm khu North Houston. Mua số lượng lớn cọ đắp bột và cọ vẽ nét.",
-    createdAt: "2024-03-20T10:00:00.000Z",
-    updatedAt: "2026-10-12T15:20:00.000Z",
-    orders: [
+    "id": "cus-002",
+    "businessName": "Nails Warehouse",
+    "contactPerson": "Linda Nguyen",
+    "phone": "+1-713-555-0188",
+    "email": "orders@nailswarehousupply.com",
+    "address": "9889 Bellaire Blvd, Ste 210",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77036",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,352.36",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-04T10:00:00.000Z",
+    "orders": [
       {
-        id: "ord-104",
-        orderNumber: "JKI-ORD-2026-079",
-        totalAmount: 1950.0,
-        paidAmount: 1950.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-10-05T00:00:00.000Z",
-        saleRep: "johnny",
-        createdAt: "2026-09-28T10:00:00.000Z",
-        items: [
-          { id: "oi-7", productId: "p-1", productName: "Z-Kolinsky Master Acrylic Brush #14", sku: "ZK-14-GLD", quantity: 30, unitPrice: 65.0 }
+        "id": "ord-2-1",
+        "orderNumber": "INV-202610-1001",
+        "totalAmount": 935.0,
+        "paidAmount": 935.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-06T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-04T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-2-1",
+            "productId": "ACC-002",
+            "productName": "Nail Art Palette Square Blue",
+            "sku": "ACC-002",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
         ]
       }
     ],
-    quotes: [
+    "quotes": [
       {
-        id: "quo-202",
-        quoteNumber: "JKI-QUO-2026-095",
-        totalAmount: 3800.0,
-        validUntil: "2026-10-31T00:00:00.000Z",
-        status: "ACCEPTED",
-        createdAt: "2026-09-25T14:00:00.000Z"
-      }
-    ],
-    smsLogs: [
-      {
-        id: "sms-303",
-        toPhone: "+18325550481",
-        fromPhone: "+17133306165",
-        content: "Anh Dũng ơi, đơn hàng cọ Z-Brushes đã giao thành công tại The Woodlands lúc 2:30 PM hôm nay qua UPS tracking #1Z99999. Cần hỗ trợ thêm anh nhắn em nhé!",
-        type: "FOLLOW_UP",
-        status: "SENT",
-        createdAt: "2026-09-30T14:40:00.000Z"
-      }
-    ],
-    churnSurveys: []
-  },
-  {
-    id: "cus-003",
-    businessName: "Bellaire Glamour Nails & Supply",
-    contactPerson: "Kelly Vu (Chị Kim)",
-    phone: "+17135550833",
-    email: "kelly.vu@bellaireglamour.com",
-    address: "9889 Bellaire Blvd, Ste 108",
-    city: "Houston",
-    state: "TX",
-    zipCode: "77036",
-    birthday: "1988-03-22T00:00:00.000Z",
-    assignedSale: "admin",
-    tier: "WHOLESALE",
-    status: "AT_RISK",
-    notes: "Khu Asiatown Bellaire. Đang có dấu hiệu giảm đơn tháng vừa rồi do tồn kho đợt hè còn nhiều và có đối thủ chào giá cạnh tranh.",
-    createdAt: "2023-11-10T09:00:00.000Z",
-    updatedAt: "2026-10-18T11:00:00.000Z",
-    orders: [
-      {
-        id: "ord-105",
-        orderNumber: "JKI-ORD-2026-022",
-        totalAmount: 1100.0,
-        paidAmount: 600.0,
-        paymentStatus: "PARTIAL",
-        dueDate: "2026-09-15T00:00:00.000Z",
-        saleRep: "admin",
-        notes: "Còn nợ $500 chuyển sang kỳ sau",
-        createdAt: "2026-08-20T10:30:00.000Z",
-        items: [
-          { id: "oi-8", productId: "p-2", productName: "Z-Ombre Precision Blending Brush", sku: "ZO-08-SLV", quantity: 20, unitPrice: 30.0 },
-          { id: "oi-9", productId: "p-3", productName: "Z-Fine Liner 3D Gel Art Brush Set", sku: "ZL-SET-3", quantity: 10, unitPrice: 50.0 }
+        "id": "qt-2",
+        "quoteNumber": "QT-202610-2001",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-04T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-2-1",
+            "productId": "ACC-002",
+            "productName": "Nail Art Palette Square Blue",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
         ]
       }
     ],
-    quotes: [],
-    smsLogs: [
+    "smsLogs": [
       {
-        id: "sms-304",
-        toPhone: "+17135550833",
-        fromPhone: "+17133306165",
-        content: "JKIOCEAN xin chào chị Kim. Tiệm mình còn nợ $500 đơn hàng đợt 20/08, chị sắp xếp thanh toán qua Zelle/Check giúp tụi em nhé ạ. Em cảm ơn chị!",
-        type: "AR_REMINDER",
-        status: "SENT",
-        createdAt: "2026-09-25T10:00:00.000Z"
+        "id": "sms-2",
+        "toPhone": "+1-713-555-0188",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Linda Nguyen (Nails Warehouse), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-04T14:00:00.000Z"
       }
     ],
-    churnSurveys: [
-      {
-        id: "cs-401",
-        customerId: "cus-003",
-        analysisMonth: "2026-09",
-        dropPercent: -58.5,
-        reason: "PRICE_COMPETITION",
-        saleNotes: "Tiệm nhận được chào giá cọ Trung Quốc giá rẻ hơn 15%. Tuy nhiên chất lượng lông cọ kém hơn lông Kolinsky JKI.",
-        actionPlan: "Đã cử Sale ghé tiệm tặng mẫu thử Z-Brushes mới, áp dụng chiết khấu bậc thang 8% cho đơn 50 cây.",
-        saleRep: "admin",
-        isResolved: false,
-        createdAt: "2026-10-02T16:00:00.000Z"
-      }
-    ]
+    "churnSurveys": []
   },
   {
-    id: "cus-004",
-    businessName: "Austin Sunset Luxury Nail Bar",
-    contactPerson: "Michael Le (Anh Minh)",
-    phone: "+15125550917",
-    email: "minh.le@sunsetaustinnails.com",
-    address: "2200 S Congress Ave",
-    city: "Austin",
-    state: "TX",
-    zipCode: "78704",
-    birthday: "1982-08-14T00:00:00.000Z",
-    assignedSale: "hanna",
-    tier: "STANDARD",
-    status: "ACTIVE",
-    notes: "Tiệm phong cách Organic khu South Congress, thợ yêu cầu cọ gel cao cấp và dung dịch rửa cọ thân thiện môi trường.",
-    createdAt: "2024-05-12T13:00:00.000Z",
-    updatedAt: "2026-10-14T10:00:00.000Z",
-    orders: [
+    "id": "cus-003",
+    "businessName": "Texas Beauty Nail Supply",
+    "contactPerson": "David Le",
+    "phone": "+1-214-555-0145",
+    "email": "orders@texasbeautynsupply.com",
+    "address": "3200 Preston Rd, Suite 12",
+    "city": "Dallas",
+    "state": "TX",
+    "zipCode": "75240",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,440.50",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-13T10:00:00.000Z",
+    "orders": [
       {
-        id: "ord-106",
-        orderNumber: "JKI-ORD-2026-085",
-        totalAmount: 1450.0,
-        paidAmount: 1450.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-10-18T00:00:00.000Z",
-        saleRep: "hanna",
-        createdAt: "2026-10-04T15:00:00.000Z"
+        "id": "ord-3-1",
+        "orderNumber": "INV-202610-1002",
+        "totalAmount": 3521.0,
+        "paidAmount": 3521.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-15T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-13T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-3-1",
+            "productId": "ACC-003",
+            "productName": "Nail Art Palette Heart Pink",
+            "sku": "ACC-003",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
+        ]
       }
     ],
-    quotes: [],
-    smsLogs: [],
-    churnSurveys: []
+    "quotes": [
+      {
+        "id": "qt-3",
+        "quoteNumber": "QT-202610-2002",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-13T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-3-1",
+            "productId": "ACC-003",
+            "productName": "Nail Art Palette Heart Pink",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-3",
+        "toPhone": "+1-214-555-0145",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào David Le (Texas Beauty Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-13T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
   },
   {
-    id: "cus-005",
-    businessName: "Dallas Star Nails & Academy",
-    contactPerson: "Nancy Hoang (Cô Nancy)",
-    phone: "+12145550349",
-    email: "nancy@dallasstarnails.com",
-    address: "11445 Emerald St",
-    city: "Dallas",
-    state: "TX",
-    zipCode: "75229",
-    birthday: "1975-12-05T00:00:00.000Z",
-    assignedSale: "johnny",
-    tier: "VIP",
-    status: "ACTIVE",
-    notes: "Có trung tâm đào tạo thợ nail với hơn 60 học viên mỗi khóa. Thường xuyên lấy trọn bộ Kit cọ học viên Z-Brushes.",
-    createdAt: "2023-08-01T08:00:00.000Z",
-    updatedAt: "2026-10-16T17:00:00.000Z",
-    orders: [
+    "id": "cus-004",
+    "businessName": "Monaco Nail Supply",
+    "contactPerson": "Tina Tran",
+    "phone": "+1-512-555-0199",
+    "email": "orders@monaconailsusupply.com",
+    "address": "11200 Lakeline Mall Dr",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78717",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "VIP",
+    "status": "AT_RISK",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,181.74",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-03-16T10:00:00.000Z",
+    "orders": [
       {
-        id: "ord-107",
-        orderNumber: "JKI-ORD-2026-091",
-        totalAmount: 6200.0,
-        paidAmount: 6200.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-10-20T00:00:00.000Z",
-        saleRep: "johnny",
-        createdAt: "2026-10-12T10:30:00.000Z"
-      },
-      {
-        id: "ord-108",
-        orderNumber: "JKI-ORD-2026-061",
-        totalAmount: 5800.0,
-        paidAmount: 5800.0,
-        paymentStatus: "PAID",
-        dueDate: "2026-09-10T00:00:00.000Z",
-        saleRep: "johnny",
-        createdAt: "2026-08-25T11:00:00.000Z"
+        "id": "ord-4-1",
+        "orderNumber": "INV-202610-1003",
+        "totalAmount": 1336.0,
+        "paidAmount": 734.8,
+        "paymentStatus": "OVERDUE",
+        "dueDate": "2026-03-18T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-03-16T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-4-1",
+            "productId": "ACC-004",
+            "productName": "Nail Art Palette Square Pink",
+            "sku": "ACC-004",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
+        ]
       }
     ],
-    quotes: [
+    "quotes": [
       {
-        id: "quo-203",
-        quoteNumber: "JKI-QUO-2026-109",
-        totalAmount: 7500.0,
-        validUntil: "2026-11-20T00:00:00.000Z",
-        status: "SENT",
-        notes: "Gói Kit cọ 100 bộ cho khóa học viên tháng 11/2026",
-        createdAt: "2026-10-17T09:00:00.000Z"
+        "id": "qt-4",
+        "quoteNumber": "QT-202610-2003",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-03-16T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-4-1",
+            "productId": "ACC-004",
+            "productName": "Nail Art Palette Square Pink",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
+        ]
       }
     ],
-    smsLogs: [
+    "smsLogs": [
       {
-        id: "sms-305",
-        toPhone: "+12145550349",
-        fromPhone: "+17133306165",
-        content: "JKIOCEAN: Cô Nancy ơi, báo giá 100 bộ Kit cọ học viên đợt tháng 11 em đã gửi qua email nancy@dallasstarnails.com và Zalo rồi ạ. Cô xem giúp con nhé!",
-        type: "FOLLOW_UP",
-        status: "SENT",
-        createdAt: "2026-10-17T09:10:00.000Z"
+        "id": "sms-4",
+        "toPhone": "+1-512-555-0199",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Tina Tran (Monaco Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-03-16T14:00:00.000Z"
       }
     ],
-    churnSurveys: []
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-005",
+    "businessName": "Invogue Nail Supply",
+    "contactPerson": "Kevin Vu",
+    "phone": "+1-210-555-0123",
+    "email": "orders@invoguenailssupply.com",
+    "address": "17503 La Cantera Pkwy",
+    "city": "San Antonio",
+    "state": "TX",
+    "zipCode": "78257",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $2,191.82",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-05-27T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-5-1",
+        "orderNumber": "INV-202610-1004",
+        "totalAmount": 1828.01,
+        "paidAmount": 1279.61,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-05-29T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-05-27T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-5-1",
+            "productId": "ACC-005",
+            "productName": "Small Art Nail Palette Butterfly",
+            "sku": "ACC-005",
+            "quantity": 25,
+            "unitPrice": 2.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-5",
+        "quoteNumber": "QT-202610-2004",
+        "totalAmount": 67.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-05-27T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-5-1",
+            "productId": "ACC-005",
+            "productName": "Small Art Nail Palette Butterfly",
+            "quantity": 30,
+            "unitPrice": 2.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-5",
+        "toPhone": "+1-210-555-0123",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Kevin Vu (Invogue Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-05-27T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-006",
+    "businessName": "Sunny Nail Supply - Milwaukee",
+    "contactPerson": "Jenny Hoang",
+    "phone": "+1-414-555-0812",
+    "email": "orders@sunnynailsupsupply.com",
+    "address": "4820 W Loomis Rd",
+    "city": "Milwaukee",
+    "state": "WI",
+    "zipCode": "53220",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,347.64",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-09-16T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-6-1",
+        "orderNumber": "INV-202610-1005",
+        "totalAmount": 3177.5,
+        "paidAmount": 0.0,
+        "paymentStatus": "UNPAID",
+        "dueDate": "2026-09-18T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-09-16T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-6-1",
+            "productId": "ACC-006",
+            "productName": "Small Art Nail Palette Flower",
+            "sku": "ACC-006",
+            "quantity": 25,
+            "unitPrice": 2.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-6",
+        "quoteNumber": "QT-202610-2005",
+        "totalAmount": 67.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-09-16T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-6-1",
+            "productId": "ACC-006",
+            "productName": "Small Art Nail Palette Flower",
+            "quantity": 30,
+            "unitPrice": 2.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-6",
+        "toPhone": "+1-414-555-0812",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Jenny Hoang (Sunny Nail Supply - Milwaukee), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-09-16T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-007",
+    "businessName": "Nailmark inc",
+    "contactPerson": "Brian Pham",
+    "phone": "+1-407-555-0391",
+    "email": "orders@nailmarkincsupply.com",
+    "address": "5140 W Colonial Dr",
+    "city": "Orlando",
+    "state": "FL",
+    "zipCode": "32808",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,263.10",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-19T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-7-1",
+        "orderNumber": "INV-202610-1006",
+        "totalAmount": 5956.5,
+        "paidAmount": 5956.5,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-21T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-19T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-7-1",
+            "productId": "ACC-007",
+            "productName": "Small Art Nail Palette Half Moon",
+            "sku": "ACC-007",
+            "quantity": 25,
+            "unitPrice": 2.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-7",
+        "quoteNumber": "QT-202610-2006",
+        "totalAmount": 67.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-19T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-7-1",
+            "productId": "ACC-007",
+            "productName": "Small Art Nail Palette Half Moon",
+            "quantity": 30,
+            "unitPrice": 2.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-7",
+        "toPhone": "+1-407-555-0391",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Brian Pham (Nailmark inc), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-19T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-008",
+    "businessName": "Beauty Direct",
+    "contactPerson": "Helen Do",
+    "phone": "+1-208-555-0211",
+    "email": "orders@beautydirectsupply.com",
+    "address": "8420 W Fairview Ave",
+    "city": "Boise",
+    "state": "ID",
+    "zipCode": "83704",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,512.92",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-09-29T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-8-1",
+        "orderNumber": "INV-202610-1007",
+        "totalAmount": 3006.0,
+        "paidAmount": 3006.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-01T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-09-29T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-8-1",
+            "productId": "ACC-008",
+            "productName": "Nail Art White Glitter Flower Palette",
+            "sku": "ACC-008",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-8",
+        "quoteNumber": "QT-202610-2007",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-09-29T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-8-1",
+            "productId": "ACC-008",
+            "productName": "Nail Art White Glitter Flower Palette",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-8",
+        "toPhone": "+1-208-555-0211",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Helen Do (Beauty Direct), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-09-29T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-009",
+    "businessName": "M2M Nail Supply",
+    "contactPerson": "Sarah Vo",
+    "phone": "+1-714-555-0943",
+    "email": "orders@m2mnailsupplsupply.com",
+    "address": "9522 Bolsa Ave",
+    "city": "Westminster",
+    "state": "CA",
+    "zipCode": "92683",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,513.30",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-04T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-9-1",
+        "orderNumber": "INV-202610-1008",
+        "totalAmount": 1365.5,
+        "paidAmount": 955.85,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-10-06T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-04T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-9-1",
+            "productId": "ACC-009",
+            "productName": "Foot File Pink",
+            "sku": "ACC-009",
+            "quantity": 25,
+            "unitPrice": 4.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-9",
+        "quoteNumber": "QT-202610-2008",
+        "totalAmount": 121.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-04T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-9-1",
+            "productId": "ACC-009",
+            "productName": "Foot File Pink",
+            "quantity": 30,
+            "unitPrice": 4.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-9",
+        "toPhone": "+1-714-555-0943",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Sarah Vo (M2M Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-04T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-010",
+    "businessName": "Hollywood Beauty Supply",
+    "contactPerson": "Michael Dang",
+    "phone": "+1-408-555-0761",
+    "email": "orders@hollywoodbeasupply.com",
+    "address": "1111 Story Rd, Ste 102",
+    "city": "San Jose",
+    "state": "CA",
+    "zipCode": "95122",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "VIP",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $3,021.03",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-09-22T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-10-1",
+        "orderNumber": "INV-202610-1009",
+        "totalAmount": 3563.65,
+        "paidAmount": 3563.65,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-09-24T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-09-22T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-10-1",
+            "productId": "ACC-010",
+            "productName": "Foot File Black",
+            "sku": "ACC-010",
+            "quantity": 25,
+            "unitPrice": 4.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-10",
+        "quoteNumber": "QT-202610-2009",
+        "totalAmount": 121.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-09-22T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-10-1",
+            "productId": "ACC-010",
+            "productName": "Foot File Black",
+            "quantity": 30,
+            "unitPrice": 4.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-10",
+        "toPhone": "+1-408-555-0761",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Michael Dang (Hollywood Beauty Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-09-22T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-011",
+    "businessName": "Boise Nail Supply",
+    "contactPerson": "Nancy Truong",
+    "phone": "+1-832-555-0456",
+    "email": "orders@boisenailsupsupply.com",
+    "address": "10613 Bellaire Blvd, Ste A",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77072",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "WHOLESALE",
+    "status": "AT_RISK",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $2,800.70",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-02-06T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-11-1",
+        "orderNumber": "INV-202610-1010",
+        "totalAmount": 1337.5,
+        "paidAmount": 735.62,
+        "paymentStatus": "OVERDUE",
+        "dueDate": "2026-02-08T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-02-06T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-11-1",
+            "productId": "ACC-011",
+            "productName": "Big Blade",
+            "sku": "ACC-011",
+            "quantity": 25,
+            "unitPrice": 3.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-11",
+        "quoteNumber": "QT-202610-2010",
+        "totalAmount": 81.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-02-06T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-11-1",
+            "productId": "ACC-011",
+            "productName": "Big Blade",
+            "quantity": 30,
+            "unitPrice": 3.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-11",
+        "toPhone": "+1-832-555-0456",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Nancy Truong (Boise Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-02-06T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-012",
+    "businessName": "Orlando Nail Supply",
+    "contactPerson": "Steven Nguyen",
+    "phone": "+1-713-555-0824",
+    "email": "orders@orlandonailssupply.com",
+    "address": "12140 Gulf Fwy",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77034",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $2,577.32",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-13T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-12-1",
+        "orderNumber": "INV-202610-1011",
+        "totalAmount": 2155.0,
+        "paidAmount": 2155.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-15T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-13T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-12-1",
+            "productId": "ACC-012",
+            "productName": "Small Blade",
+            "sku": "ACC-012",
+            "quantity": 25,
+            "unitPrice": 3.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-12",
+        "quoteNumber": "QT-202610-2011",
+        "totalAmount": 81.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-13T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-12-1",
+            "productId": "ACC-012",
+            "productName": "Small Blade",
+            "quantity": 30,
+            "unitPrice": 3.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-12",
+        "toPhone": "+1-713-555-0824",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Steven Nguyen (Orlando Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-13T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-013",
+    "businessName": "Jasmine Nail Supply",
+    "contactPerson": "Jessica Le",
+    "phone": "+1-281-555-0378",
+    "email": "orders@jasminenailssupply.com",
+    "address": "2000 Willowbrook Mall",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77064",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,854.20",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-08-25T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-13-1",
+        "orderNumber": "INV-202610-1012",
+        "totalAmount": 1950.0,
+        "paidAmount": 1365.0,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-08-27T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-08-25T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-13-1",
+            "productId": "ACC-013",
+            "productName": "Big/ Small Blade",
+            "sku": "ACC-013",
+            "quantity": 25,
+            "unitPrice": 3.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-13",
+        "quoteNumber": "QT-202610-2012",
+        "totalAmount": 81.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-08-25T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-13-1",
+            "productId": "ACC-013",
+            "productName": "Big/ Small Blade",
+            "quantity": 30,
+            "unitPrice": 3.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-13",
+        "toPhone": "+1-281-555-0378",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Jessica Le (Jasmine Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-08-25T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-014",
+    "businessName": "Naty Nail Supply",
+    "contactPerson": "Peter Dinh",
+    "phone": "+1-714-555-0639",
+    "email": "orders@natynailsuppsupply.com",
+    "address": "14361 Euclid St",
+    "city": "Garden Grove",
+    "state": "CA",
+    "zipCode": "92843",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "WHOLESALE",
+    "status": "AT_RISK",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,687.00",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-02-02T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-14-1",
+        "orderNumber": "INV-202610-1013",
+        "totalAmount": 786.25,
+        "paidAmount": 432.44,
+        "paymentStatus": "OVERDUE",
+        "dueDate": "2026-02-04T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-02-02T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-14-1",
+            "productId": "ACC-014",
+            "productName": "Nail Brush Blue",
+            "sku": "ACC-014",
+            "quantity": 25,
+            "unitPrice": 0.85
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-14",
+        "quoteNumber": "QT-202610-2013",
+        "totalAmount": 22.95,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-02-02T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-14-1",
+            "productId": "ACC-014",
+            "productName": "Nail Brush Blue",
+            "quantity": 30,
+            "unitPrice": 0.85,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-14",
+        "toPhone": "+1-714-555-0639",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Peter Dinh (Naty Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-02-02T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-015",
+    "businessName": "Inail Supply",
+    "contactPerson": "Rachel Huynh",
+    "phone": "+1-817-555-0482",
+    "email": "orders@inailsupplysupply.com",
+    "address": "3811 S Cooper St",
+    "city": "Arlington",
+    "state": "TX",
+    "zipCode": "76015",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "WHOLESALE",
+    "status": "AT_RISK",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,215.30",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-03-25T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-15-1",
+        "orderNumber": "INV-202610-1014",
+        "totalAmount": 1966.5,
+        "paidAmount": 1081.57,
+        "paymentStatus": "OVERDUE",
+        "dueDate": "2026-03-27T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-03-25T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-15-1",
+            "productId": "ACC-015",
+            "productName": "Nail Brush Pink",
+            "sku": "ACC-015",
+            "quantity": 25,
+            "unitPrice": 0.85
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-15",
+        "quoteNumber": "QT-202610-2014",
+        "totalAmount": 22.95,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-03-25T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-15-1",
+            "productId": "ACC-015",
+            "productName": "Nail Brush Pink",
+            "quantity": 30,
+            "unitPrice": 0.85,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-15",
+        "toPhone": "+1-817-555-0482",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Rachel Huynh (Inail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-03-25T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-016",
+    "businessName": "Cindy Hair Nail Supply",
+    "contactPerson": "Tommy Ta",
+    "phone": "+1-281-555-0917",
+    "email": "orders@cindyhairnaisupply.com",
+    "address": "23501 Cinco Ranch Blvd",
+    "city": "Katy",
+    "state": "TX",
+    "zipCode": "77494",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,160.04",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-12-08T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-16-1",
+        "orderNumber": "INV-202610-1015",
+        "totalAmount": 484.0,
+        "paidAmount": 0.0,
+        "paymentStatus": "UNPAID",
+        "dueDate": "2026-12-10T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-12-08T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-16-1",
+            "productId": "ACC-016",
+            "productName": "Spider gel tool $",
+            "sku": "ACC-016",
+            "quantity": 25,
+            "unitPrice": 15.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-16",
+        "quoteNumber": "QT-202610-2015",
+        "totalAmount": 405.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-12-08T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-16-1",
+            "productId": "ACC-016",
+            "productName": "Spider gel tool $",
+            "quantity": 30,
+            "unitPrice": 15.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-16",
+        "toPhone": "+1-281-555-0917",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Tommy Ta (Cindy Hair Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-12-08T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-017",
+    "businessName": "Golden Sun Nail Supply",
+    "contactPerson": "Andy Tran",
+    "phone": "+1-832-555-0142",
+    "email": "orders@goldensunnaisupply.com",
+    "address": "7211 Regency Square Blvd",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77036",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,884.53",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-09-02T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-17-1",
+        "orderNumber": "INV-202610-1016",
+        "totalAmount": 2050.0,
+        "paidAmount": 1435.0,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-09-04T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-09-02T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-17-1",
+            "productId": "ACC-017",
+            "productName": "Dotting Tool Set 5 Set Pieces",
+            "sku": "ACC-017",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-17",
+        "quoteNumber": "QT-202610-2016",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-09-02T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-17-1",
+            "productId": "ACC-017",
+            "productName": "Dotting Tool Set 5 Set Pieces",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-17",
+        "toPhone": "+1-832-555-0142",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Andy Tran (Golden Sun Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-09-02T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-018",
+    "businessName": "Elegant Nail Supply",
+    "contactPerson": "Linda Nguyen",
+    "phone": "+1-713-555-0188",
+    "email": "orders@elegantnailssupply.com",
+    "address": "9889 Bellaire Blvd, Ste 210",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77036",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,719.25",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-08-04T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-18-1",
+        "orderNumber": "INV-202610-1017",
+        "totalAmount": 2370.0,
+        "paidAmount": 2370.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-08-06T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-08-04T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-18-1",
+            "productId": "ACC-018",
+            "productName": "Dotting Circle Tool",
+            "sku": "ACC-018",
+            "quantity": 25,
+            "unitPrice": 3.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-18",
+        "quoteNumber": "QT-202610-2017",
+        "totalAmount": 94.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-08-04T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-18-1",
+            "productId": "ACC-018",
+            "productName": "Dotting Circle Tool",
+            "quantity": 30,
+            "unitPrice": 3.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-18",
+        "toPhone": "+1-713-555-0188",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Linda Nguyen (Elegant Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-08-04T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-019",
+    "businessName": "1 Stop Nail Supply",
+    "contactPerson": "David Le",
+    "phone": "+1-214-555-0145",
+    "email": "orders@1stopnailsupsupply.com",
+    "address": "3200 Preston Rd, Suite 12",
+    "city": "Dallas",
+    "state": "TX",
+    "zipCode": "75240",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,321.60",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-12-10T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-19-1",
+        "orderNumber": "INV-202610-1018",
+        "totalAmount": 2975.0,
+        "paidAmount": 2975.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-12-12T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-12-10T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-19-1",
+            "productId": "ACC-019",
+            "productName": "Diamond Pick Up Blue",
+            "sku": "ACC-019",
+            "quantity": 25,
+            "unitPrice": 3.75
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-19",
+        "quoteNumber": "QT-202610-2018",
+        "totalAmount": 101.25,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-12-10T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-19-1",
+            "productId": "ACC-019",
+            "productName": "Diamond Pick Up Blue",
+            "quantity": 30,
+            "unitPrice": 3.75,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-19",
+        "toPhone": "+1-214-555-0145",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào David Le (1 Stop Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-12-10T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-020",
+    "businessName": "Diamond Nail Supply",
+    "contactPerson": "Tina Tran",
+    "phone": "+1-512-555-0199",
+    "email": "orders@diamondnailssupply.com",
+    "address": "11200 Lakeline Mall Dr",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78717",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "WHOLESALE",
+    "status": "AT_RISK",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,418.48",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-03-31T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-20-1",
+        "orderNumber": "INV-202610-1019",
+        "totalAmount": 536.0,
+        "paidAmount": 294.8,
+        "paymentStatus": "OVERDUE",
+        "dueDate": "2026-04-02T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-03-31T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-20-1",
+            "productId": "ACC-020",
+            "productName": "Diamond Pick Up Red",
+            "sku": "ACC-020",
+            "quantity": 25,
+            "unitPrice": 3.75
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-20",
+        "quoteNumber": "QT-202610-2019",
+        "totalAmount": 101.25,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-03-31T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-20-1",
+            "productId": "ACC-020",
+            "productName": "Diamond Pick Up Red",
+            "quantity": 30,
+            "unitPrice": 3.75,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-20",
+        "toPhone": "+1-512-555-0199",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Tina Tran (Diamond Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-03-31T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-021",
+    "businessName": "Rosie Tech School",
+    "contactPerson": "Kevin Vu",
+    "phone": "+1-210-555-0123",
+    "email": "orders@rosietechschsupply.com",
+    "address": "17503 La Cantera Pkwy",
+    "city": "San Antonio",
+    "state": "TX",
+    "zipCode": "78257",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $903.56",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-06-24T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-21-1",
+        "orderNumber": "INV-202610-1020",
+        "totalAmount": 424.2,
+        "paidAmount": 296.94,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-06-26T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-06-24T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-21-1",
+            "productId": "ACC-021",
+            "productName": "D iamond P icker W ith D otting Black Out of stock",
+            "sku": "ACC-021",
+            "quantity": 25,
+            "unitPrice": 3.75
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-21",
+        "quoteNumber": "QT-202610-2020",
+        "totalAmount": 101.25,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-06-24T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-21-1",
+            "productId": "ACC-021",
+            "productName": "D iamond P icker W ith D otting Black Out of stock",
+            "quantity": 30,
+            "unitPrice": 3.75,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-21",
+        "toPhone": "+1-210-555-0123",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Kevin Vu (Rosie Tech School), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-06-24T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-022",
+    "businessName": "T Spa Nail Supply",
+    "contactPerson": "Jenny Hoang",
+    "phone": "+1-414-555-0812",
+    "email": "orders@tspanailsuppsupply.com",
+    "address": "4820 W Loomis Rd",
+    "city": "Milwaukee",
+    "state": "WI",
+    "zipCode": "53220",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $300.00",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-06-02T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-22-1",
+        "orderNumber": "INV-202610-1021",
+        "totalAmount": 510.0,
+        "paidAmount": 510.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-06-04T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-06-02T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-22-1",
+            "productId": "ACC-022",
+            "productName": "D iamond P icker W ith D otting Pink",
+            "sku": "ACC-022",
+            "quantity": 25,
+            "unitPrice": 3.75
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-22",
+        "quoteNumber": "QT-202610-2021",
+        "totalAmount": 101.25,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-06-02T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-22-1",
+            "productId": "ACC-022",
+            "productName": "D iamond P icker W ith D otting Pink",
+            "quantity": 30,
+            "unitPrice": 3.75,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-22",
+        "toPhone": "+1-414-555-0812",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Jenny Hoang (T Spa Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-06-02T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-023",
+    "businessName": "Tgel Nail Supply",
+    "contactPerson": "Brian Pham",
+    "phone": "+1-407-555-0391",
+    "email": "orders@tgelnailsuppsupply.com",
+    "address": "5140 W Colonial Dr",
+    "city": "Orlando",
+    "state": "FL",
+    "zipCode": "32808",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "WHOLESALE",
+    "status": "AT_RISK",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $1,075.00",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-03-16T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-23-1",
+        "orderNumber": "INV-202610-1022",
+        "totalAmount": 1950.0,
+        "paidAmount": 1072.5,
+        "paymentStatus": "OVERDUE",
+        "dueDate": "2026-03-18T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-03-16T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-23-1",
+            "productId": "ACC-023",
+            "productName": "S ilicon P en S ingle White",
+            "sku": "ACC-023",
+            "quantity": 25,
+            "unitPrice": 2.5
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-23",
+        "quoteNumber": "QT-202610-2022",
+        "totalAmount": 67.5,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-03-16T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-23-1",
+            "productId": "ACC-023",
+            "productName": "S ilicon P en S ingle White",
+            "quantity": 30,
+            "unitPrice": 2.5,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-23",
+        "toPhone": "+1-407-555-0391",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Brian Pham (Tgel Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-03-16T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-024",
+    "businessName": "Nail Supply Avenue",
+    "contactPerson": "Helen Do",
+    "phone": "+1-208-555-0211",
+    "email": "orders@nailsupplyavsupply.com",
+    "address": "8420 W Fairview Ave",
+    "city": "Boise",
+    "state": "ID",
+    "zipCode": "83704",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $855.50",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-09-29T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-24-1",
+        "orderNumber": "INV-202610-1023",
+        "totalAmount": 1449.5,
+        "paidAmount": 1449.5,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-01T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-09-29T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-24-1",
+            "productId": "ACC-024",
+            "productName": "Silicon Pen Set - 3D Design . 25",
+            "sku": "ACC-024",
+            "quantity": 25,
+            "unitPrice": 4.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-24",
+        "quoteNumber": "QT-202610-2023",
+        "totalAmount": 108.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-09-29T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-24-1",
+            "productId": "ACC-024",
+            "productName": "Silicon Pen Set - 3D Design . 25",
+            "quantity": 30,
+            "unitPrice": 4.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-24",
+        "toPhone": "+1-208-555-0211",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Helen Do (Nail Supply Avenue), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-09-29T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-025",
+    "businessName": "COCONUT - Nail & Beauty Supply",
+    "contactPerson": "Sarah Vo",
+    "phone": "+1-714-555-0943",
+    "email": "orders@coconutnailbsupply.com",
+    "address": "9522 Bolsa Ave",
+    "city": "Westminster",
+    "state": "CA",
+    "zipCode": "92683",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "WHOLESALE",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $638.80",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-08-26T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-25-1",
+        "orderNumber": "INV-202610-1024",
+        "totalAmount": 1298.0,
+        "paidAmount": 908.6,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-08-28T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-08-26T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-25-1",
+            "productId": "ACC-025",
+            "productName": "Nail Chrome Silicon – Pink",
+            "sku": "ACC-025",
+            "quantity": 25,
+            "unitPrice": 2.25
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-25",
+        "quoteNumber": "QT-202610-2024",
+        "totalAmount": 60.75,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-08-26T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-25-1",
+            "productId": "ACC-025",
+            "productName": "Nail Chrome Silicon – Pink",
+            "quantity": 30,
+            "unitPrice": 2.25,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-25",
+        "toPhone": "+1-714-555-0943",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Sarah Vo (COCONUT - Nail & Beauty Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-08-26T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-026",
+    "businessName": "NT Nail Supply",
+    "contactPerson": "Michael Dang",
+    "phone": "+1-408-555-0761",
+    "email": "orders@ntnailsupplysupply.com",
+    "address": "1111 Story Rd, Ste 102",
+    "city": "San Jose",
+    "state": "CA",
+    "zipCode": "95122",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $910.92",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-08-05T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-26-1",
+        "orderNumber": "INV-202610-1025",
+        "totalAmount": 435.0,
+        "paidAmount": 0.0,
+        "paymentStatus": "UNPAID",
+        "dueDate": "2026-08-07T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-08-05T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-26-1",
+            "productId": "ACC-026",
+            "productName": "Nail Chrome Silicon – Black",
+            "sku": "ACC-026",
+            "quantity": 25,
+            "unitPrice": 2.25
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-26",
+        "quoteNumber": "QT-202610-2025",
+        "totalAmount": 60.75,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-08-05T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-26-1",
+            "productId": "ACC-026",
+            "productName": "Nail Chrome Silicon – Black",
+            "quantity": 30,
+            "unitPrice": 2.25,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-26",
+        "toPhone": "+1-408-555-0761",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Michael Dang (NT Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-08-05T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-027",
+    "businessName": "Seneca Nail Supply",
+    "contactPerson": "Nancy Truong",
+    "phone": "+1-832-555-0456",
+    "email": "orders@senecanailsusupply.com",
+    "address": "10613 Bellaire Blvd, Ste A",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77072",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $553.10",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-20T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-27-1",
+        "orderNumber": "INV-202610-1026",
+        "totalAmount": 958.0,
+        "paidAmount": 958.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-22T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-20T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-27-1",
+            "productId": "ACC-027",
+            "productName": "Sand band mini - Long – Pink Medium",
+            "sku": "ACC-027",
+            "quantity": 25,
+            "unitPrice": 3.75
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-27",
+        "quoteNumber": "QT-202610-2026",
+        "totalAmount": 101.25,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-20T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-27-1",
+            "productId": "ACC-027",
+            "productName": "Sand band mini - Long – Pink Medium",
+            "quantity": 30,
+            "unitPrice": 3.75,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-27",
+        "toPhone": "+1-832-555-0456",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Nancy Truong (Seneca Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-20T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-028",
+    "businessName": "WOO Nail Supply",
+    "contactPerson": "Steven Nguyen",
+    "phone": "+1-713-555-0824",
+    "email": "orders@woonailsupplsupply.com",
+    "address": "12140 Gulf Fwy",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77034",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $427.68",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-22T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-28-1",
+        "orderNumber": "INV-202610-1027",
+        "totalAmount": 685.8,
+        "paidAmount": 685.8,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-24T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-22T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-28-1",
+            "productId": "ACC-028",
+            "productName": "Sand band mini - Long – Pink Fine",
+            "sku": "ACC-028",
+            "quantity": 25,
+            "unitPrice": 3.75
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-28",
+        "quoteNumber": "QT-202610-2027",
+        "totalAmount": 101.25,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-22T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-28-1",
+            "productId": "ACC-028",
+            "productName": "Sand band mini - Long – Pink Fine",
+            "quantity": 30,
+            "unitPrice": 3.75,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-28",
+        "toPhone": "+1-713-555-0824",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Steven Nguyen (WOO Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-22T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-029",
+    "businessName": "A Nail Supply",
+    "contactPerson": "Jessica Le",
+    "phone": "+1-281-555-0378",
+    "email": "orders@anailsupplysupply.com",
+    "address": "2000 Willowbrook Mall",
+    "city": "Houston",
+    "state": "TX",
+    "zipCode": "77064",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $443.00",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-04-22T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-29-1",
+        "orderNumber": "INV-202610-1028",
+        "totalAmount": 600.0,
+        "paidAmount": 420.0,
+        "paymentStatus": "PARTIAL",
+        "dueDate": "2026-04-24T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-04-22T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-29-1",
+            "productId": "ACC-029",
+            "productName": "Sand Band (Size Fine, Medium, Coarse) Pink",
+            "sku": "ACC-029",
+            "quantity": 25,
+            "unitPrice": 3.25
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-29",
+        "quoteNumber": "QT-202610-2028",
+        "totalAmount": 87.75,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-04-22T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-29-1",
+            "productId": "ACC-029",
+            "productName": "Sand Band (Size Fine, Medium, Coarse) Pink",
+            "quantity": 30,
+            "unitPrice": 3.25,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-29",
+        "toPhone": "+1-281-555-0378",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Jessica Le (A Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-04-22T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-030",
+    "businessName": "Nail Gurus Spa",
+    "contactPerson": "Peter Dinh",
+    "phone": "+1-714-555-0639",
+    "email": "orders@nailgurusspasupply.com",
+    "address": "14361 Euclid St",
+    "city": "Garden Grove",
+    "state": "CA",
+    "zipCode": "92843",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Alice Nguyen",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $296.50",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-09-01T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-30-1",
+        "orderNumber": "INV-202610-1029",
+        "totalAmount": 225.0,
+        "paidAmount": 225.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-09-03T00:00:00.000Z",
+        "saleRep": "Alice Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-09-01T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-30-1",
+            "productId": "ACC-030",
+            "productName": "Sand Band (Size Fine, Medium, Coarse) Zebra",
+            "sku": "ACC-030",
+            "quantity": 25,
+            "unitPrice": 3.25
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-30",
+        "quoteNumber": "QT-202610-2029",
+        "totalAmount": 87.75,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-09-01T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-30-1",
+            "productId": "ACC-030",
+            "productName": "Sand Band (Size Fine, Medium, Coarse) Zebra",
+            "quantity": 30,
+            "unitPrice": 3.25,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-30",
+        "toPhone": "+1-714-555-0639",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Peter Dinh (Nail Gurus Spa), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-09-01T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-031",
+    "businessName": "Rossie Tech Nail Supply",
+    "contactPerson": "Rachel Huynh",
+    "phone": "+1-817-555-0482",
+    "email": "orders@rossietechnasupply.com",
+    "address": "3811 S Cooper St",
+    "city": "Arlington",
+    "state": "TX",
+    "zipCode": "76015",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Johnny Tran",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $150.60",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-19T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-31-1",
+        "orderNumber": "INV-202610-1030",
+        "totalAmount": 303.0,
+        "paidAmount": 0.0,
+        "paymentStatus": "UNPAID",
+        "dueDate": "2026-10-21T00:00:00.000Z",
+        "saleRep": "Johnny Tran",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-19T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-31-1",
+            "productId": "ACC-031",
+            "productName": "Sand band Zebra – Big Medium $",
+            "sku": "ACC-031",
+            "quantity": 25,
+            "unitPrice": 15.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-31",
+        "quoteNumber": "QT-202610-2030",
+        "totalAmount": 405.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "SENT",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-19T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-31-1",
+            "productId": "ACC-031",
+            "productName": "Sand band Zebra – Big Medium $",
+            "quantity": 30,
+            "unitPrice": 15.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-31",
+        "toPhone": "+1-817-555-0482",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Rachel Huynh (Rossie Tech Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-19T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
+  },
+  {
+    "id": "cus-032",
+    "businessName": "LaMi Nail Supply",
+    "contactPerson": "Tommy Ta",
+    "phone": "+1-281-555-0917",
+    "email": "orders@laminailsuppsupply.com",
+    "address": "23501 Cinco Ranch Blvd",
+    "city": "Katy",
+    "state": "TX",
+    "zipCode": "77494",
+    "birthday": "1988-06-15T00:00:00.000Z",
+    "assignedSale": "Hanna Nguyen",
+    "tier": "STANDARD",
+    "status": "ACTIVE",
+    "notes": "Khách hàng B2B thực tế từ hệ thống JKIOCEAN. Tỷ suất lợi nhuận đóng góp: $100.40",
+    "createdAt": "2024-03-15T08:00:00.000Z",
+    "updatedAt": "2026-10-04T10:00:00.000Z",
+    "orders": [
+      {
+        "id": "ord-32-1",
+        "orderNumber": "INV-202610-1031",
+        "totalAmount": 202.0,
+        "paidAmount": 202.0,
+        "paymentStatus": "PAID",
+        "dueDate": "2026-10-06T00:00:00.000Z",
+        "saleRep": "Hanna Nguyen",
+        "notes": "Đơn hàng sỉ giao từ Houston Hub. Phương thức thanh toán: Zelle/Check.",
+        "createdAt": "2026-10-04T09:00:00.000Z",
+        "items": [
+          {
+            "id": "oi-32-1",
+            "productId": "ACC-032",
+            "productName": "Sand band Zebra – Big Fine $",
+            "sku": "ACC-032",
+            "quantity": 25,
+            "unitPrice": 15.0
+          }
+        ]
+      }
+    ],
+    "quotes": [
+      {
+        "id": "qt-32",
+        "quoteNumber": "QT-202610-2031",
+        "totalAmount": 405.0,
+        "validUntil": "2026-11-15T00:00:00.000Z",
+        "status": "ACCEPTED",
+        "notes": "Báo giá ưu đãi sỉ giao tại Houston Hub",
+        "createdAt": "2026-10-04T08:30:00.000Z",
+        "items": [
+          {
+            "id": "qi-32-1",
+            "productId": "ACC-032",
+            "productName": "Sand band Zebra – Big Fine $",
+            "quantity": 30,
+            "unitPrice": 15.0,
+            "discount": 10
+          }
+        ]
+      }
+    ],
+    "smsLogs": [
+      {
+        "id": "sms-32",
+        "toPhone": "+1-281-555-0917",
+        "fromPhone": "+17133306165",
+        "content": "JKIOCEAN: Chào Tommy Ta (LaMi Nail Supply), JKI gửi báo giá tháng 10. Liên hệ hotline nếu cần hỗ trợ nhé!",
+        "type": "FOLLOW_UP",
+        "status": "SENT",
+        "createdAt": "2026-10-04T14:00:00.000Z"
+      }
+    ],
+    "churnSurveys": []
   }
 ];
 
-// Initial Mock Leads (High-potential Texas & Sunbelt Salons)
 export const initialMockLeads: MockLead[] = [
   {
     id: "lead-001",
-    salonName: "Crystal Luxe Nail Lounge",
-    ownerName: "Sarah Dang",
-    phone: "+18325550711",
-    city: "Katy",
+    salonName: "Milano Nail Spa Austin",
+    ownerName: "David Hoang",
+    phone: "+15125550143",
+    city: "Austin",
     state: "TX",
-    address: "24419 Katy Fwy",
-    googleReviewCount: 248,
+    address: "10515 N Mopac Expy",
+    googleReviewCount: 420,
     rating: 4.8,
-    icpScore: 92,
-    personalizedHook: "Tiệm 24 bàn tại Katy Fwy với 248 đánh giá 4.8 sao. Khách chuộng dịch vụ Ombre & Acrylic cao cấp. Rất thích hợp chào bộ cọ Kolinsky Master #14 kèm chính sách giá sỉ đợt Tết.",
-    status: "QUALIFIED",
+    icpScore: 94,
+    personalizedHook: "Tiệm 24 thợ chuyên đắp bột Ombre, nhu cầu cọ Z Brushes cực lớn.",
+    status: "NEW",
     assignedSale: "hanna",
-    createdAt: "2026-10-14T08:00:00.000Z",
-    updatedAt: "2026-10-18T14:30:00.000Z"
+    createdAt: "2026-10-18T08:00:00.000Z",
+    updatedAt: "2026-10-18T08:00:00.000Z"
   },
   {
     id: "lead-002",
-    salonName: "Sugar Land Elegant Nails & Bar",
-    ownerName: "Tony Truong",
-    phone: "+12815550264",
-    city: "Sugar Land",
+    salonName: "Venetian Nails Lounge Katy",
+    ownerName: "Kathy Vo",
+    phone: "+12815550155",
+    city: "Katy",
     state: "TX",
-    address: "16535 Southwest Fwy",
-    googleReviewCount: 310,
+    address: "23501 Cinco Ranch Blvd",
+    googleReviewCount: 680,
     rating: 4.9,
-    icpScore: 88,
-    personalizedHook: "Vị trí đắc địa First Colony Sugar Land, lượng khách cực đông. Chủ tiệm đang tìm nguồn cung cấp cọ đắp bột ổn định không bị rụng lông.",
+    icpScore: 91,
+    personalizedHook: "Khu vực Katy giàu có, thợ yêu cầu kềm cắt da Cobalt sắc bén.",
     status: "CONTACTED",
     assignedSale: "hanna",
-    createdAt: "2026-10-15T11:20:00.000Z",
-    updatedAt: "2026-10-17T16:00:00.000Z"
-  },
-  {
-    id: "lead-003",
-    salonName: "San Antonio Pearl Nail Sanctuary",
-    ownerName: "Vivian Phan",
-    phone: "+12105550639",
-    city: "San Antonio",
-    state: "TX",
-    address: "312 Pearl Pkwy",
-    googleReviewCount: 185,
-    rating: 4.7,
-    icpScore: 85,
-    personalizedHook: "Tiệm upscale tại Pearl District San Antonio. Khách hàng chi trả cao, thợ thích dùng cọ cán kim loại Z-Brushes chống ăn mòn acetone.",
-    status: "NEW",
-    assignedSale: "johnny",
-    createdAt: "2026-10-17T09:00:00.000Z",
-    updatedAt: "2026-10-17T09:00:00.000Z"
-  },
-  {
-    id: "lead-004",
-    salonName: "Pearland Golden Touch Nails",
-    ownerName: "Henry Dinh",
-    phone: "+17135550998",
-    city: "Pearland",
-    state: "TX",
-    address: "2803 Business Center Dr",
-    googleReviewCount: 94,
-    rating: 4.3,
-    icpScore: 68,
-    personalizedHook: "Tiệm tầm trung 10 thợ, thường lấy phụ liệu từ supply địa phương. Có thể thuyết phục bằng chương trình dùng thử 14 ngày không ưng hoàn tiền.",
-    status: "NEW",
-    assignedSale: "admin",
-    createdAt: "2026-10-18T13:45:00.000Z",
-    updatedAt: "2026-10-18T13:45:00.000Z"
-  },
-  {
-    id: "lead-005",
-    salonName: "Plano Legacy West Nails Bar",
-    ownerName: "Christina Vu",
-    phone: "+19725550183",
-    city: "Plano",
-    state: "TX",
-    address: "7400 Windrose Ave",
-    googleReviewCount: 420,
-    rating: 4.9,
-    icpScore: 95,
-    personalizedHook: "Top 1 tiệm Nails tại Legacy West Dallas. Đội ngũ hơn 35 thợ nail tay nghề cao. Đang mở rộng thêm 2 chi nhánh mới ở Frisco.",
-    status: "QUALIFIED",
-    assignedSale: "johnny",
-    createdAt: "2026-10-12T10:00:00.000Z",
-    updatedAt: "2026-10-16T15:00:00.000Z"
-  },
-  {
-    id: "lead-006",
-    salonName: "Midland Texas Oil Country Nails",
-    ownerName: "Brian Do",
-    phone: "+14325550412",
-    city: "Midland",
-    state: "TX",
-    address: "4400 N Midland Dr",
-    googleReviewCount: 65,
-    rating: 4.1,
-    icpScore: 54,
-    personalizedHook: "Khu vực Tây Texas, phí ship cao hơn Houston. Cần chào gói combo miễn phí vận chuyển cho đơn từ $500.",
-    status: "CONTACTED",
-    assignedSale: "admin",
-    createdAt: "2026-10-16T14:00:00.000Z",
-    updatedAt: "2026-10-18T11:00:00.000Z"
+    createdAt: "2026-10-15T09:30:00.000Z",
+    updatedAt: "2026-10-17T11:00:00.000Z"
   }
 ];
 
-// In-Memory store for runtime fallback when DB connection is pending
-let globalCustomerStore: MockCustomer[] = [...initialMockCustomers];
-let globalLeadStore: MockLead[] = [...initialMockLeads];
+let mockCustomersStore: MockCustomer[] = [...initialMockCustomers];
+let mockLeadsStore: MockLead[] = [...initialMockLeads];
 
 export function getMockCustomers(): MockCustomer[] {
-  return globalCustomerStore;
+  return mockCustomersStore;
 }
 
 export function getMockCustomerById(id: string): MockCustomer | undefined {
-  return globalCustomerStore.find((c) => c.id === id);
+  return mockCustomersStore.find((c) => c.id === id);
 }
 
-export function addMockCustomer(customer: Partial<MockCustomer>): MockCustomer {
-  const newCus: MockCustomer = {
-    id: customer.id || `cus-${Date.now()}`,
-    businessName: customer.businessName || "New Salon",
-    contactPerson: customer.contactPerson || "Chủ Tiệm",
-    phone: customer.phone || "+10000000000",
-    email: customer.email || null,
-    address: customer.address || null,
-    city: customer.city || "Houston",
-    state: customer.state || "TX",
-    zipCode: customer.zipCode || null,
-    birthday: customer.birthday || null,
-    assignedSale: customer.assignedSale || "admin",
-    tier: customer.tier || "STANDARD",
-    status: customer.status || "ACTIVE",
-    notes: customer.notes || null,
+export function addMockCustomer(c: any): MockCustomer {
+  const newCust: MockCustomer = {
+    ...c,
+    id: `cus-${Date.now()}`,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    orders: customer.orders || [],
-    quotes: customer.quotes || [],
-    smsLogs: customer.smsLogs || [],
-    churnSurveys: customer.churnSurveys || [],
+    orders: [],
+    quotes: [],
+    smsLogs: [],
+    churnSurveys: [],
   };
-  globalCustomerStore.unshift(newCus);
-  return newCus;
+  mockCustomersStore.unshift(newCust);
+  return newCust;
 }
 
 export function updateMockCustomer(id: string, updates: Partial<MockCustomer>): MockCustomer | null {
-  const idx = globalCustomerStore.findIndex((c) => c.id === id);
-  if (idx === -1) return null;
-  globalCustomerStore[idx] = {
-    ...globalCustomerStore[idx],
+  const index = mockCustomersStore.findIndex((c) => c.id === id);
+  if (index === -1) return null;
+  mockCustomersStore[index] = {
+    ...mockCustomersStore[index],
     ...updates,
     updatedAt: new Date().toISOString(),
   };
-  return globalCustomerStore[idx];
+  return mockCustomersStore[index];
+}
+
+export function deleteMockCustomer(id: string): boolean {
+  const initialLen = mockCustomersStore.length;
+  mockCustomersStore = mockCustomersStore.filter((c) => c.id !== id);
+  return mockCustomersStore.length < initialLen;
 }
 
 export function getMockLeads(): MockLead[] {
-  return globalLeadStore;
+  return mockLeadsStore;
 }
 
-export function addMockLead(lead: Partial<MockLead>): MockLead {
+
+export function addMockLead(lead: Omit<MockLead, "id" | "createdAt" | "updatedAt">): MockLead {
   const newLead: MockLead = {
-    id: lead.id || `lead-${Date.now()}`,
-    salonName: lead.salonName || "New Salon Lead",
-    ownerName: lead.ownerName || null,
-    phone: lead.phone || "+10000000000",
-    city: lead.city || "Houston",
-    state: lead.state || "TX",
-    address: lead.address || null,
-    googleReviewCount: lead.googleReviewCount ?? 0,
-    rating: lead.rating ?? 4.5,
-    icpScore: lead.icpScore ?? 75,
-    personalizedHook: lead.personalizedHook || null,
-    status: lead.status || "NEW",
-    assignedSale: lead.assignedSale || "admin",
+    ...lead,
+    id: `lead-${Date.now()}`,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
-  globalLeadStore.unshift(newLead);
+  mockLeadsStore.unshift(newLead);
   return newLead;
 }
 
 export function updateMockLead(id: string, updates: Partial<MockLead>): MockLead | null {
-  const idx = globalLeadStore.findIndex((l) => l.id === id);
-  if (idx === -1) return null;
-  globalLeadStore[idx] = {
-    ...globalLeadStore[idx],
+  const index = mockLeadsStore.findIndex((l) => l.id === id);
+  if (index === -1) return null;
+  mockLeadsStore[index] = {
+    ...mockLeadsStore[index],
     ...updates,
     updatedAt: new Date().toISOString(),
   };
-  return globalLeadStore[idx];
+  return mockLeadsStore[index];
 }
 
-export function addMockSmsLog(customerId: string | null, toPhone: string, content: string, type: "PROMOTION" | "BIRTHDAY" | "AR_REMINDER" | "FOLLOW_UP" = "FOLLOW_UP") {
+export function addMockSmsLog(
+  customerIdOrObj: any,
+  toPhone?: string,
+  content?: string,
+  type?: string
+) {
+  let custId = null;
+  let targetPhone = "";
+  let smsContent = "";
+  let smsType = "FOLLOW_UP";
+
+  if (typeof customerIdOrObj === "object" && customerIdOrObj !== null) {
+    custId = customerIdOrObj.customerId;
+    targetPhone = customerIdOrObj.toPhone;
+    smsContent = customerIdOrObj.content;
+    smsType = customerIdOrObj.type || "FOLLOW_UP";
+  } else {
+    custId = customerIdOrObj;
+    targetPhone = toPhone || "";
+    smsContent = content || "";
+    smsType = type || "FOLLOW_UP";
+  }
+
   const newLog = {
     id: `sms-${Date.now()}`,
-    toPhone,
+    customerId: custId,
+    toPhone: targetPhone,
     fromPhone: "+17133306165",
-    content,
-    type,
+    content: smsContent,
+    type: smsType,
     status: "SENT",
     createdAt: new Date().toISOString(),
   };
 
-  if (customerId) {
-    const cus = globalCustomerStore.find((c) => c.id === customerId);
-    if (cus) {
-      if (!cus.smsLogs) cus.smsLogs = [];
-      cus.smsLogs.unshift(newLog);
+  if (custId) {
+    const cust = mockCustomersStore.find((c) => c.id === custId);
+    if (cust) {
+      cust.smsLogs.unshift(newLog as any);
     }
   }
+
   return newLog;
 }

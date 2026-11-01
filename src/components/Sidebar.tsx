@@ -13,7 +13,6 @@ import {
   PhoneCall,
   Settings,
   ChevronRight,
-  ExternalLink,
 } from "lucide-react";
 
 interface NavItem {
@@ -92,35 +91,7 @@ export default function Sidebar() {
           );
         })}
 
-        <div className="pt-5 px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-          Hệ Thống Liên Kết
-        </div>
 
-        <a
-          href="https://cloud.jkioceanhub.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors"
-        >
-          <div className="flex items-center space-x-2.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Nextcloud Hub</span>
-          </div>
-          <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-        </a>
-
-        <a
-          href="https://attendance.jkioceanhub.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors"
-        >
-          <div className="flex items-center space-x-2.5">
-            <span className="w-2 h-2 rounded-full bg-sky-400"></span>
-            <span>App Điểm Danh</span>
-          </div>
-          <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-        </a>
       </nav>
 
       {/* Footer System Status */}

@@ -1,94 +1,105 @@
-# Hướng Dẫn Triển Khai Hệ Thống JKIOCEAN CRM & Kho Lên Máy Chủ VPS
+# Hướng Dẫn Triển Khai JKIOCEAN Management Hub Lên VPS Contabo Công Ty
 
-* **Hệ thống**: JKIOCEAN B2B Management Hub (Khách Hàng, Bán Hàng, Tồn Kho, Báo Giá PDF, Công Nợ AR)
-* **Máy chủ VPS**: Contabo VPS 6 (`37.60.226.206`), Ubuntu 24.04 LTS
-* **Subdomain đích**: `https://manage.jkioceanhub.com`
-* **Cơ chế xác thực (SSO)**: Dùng chung bộ tài khoản với Nextcloud (`cloud.jkioceanhub.com`) và App Điểm Danh (`attendance.jkioceanhub.com`).
-
----
-
-## 1. Kiến Trúc Hoạt Động Trên VPS
-
-```
-Internet (HTTPS)
-   │
-   ▼
-Traefik Reverse Proxy (Mạng Docker 'coolify')
-   ├── cloud.jkioceanhub.com      ──> nextcloud-app-1:80
-   ├── attendance.jkioceanhub.com ──> attendance-web:3000
-   └── manage.jkioceanhub.com     ──> jki-erp-web:3000 (App này)
-                                            │
-                                            ▼
-                                  PostgreSQL (jki-erp-db:5432)
-                                  + SSO Verify (http://attendance-web:3000/api/auth/verify)
-```
+* **Ứng dụng**: JKIOCEAN Management Hub (Quản lý Kho, Khách hàng B2B, Xuất Báo Giá Kèm Ảnh, Công Nợ AR)
+* **Máy chủ VPS**: Contabo Cloud VPS 6 (`vmi3636449`)
+* **IP Server**: `37.60.226.206` (Ubuntu 24.04 LTS)
+* **Tên miền truy cập (Subdomain)**: `https://manage.jkioceanhub.com`
+* **Hệ sinh thái liên kết trên VPS**: Nextcloud Hub (`https://cloud.jkioceanhub.com`), Rclone Google Drive 5TB, Coturn Talk.
 
 ---
 
-## 2. Các Bước Triển Khai Nhanh (1-Click Trên VPS)
+## 1. Kiến Trúc Mạng Trên VPS
 
-### Bước 1: Trỏ DNS Subdomain
-Truy cập trang quản trị DNS tên miền `jkioceanhub.com` (ví dụ trên Cloudflare hoặc Namecheap):
+```mermaid
+flowchart TD
+    Client["Trình duyệt nhân viên / Khách hàng"] -->|HTTPS 443| Caddy["Caddy Reverse Proxy (Tự động cấp SSL Let's Encrypt)"]
+    
+    subgraph VPS["Contabo VPS (37.60.226.206)"]
+        Caddy -->|Host: cloud.jkioceanhub.com| Nextcloud["Nextcloud App (:80)"]
+        Caddy -->|Host: manage.jkioceanhub.com| App["JKIOCEAN ERP Web (:3000)"]
+        App <--> Postgres["PostgreSQL 16 (jki-erp-db:5432)"]
+        App --> Storage["public/uploads/products (375+ ảnh cọ, kềm, phụ liệu)"]
+    end
+```
+
+---
+
+## 2. Các Bước Triển Khai Chi Tiết Lên VPS
+
+### Bước 1: Trỏ Bản Ghi DNS Tên Miền
+Truy cập trang quản lý DNS (Cloudflare / Namecheap / GoDaddy) của tên miền `jkioceanhub.com`:
 * Thêm bản ghi **A record**:
-  * Name: `manage` (hoặc `manage.jkioceanhub.com`)
-  * IPv4: `37.60.226.206`
-  * Proxy status: DNS Only (đám mây xám) nếu dùng Coolify Traefik tự cấp SSL Let's Encrypt.
+  * **Type**: `A`
+  * **Name**: `manage` (hoặc `manage.jkioceanhub.com`)
+  * **IPv4 Address**: `37.60.226.206`
+  * **TTL**: Auto / 5 minutes
+  * **Proxy status**: DNS Only (nếu dùng Caddy tự cấp chứng chỉ SSL)
 
-### Bước 2: Đẩy Code Lên VPS
-Từ máy tính cá nhân hoặc kết nối SSH vào VPS (`ssh root@37.60.226.206`):
+### Bước 2: Cập Nhật Caddyfile Trên VPS
+Trên VPS (`/opt/nextcloud/Caddyfile` hoặc file cấu hình Caddy đang chạy):
+Thêm khối cấu hình sau vào Caddy:
+
+```caddyfile
+manage.jkioceanhub.com {
+    encode gzip zstd
+
+    # Bảo mật tiêu chuẩn
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+    }
+
+    # Reverse proxy sang ứng dụng Management Hub
+    reverse_proxy jki-erp-web:3000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto https
+    }
+}
+```
+
+Sau đó reload Caddy:
 ```bash
-# 1. Di chuyển vào thư mục dự án trên VPS
-mkdir -p /opt/jki-erp
+docker exec -it nextcloud-caddy-1 caddy reload --config /etc/caddy/Caddyfile
+```
+
+### Bước 3: Đẩy Mã Nguồn & Thư Mục Ảnh Sản Phẩm Lên VPS
+Từ máy tính cá nhân (PowerShell hoặc Terminal):
+```bash
+# Nén hoặc rsync mã nguồn lên thư mục /opt/jki-erp trên VPS
+ssh root@37.60.226.206 "mkdir -p /opt/jki-erp"
+
+# Đẩy toàn bộ source code (bao gồm data/ và public/uploads/products) lên VPS
+scp -r * root@37.60.226.206:/opt/jki-erp/
+```
+
+### Bước 4: Khởi Chạy Bằng Docker Compose
+SSH vào VPS:
+```bash
+ssh root@37.60.226.206
 cd /opt/jki-erp
 
-# 2. Clone hoặc copy mã nguồn manage-cus-inven vào đây
-# git clone <repo_url> .
-
-# 3. Tạo file cấu hình môi trường .env
+# Đảm bảo file .env đã cấu hình đúng
 cp .env.example .env
-nano .env
-```
 
-Điền các biến môi trường trong `.env`:
-```env
-DATABASE_URL="postgresql://erp_user:JkiErp2026PasswordSecure@erp-db:5432/jki_erp?schema=public"
-ATTENDANCE_SSO_URL="http://attendance-web:3000/api/auth/verify"
-JWT_SECRET="jkiocean-erp-jwt-secret-key-2026-very-secure"
-QUO_API_KEY="your_actual_quo_api_key_from_quo_settings"
-QUO_PHONE_NUMBER="+17133306165"
-NODE_ENV="production"
-PORT=3000
-```
+# Đảm bảo mạng docker kết nối với Caddy (mạng 'nextcloud_net' hoặc 'coolify')
+docker network inspect nextcloud_net >/dev/null 2>&1 || docker network create nextcloud_net
 
-### Bước 3: Khởi Chạy Bằng Docker Compose
-```bash
-# 1. Đảm bảo mạng coolify đang chạy
-docker network inspect coolify >/dev/null 2>&1 || docker network create coolify
-
-# 2. Khởi chạy cụm container
+# Khởi chạy cụm container
 docker compose up -d --build
+```
 
-# 3. Chạy cập nhật database và nạp dữ liệu mẫu
+### Bước 5: Đẩy Dữ Liệu Sản Phẩm & Khách Hàng (Prisma Seed)
+Chạy lệnh nạp tự động toàn bộ 345+ sản phẩm kèm ảnh và 32 khách hàng thực tế vào Database PostgreSQL:
+```bash
 docker exec -it jki-erp-web npx prisma db push
 docker exec -it jki-erp-web npx prisma db seed
 ```
 
-### Bước 4: Kiểm Tra Truy Cập
-1. Mở trình duyệt: [https://manage.jkioceanhub.com](https://manage.jkioceanhub.com)
-2. Traefik sẽ tự động xin chứng chỉ SSL Let's Encrypt trong 30 giây.
-3. Đăng nhập bằng tài khoản nội bộ JKI:
-   * **Johnny Tran (Sếp)**: Username: `johnny` | Pass: `Admin@123456`
-   * **Hanna Nguyen (Sales)**: Username: `hanna` | Pass: `Nv@123456`
-   * **Alice Nguyen (Kế toán)**: Username: `alice` | Pass: `Hr@123456`
-   * **Root Administrator**: Username: `admin` | Pass: `3846ffbeb28841019aed`
-
----
-
-## 3. Khắc Phục Sự Cố Thường Gặp (Troubleshooting)
-
-1. **Lỗi không đăng nhập được qua SSO**:
-   * Kiểm tra container `attendance-web` có đang chạy trên mạng `coolify` không bằng lệnh:
-     `docker inspect attendance-web | grep -i network`
-   * Nếu khác mạng, thêm container vào mạng: `docker network connect coolify attendance-web`
-2. **Lỗi khi gửi SMS Quo**:
-   * Kiểm tra `QUO_API_KEY` trong file `.env`. Đảm bảo đầu số `+17133306165` đã hoàn tất đăng ký US A2P 10DLC trong bảng điều khiển Quo (OpenPhone).
+### Bước 6: Kiểm Tra Truy Cập
+Mở trình duyệt: [https://manage.jkioceanhub.com](https://manage.jkioceanhub.com)
+1. Danh mục 345+ sản phẩm (Z Brushes, Kềm cắt da, Gel, Bột Ombre, Phụ liệu) hiển thị đầy đủ hình ảnh và giá sỉ/lẻ.
+2. 32 khách hàng thực tế kèm lịch sử hóa đơn, ngày đi hàng và công nợ.
+3. Tạo báo giá siêu tốc: Chọn sản phẩm -> nhập số lượng -> 1 click Copy Text gửi Zalo/SMS hoặc In/Lưu PDF trực tiếp.

@@ -389,7 +389,7 @@ export default function Customer360Page() {
           <div className="flex flex-wrap items-center gap-3">
             {/* Create Quote Link */}
             <Link
-              href={`/quotes?new=true&customerId=${customer.id}`}
+              href={`/quotes/create?customerId=${customer.id}`}
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-[#253c68] text-[#253c68] hover:bg-[#253c68]/5 font-bold text-sm btn-press transition"
             >
               <FileText className="w-4 h-4" />
@@ -673,7 +673,7 @@ export default function Customer360Page() {
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-slate-800">Danh Sách Báo Giá Đã Lập</h3>
                 <Link
-                  href={`/quotes?new=true&customerId=${customer.id}`}
+                  href={`/quotes/create?customerId=${customer.id}`}
                   className="flex items-center space-x-1.5 text-xs font-bold text-white bg-[#253c68] px-3.5 py-2 rounded-xl hover:bg-[#1a2c4e] transition"
                 >
                   <Plus className="w-3.5 h-3.5" />

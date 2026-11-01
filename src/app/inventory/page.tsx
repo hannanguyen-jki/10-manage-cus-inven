@@ -292,6 +292,56 @@ export default function InventoryPage() {
     }
   };
 
+  // Export Inventory to CSV / Excel
+  const handleExportInventoryCsv = () => {
+    if (products.length === 0) return;
+    const headers = ["Mã SKU", "Tên Sản Phẩm", "Danh Mục", "Giá Sỉ ($)", "Giá Lẻ ($)", "Tồn Kho", "Cảnh Báo Min", "Giá Trị Tồn ($)", "Vị Trí Kho"];
+    const rows = products.map((p) => [
+      `"${p.sku}"`,
+      `"${p.name.replace(/"/g, '""')}"`,
+      `"${(p.category || '').replace(/"/g, '""')}"`,
+      p.wholesalePrice.toFixed(2),
+      p.retailPrice ? p.retailPrice.toFixed(2) : "",
+      p.currentStock,
+      p.minStockAlert,
+      (p.currentStock * p.wholesalePrice).toFixed(2),
+      `"${(p.location || 'Houston Hub').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Bao_Cao_Ton_Kho_JKIOCEAN_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Quick Stock Adjust (+ / -) directly
+  const handleQuickAdjust = async (product: Product, delta: number) => {
+    const newStock = Math.max(0, product.currentStock + delta);
+    setProducts((prev) =>
+      prev.map((p) => (p.id === product.id ? { ...p, currentStock: newStock } : p))
+    );
+    try {
+      await fetch("/api/inventory/stock-movement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product.id,
+          type: delta > 0 ? "INBOUND" : "OUTBOUND",
+          quantity: Math.abs(delta),
+          referenceNo: `QUICK-${delta > 0 ? "IN" : "OUT"}`,
+          notes: `Điều chỉnh nhanh ${delta > 0 ? "+" : ""}${delta} trực tiếp tại kho`,
+        }),
+      });
+    } catch {
+      // Background sync
+    }
+  };
+
   // Open Quick Movement Modal
   const openMovementModal = (p?: Product) => {
     setMovementProduct(p || products[0] || null);
@@ -391,6 +441,15 @@ export default function InventoryPage() {
             <FileSpreadsheet className="w-4 h-4 text-[#38bdf8]" />
             <span>Import Word (.docx)</span>
           </Link>
+
+          {/* Export Excel */}
+          <button
+            onClick={handleExportInventoryCsv}
+            className="inline-flex items-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3.5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all btn-press"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+            <span>Xuất Excel Kiểm Kê</span>
+          </button>
 
           {/* Quick Movement */}
           <button
@@ -640,6 +699,13 @@ export default function InventoryPage() {
                       {/* Current Stock */}
                       <td className="py-3 px-4 text-center">
                         <div className="inline-flex items-center space-x-1.5">
+                          <button
+                            onClick={() => handleQuickAdjust(p, -5)}
+                            title="Xuất nhanh 5 cây/sản phẩm"
+                            className="w-5 h-5 rounded bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 font-bold text-xs flex items-center justify-center transition shadow-xs"
+                          >
+                            -
+                          </button>
                           <span
                             className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                               isOut
@@ -651,6 +717,13 @@ export default function InventoryPage() {
                           >
                             {p.currentStock.toLocaleString()}
                           </span>
+                          <button
+                            onClick={() => handleQuickAdjust(p, 10)}
+                            title="Nhập thêm 10 cây/sản phẩm"
+                            className="w-5 h-5 rounded bg-slate-100 hover:bg-emerald-100 text-slate-500 hover:text-emerald-600 font-bold text-xs flex items-center justify-center transition shadow-xs"
+                          >
+                            +
+                          </button>
                         </div>
                         {isLow && (
                           <div className="text-[10px] text-amber-600 font-semibold mt-0.5">
