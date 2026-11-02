@@ -29,7 +29,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://erp_user:JkiErp2026PasswordSecure@erp-db:5432/jki_erp?schema=public"
       ATTENDANCE_SSO_URL: "http://attendance-web:3000/api/auth/verify"
-      JWT_SECRET: "jkiocean-erp-jwt-secret-key-2026-very-secure"
+      JWT_SECRET: "${ERP_JWT_SECRET:-jkiocean-erp-jwt-secret-key-2026-very-secure}"
       QUO_API_KEY: "${QUO_API_KEY:-quo_live_secret_key}"
       QUO_PHONE_NUMBER: "+17133306165"
       NODE_ENV: "production"
