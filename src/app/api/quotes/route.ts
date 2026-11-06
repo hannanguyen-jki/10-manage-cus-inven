@@ -1,5 +1,31 @@
 import { NextResponse } from "next/server";
 import { getQuotesList, createNewQuote, QuoteData } from "@/lib/quotesData";
+import { prisma } from "@/lib/prisma";
+import { addMockCustomer } from "@/lib/mock-crm-data";
+
+/** Save a customer typed in by hand on the quote builder and return its id + details. */
+async function createCustomerFromQuote(nc: any) {
+  const data = {
+    businessName: String(nc.businessName || "").trim(),
+    contactPerson: String(nc.contactPerson || "").trim(),
+    phone: String(nc.phone || "").trim(),
+    email: nc.email?.trim() || null,
+    address: nc.address?.trim() || null,
+    city: nc.city?.trim() || null,
+    state: (nc.state?.trim() || "TX").toUpperCase(),
+    zipCode: nc.zipCode?.trim() || null,
+  };
+  if (process.env.DATABASE_URL) {
+    try {
+      const created = await prisma.customer.create({ data });
+      return { ...data, id: created.id };
+    } catch {
+      // fall back to in-memory store
+    }
+  }
+  const created = addMockCustomer(data);
+  return { ...data, id: created.id };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +75,19 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { customerId, customer, items, validUntil, notes, paymentTerms, status } = body;
+    const { items, validUntil, notes, paymentTerms, status, createdUser, newCustomer } = body;
+    let { customerId, customer } = body;
+
+    if (!customerId && newCustomer) {
+      if (!newCustomer.businessName?.trim() || !newCustomer.contactPerson?.trim() || !newCustomer.phone?.trim()) {
+        return NextResponse.json(
+          { success: false, error: "Cần nhập tên tiệm, người liên hệ và số điện thoại" },
+          { status: 400 }
+        );
+      }
+      customer = await createCustomerFromQuote(newCustomer);
+      customerId = customer.id;
+    }
 
     if (!customerId) {
       return NextResponse.json(
@@ -77,6 +115,7 @@ export async function POST(req: Request) {
       notes: notes || "Free local delivery for wholesale orders in Greater Houston Hub.",
       paymentTerms: paymentTerms || "Zelle / Check / Card",
       status: (status as QuoteData["status"]) || "DRAFT",
+      createdUser: createdUser || undefined,
     });
 
     return NextResponse.json({

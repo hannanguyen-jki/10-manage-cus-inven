@@ -13,20 +13,13 @@ import {
   Download,
   X,
   MapPin,
-  CheckCircle2,
-  AlertCircle,
-  Crown,
   SearchX,
 } from "lucide-react";
 import {
   Avatar,
   EmptyState,
-  FadeIn,
   PageHeader,
   Skeleton,
-  StatCard,
-  TIER_META,
-  TierBadge,
   cn,
   timeAgo,
   useToast,
@@ -43,7 +36,6 @@ interface Customer {
   email: string | null;
   city: string | null;
   state: string | null;
-  tier: "STANDARD" | "WHOLESALE" | "VIP";
   status: "ACTIVE" | "AT_RISK" | "INACTIVE";
   payStatus: "PAID" | "OWING" | "NONE";
   unpaidOrders: number;
@@ -59,7 +51,6 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [pay, setPay] = useState<PayFilter>("ALL");
-  const [tier, setTier] = useState<string>("ALL");
   const [state, setState] = useState<string>("ALL");
   const [addOpen, setAddOpen] = useState(false);
   const [sms, setSms] = useState<{ c: Customer; t: SmsTemplate } | null>(null);
@@ -91,7 +82,6 @@ export default function CustomersPage() {
       all: customers.length,
       owing: customers.filter((c) => c.payStatus === "OWING").length,
       paid: customers.filter((c) => c.payStatus === "PAID").length,
-      vip: customers.filter((c) => c.tier === "VIP").length,
     }),
     [customers]
   );
@@ -100,15 +90,14 @@ export default function CustomersPage() {
     const q = search.trim().toLowerCase();
     return customers.filter((c) => {
       if (pay !== "ALL" && c.payStatus !== pay) return false;
-      if (tier !== "ALL" && c.tier !== tier) return false;
       if (state !== "ALL" && c.state !== state) return false;
       if (!q) return true;
       return [c.businessName, c.contactPerson, c.phone, c.city].some((v) => (v || "").toLowerCase().includes(q));
     });
-  }, [customers, search, pay, tier, state]);
+  }, [customers, search, pay, state]);
 
   const exportCsv = () => {
-    const head = ["Tên tiệm", "Người liên hệ", "SĐT", "Email", "Thành phố", "Bang", "Nhóm", "Thanh toán", "Đơn chưa trả"];
+    const head = ["Tên tiệm", "Người liên hệ", "SĐT", "Email", "Thành phố", "Bang", "Thanh toán", "Đơn chưa trả"];
     const rows = filtered.map((c) => [
       c.businessName,
       c.contactPerson,
@@ -116,8 +105,7 @@ export default function CustomersPage() {
       c.email || "",
       c.city || "",
       c.state || "",
-      TIER_META[c.tier]?.label || c.tier,
-      c.payStatus === "PAID" ? "Đã trả hết" : c.payStatus === "OWING" ? "Còn nợ" : "Chưa có đơn",
+      c.payStatus === "PAID" ? "Đã trả hết" : c.payStatus === "OWING" ? "Chưa trả hết" : "Chưa có đơn",
       c.unpaidOrders,
     ]);
     const csv = [head, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -129,7 +117,7 @@ export default function CustomersPage() {
     URL.revokeObjectURL(a.href);
   };
 
-  const hasFilter = search || pay !== "ALL" || tier !== "ALL" || state !== "ALL";
+  const hasFilter = search || pay !== "ALL" || state !== "ALL";
 
   return (
     <div className="space-y-6">
@@ -151,22 +139,6 @@ export default function CustomersPage() {
         }
       />
 
-      {/* Stat filters */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <FadeIn delay={0}>
-          <StatCard label="Tất cả khách" value={counts.all} icon={Users} tone="brand" onClick={() => setPay("ALL")} active={pay === "ALL"} />
-        </FadeIn>
-        <FadeIn delay={60}>
-          <StatCard label="Còn nợ" value={counts.owing} icon={AlertCircle} tone="rose" onClick={() => setPay("OWING")} active={pay === "OWING"} />
-        </FadeIn>
-        <FadeIn delay={120}>
-          <StatCard label="Đã trả hết" value={counts.paid} icon={CheckCircle2} tone="green" onClick={() => setPay("PAID")} active={pay === "PAID"} />
-        </FadeIn>
-        <FadeIn delay={180}>
-          <StatCard label="Khách VIP" value={counts.vip} icon={Crown} tone="amber" onClick={() => setTier(tier === "VIP" ? "ALL" : "VIP")} active={tier === "VIP"} />
-        </FadeIn>
-      </div>
-
       {/* Toolbar */}
       <div className="card p-3 sm:p-4 flex flex-col lg:flex-row gap-3 lg:items-center">
         <div className="relative flex-1">
@@ -184,10 +156,17 @@ export default function CustomersPage() {
           )}
         </div>
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          {[{ k: "ALL", label: "Mọi nhóm", emoji: "✨" }, ...Object.entries(TIER_META).map(([k, m]) => ({ k, label: m.label, emoji: m.emoji }))].map((t) => (
-            <button key={t.k} onClick={() => setTier(t.k)} className={cn("chip", tier === t.k ? "chip-on" : "chip-off")}>
-              <span>{t.emoji}</span>
+          {(
+            [
+              { k: "ALL", label: "Tất cả", n: counts.all, dot: "bg-ink-300" },
+              { k: "PAID", label: "Đã trả hết", n: counts.paid, dot: "bg-emerald-500" },
+              { k: "OWING", label: "Chưa trả hết", n: counts.owing, dot: "bg-rose-500" },
+            ] as const
+          ).map((t) => (
+            <button key={t.k} onClick={() => setPay(t.k)} className={cn("chip", pay === t.k ? "chip-on" : "chip-off")}>
+              <span className={cn("w-2 h-2 rounded-full", t.dot)} />
               {t.label}
+              <span className={cn("rounded-full px-1.5", pay === t.k ? "bg-white/20" : "bg-ink-100")}>{t.n}</span>
             </button>
           ))}
           <select value={state} onChange={(e) => setState(e.target.value)} className="chip chip-off pr-7 cursor-pointer outline-none">
@@ -221,7 +200,6 @@ export default function CustomersPage() {
                   onClick={() => {
                     setSearch("");
                     setPay("ALL");
-                    setTier("ALL");
                     setState("ALL");
                   }}
                 >
@@ -244,7 +222,6 @@ export default function CustomersPage() {
                 <tr className="text-left text-xs font-semibold text-ink-400 border-b border-ink-100">
                   <th className="py-3.5 pl-6 pr-3">Tiệm</th>
                   <th className="py-3.5 px-3">Liên hệ</th>
-                  <th className="py-3.5 px-3">Nhóm</th>
                   <th className="py-3.5 px-3">Thanh toán</th>
                   <th className="py-3.5 px-3 hidden 2xl:table-cell whitespace-nowrap">Mua gần nhất</th>
                   <th className="py-3.5 pr-6 pl-3 text-right">Thao tác</th>
@@ -271,9 +248,6 @@ export default function CustomersPage() {
                       <a href={`tel:${c.phone}`} className="text-xs font-mono text-ink-400 hover:text-brand-600 whitespace-nowrap">
                         {c.phone}
                       </a>
-                    </td>
-                    <td className="py-3.5 px-3">
-                      <TierBadge tier={c.tier} />
                     </td>
                     <td className="py-3.5 px-3">
                       <CustomerPayBadge c={c} />
@@ -305,7 +279,6 @@ export default function CustomersPage() {
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <div className="flex flex-wrap gap-1.5">
                     <CustomerPayBadge c={c} />
-                    <TierBadge tier={c.tier} />
                   </div>
                   <RowActions c={c} onSms={(t) => setSms({ c, t })} compact />
                 </div>

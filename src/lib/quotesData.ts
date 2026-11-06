@@ -304,10 +304,10 @@ export async function createNewQuote(data: {
       contactPerson: data.customer.contactPerson || "Salon Manager",
       phone: data.customer.phone || "+1-713-330-6165",
       email: data.customer.email || null,
-      address: data.customer.address || "Houston, TX",
-      city: data.customer.city || "Houston",
+      address: data.customer.address || null,
+      city: data.customer.city || null,
       state: data.customer.state || "TX",
-      zipCode: data.customer.zipCode || "77036",
+      zipCode: data.customer.zipCode || null,
       tier: data.customer.tier || "STANDARD",
     };
   }

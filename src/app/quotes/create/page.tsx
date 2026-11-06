@@ -17,13 +17,13 @@ import {
   Send,
   Save,
   ChevronDown,
-  Truck,
   PackageOpen,
   X,
+  UserPlus,
   CalendarClock,
 } from "lucide-react";
 import type { QuoteCustomerData, ProductCatalogItem } from "@/lib/quotesData";
-import { Avatar, EmptyState, SpotlightCard, TierBadge, cn } from "@/components/ui";
+import { Avatar, EmptyState, SpotlightCard, cn } from "@/components/ui";
 
 interface LineItem {
   productId: string;
@@ -33,7 +33,6 @@ interface LineItem {
   category: string;
   quantity: number;
   unitPrice: number;
-  discount: number; // %
 }
 
 const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -45,14 +44,16 @@ const prettyCat = (c: string) =>
     .toLowerCase()
     .replace(/(^|\s)\S/g, (s) => s.toUpperCase());
 
-const PAYMENT_TERMS = [
-  { value: "Net 15 (Zelle / Company Check)", label: "Trả trong 15 ngày (Zelle / Check)" },
-  { value: "Net 30 (Approved Wholesale Account)", label: "Trả trong 30 ngày" },
-  { value: "Due upon receipt (Zelle prior to dispatch)", label: "Trả trước khi giao (Zelle)" },
-  { value: "Credit Card (Visa / Mastercard / Amex)", label: "Thẻ tín dụng" },
-  { value: "COD (Houston Local Hub)", label: "Trả khi nhận hàng (COD)" },
-  { value: "Bank Wire Transfer", label: "Chuyển khoản ngân hàng" },
-];
+const EMPTY_NEW_CUSTOMER = {
+  businessName: "",
+  contactPerson: "",
+  phone: "",
+  email: "",
+  address: "",
+  city: "",
+  state: "TX",
+  zipCode: "",
+};
 
 function CreateQuoteContent() {
   const router = useRouter();
@@ -63,6 +64,8 @@ function CreateQuoteContent() {
   const [products, setProducts] = useState<ProductCatalogItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [mode, setMode] = useState<"existing" | "new">("existing");
+  const [newCustomer, setNewCustomer] = useState(EMPTY_NEW_CUSTOMER);
   const [customerId, setCustomerId] = useState("");
   const [customerQuery, setCustomerQuery] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -74,8 +77,6 @@ function CreateQuoteContent() {
   const [quoteNumber, setQuoteNumber] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const [salesRep, setSalesRep] = useState("Johnny Tran");
-  const [paymentTerms, setPaymentTerms] = useState(PAYMENT_TERMS[0].value);
-  const [notes, setNotes] = useState("Free local delivery for wholesale orders in Greater Houston. 30-day replacement warranty on Kolinsky bristles.");
   const [saving, setSaving] = useState<"DRAFT" | "SENT" | null>(null);
   const [error, setError] = useState("");
 
@@ -122,25 +123,25 @@ function CreateQuoteContent() {
       if (i >= 0) return prev.map((it, idx) => (idx === i ? { ...it, quantity: it.quantity + 1 } : it));
       return [
         ...prev,
-        { productId: p.id, productName: p.name, sku: p.sku, imageUrl: p.imageUrl, category: p.category, quantity: 10, unitPrice: p.wholesalePrice, discount: 0 },
+        { productId: p.id, productName: p.name, sku: p.sku, imageUrl: p.imageUrl, category: p.category, quantity: 10, unitPrice: p.wholesalePrice },
       ];
     });
   };
   const update = (i: number, patch: Partial<LineItem>) => setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
   const remove = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
 
-  const subtotal = items.reduce((s, it) => s + it.quantity * it.unitPrice, 0);
-  const discount = items.reduce((s, it) => s + it.quantity * it.unitPrice * (it.discount / 100), 0);
-  const freeShip = subtotal >= 500;
-  const shipping = items.length === 0 || freeShip ? 0 : 25;
-  const total = Math.max(0, subtotal - discount + shipping);
+  const total = items.reduce((s, it) => s + it.quantity * it.unitPrice, 0);
   const pieces = items.reduce((s, it) => s + it.quantity, 0);
 
-  const step = !customer ? 1 : items.length === 0 ? 2 : 3;
+  const setNew = (k: keyof typeof EMPTY_NEW_CUSTOMER, v: string) => setNewCustomer((c) => ({ ...c, [k]: v }));
+  const newReady = !!(newCustomer.businessName.trim() && newCustomer.contactPerson.trim() && newCustomer.phone.trim());
+  const customerReady = mode === "existing" ? !!customer : newReady;
+  const step = !customerReady ? 1 : items.length === 0 ? 2 : 3;
 
   const save = async (status: "DRAFT" | "SENT") => {
     setError("");
-    if (!customerId) return setError("Hãy chọn khách hàng trước");
+    if (mode === "existing" && !customerId) return setError("Hãy chọn khách hàng trước");
+    if (mode === "new" && !newReady) return setError("Nhập tên tiệm, người liên hệ và số điện thoại của khách mới");
     if (items.length === 0) return setError("Hãy thêm ít nhất 1 sản phẩm");
     setSaving(status);
     try {
@@ -149,8 +150,7 @@ function CreateQuoteContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quoteNumber,
-          customerId,
-          customer,
+          ...(mode === "existing" ? { customerId, customer } : { newCustomer }),
           items: items.map((it) => ({
             productId: it.productId,
             productName: it.productName,
@@ -158,11 +158,8 @@ function CreateQuoteContent() {
             imageUrl: it.imageUrl,
             quantity: Number(it.quantity) || 1,
             unitPrice: Number(it.unitPrice) || 0,
-            discount: Number(it.discount) || 0,
           })),
           validUntil: new Date(`${validUntil}T23:59:59.000Z`).toISOString(),
-          notes,
-          paymentTerms,
           status,
           createdUser: salesRep,
         }),
@@ -233,7 +230,76 @@ function CreateQuoteContent() {
         <div className="lg:col-span-7 xl:col-span-8 space-y-4">
           {/* 1. Customer */}
           <SpotlightCard className="p-5 !overflow-visible z-20">
-            <StepTitle n={1} title="Khách hàng" done={!!customer} />
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <StepTitle n={1} title="Khách hàng" done={customerReady} />
+              <div className="inline-flex rounded-2xl bg-ink-50 p-1 text-sm font-semibold">
+                {(
+                  [
+                    { k: "existing", label: "Khách có sẵn", icon: Store },
+                    { k: "new", label: "Khách mới", icon: UserPlus },
+                  ] as const
+                ).map((m) => {
+                  const Icon = m.icon;
+                  return (
+                    <button
+                      key={m.k}
+                      type="button"
+                      onClick={() => {
+                        setMode(m.k);
+                        setPickerOpen(false);
+                      }}
+                      className={cn(
+                        "flex items-center gap-1.5 rounded-xl px-3 py-1.5 transition-all",
+                        mode === m.k ? "bg-white text-ink-900 shadow-soft" : "text-ink-500 hover:text-ink-800"
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {m.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {mode === "new" ? (
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-up">
+                <div className="sm:col-span-2">
+                  <label className="label">Tên tiệm *</label>
+                  <input className="input" value={newCustomer.businessName} onChange={(e) => setNew("businessName", e.target.value)} placeholder="VD: Glamour Nail Supply" />
+                </div>
+                <div>
+                  <label className="label">Người liên hệ *</label>
+                  <input className="input" value={newCustomer.contactPerson} onChange={(e) => setNew("contactPerson", e.target.value)} placeholder="Chủ tiệm / quản lý" />
+                </div>
+                <div>
+                  <label className="label">Số điện thoại *</label>
+                  <input className="input font-mono" value={newCustomer.phone} onChange={(e) => setNew("phone", e.target.value)} placeholder="1 713-330-6165" />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="label">Email</label>
+                  <input className="input" type="email" value={newCustomer.email} onChange={(e) => setNew("email", e.target.value)} />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="label">Địa chỉ</label>
+                  <input className="input" value={newCustomer.address} onChange={(e) => setNew("address", e.target.value)} placeholder="Số nhà, tên đường" />
+                </div>
+                <div>
+                  <label className="label">Thành phố</label>
+                  <input className="input" value={newCustomer.city} onChange={(e) => setNew("city", e.target.value)} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Bang</label>
+                    <input className="input uppercase" maxLength={2} value={newCustomer.state} onChange={(e) => setNew("state", e.target.value.toUpperCase())} />
+                  </div>
+                  <div>
+                    <label className="label">Zip</label>
+                    <input className="input" value={newCustomer.zipCode} onChange={(e) => setNew("zipCode", e.target.value)} />
+                  </div>
+                </div>
+                <p className="sm:col-span-2 text-xs text-ink-400">Khách mới sẽ được lưu vào danh sách Khách hàng khi tạo báo giá.</p>
+              </div>
+            ) : (
             <div className="relative mt-4">
               <button
                 type="button"
@@ -249,7 +315,6 @@ function CreateQuoteContent() {
                         {customer.contactPerson} · {customer.phone} · {[customer.city, customer.state].filter(Boolean).join(", ")}
                       </p>
                     </div>
-                    {customer.tier && <TierBadge tier={customer.tier} />}
                   </>
                 ) : (
                   <>
@@ -290,11 +355,27 @@ function CreateQuoteContent() {
                         {c.id === customerId && <Check className="w-4 h-4 text-brand-600" />}
                       </button>
                     ))}
-                    {filteredCustomers.length === 0 && <p className="py-6 text-center text-sm text-ink-400">Không tìm thấy</p>}
+                    {filteredCustomers.length === 0 && (
+                      <div className="py-6 text-center">
+                        <p className="text-sm text-ink-400">Không tìm thấy</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMode("new");
+                            setPickerOpen(false);
+                            setNewCustomer((c) => ({ ...c, businessName: customerQuery }));
+                          }}
+                          className="btn-ghost mt-3"
+                        >
+                          <UserPlus className="w-4 h-4" /> Nhập khách mới
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
             </div>
+            )}
           </SpotlightCard>
 
           {/* 2. Items */}
@@ -315,7 +396,7 @@ function CreateQuoteContent() {
             ) : (
               <div className="mt-4 space-y-2">
                 {items.map((it, i) => {
-                  const line = it.quantity * it.unitPrice * (1 - it.discount / 100);
+                  const line = it.quantity * it.unitPrice;
                   return (
                     <div key={it.productId} className="rounded-2xl border border-ink-100 bg-white p-3 animate-fade-up">
                      <div className="flex items-center gap-3">
@@ -360,18 +441,6 @@ function CreateQuoteContent() {
                             className="w-14 text-right text-sm font-semibold outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
                           />
                         </label>
-                        {/* discount */}
-                        <label className="flex items-center rounded-xl border border-ink-200 bg-white px-2 h-9" title="Giảm giá (%)">
-                          <input
-                            type="number"
-                            min={0}
-                            max={50}
-                            value={it.discount}
-                            onChange={(e) => update(i, { discount: Math.min(50, Math.max(0, parseFloat(e.target.value) || 0)) })}
-                            className="w-8 text-right text-sm font-semibold text-amber-600 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
-                          />
-                          <span className="text-xs text-ink-400 ml-0.5">% giảm</span>
-                        </label>
                       </div>
                     </div>
                   );
@@ -383,29 +452,15 @@ function CreateQuoteContent() {
           {/* Details */}
           <SpotlightCard className="p-5">
             <h3 className="font-bold text-ink-900">Thông tin thêm</h3>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label">Hiệu lực đến</label>
                 <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} className="input" />
               </div>
               <div>
-                <label className="label">Cách thanh toán</label>
-                <select value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} className="input">
-                  {PAYMENT_TERMS.map((p) => (
-                    <option key={p.value} value={p.value}>
-                      {p.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
                 <label className="label">Người lập</label>
                 <input value={salesRep} onChange={(e) => setSalesRep(e.target.value)} className="input" />
               </div>
-            </div>
-            <div className="mt-4">
-              <label className="label">Ghi chú in trên PDF</label>
-              <textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} className="input resize-none" />
             </div>
           </SpotlightCard>
         </div>
@@ -418,27 +473,9 @@ function CreateQuoteContent() {
               <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-brand-500/40 blur-3xl" />
               <div className="relative">
                 <StepTitle n={3} title="Tổng báo giá" done={false} dark />
-                <dl className="mt-4 space-y-2 text-sm">
-                  <Row label="Tiền hàng" value={money(subtotal)} />
-                  {discount > 0 && <Row label="Giảm giá" value={`-${money(discount)}`} className="text-amber-300" />}
-                  <Row
-                    label={
-                      <span className="flex items-center gap-1.5">
-                        <Truck className="w-3.5 h-3.5" /> Phí giao
-                      </span>
-                    }
-                    value={freeShip ? "Miễn phí" : money(shipping)}
-                    className={freeShip ? "text-emerald-300" : ""}
-                  />
-                </dl>
-                {!freeShip && items.length > 0 && (
-                  <div className="mt-3">
-                    <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-brand-400 to-emerald-400 transition-all duration-700" style={{ width: `${Math.min(100, (subtotal / 500) * 100)}%` }} />
-                    </div>
-                    <p className="mt-1.5 text-[11px] text-ink-300">Thêm {money(500 - subtotal)} để được miễn phí giao</p>
-                  </div>
-                )}
+                <p className="mt-3 text-sm text-ink-300">
+                  {items.length} loại sản phẩm · {pieces.toLocaleString("en-US")} cái
+                </p>
                 <div className="mt-4 pt-4 border-t border-white/10 flex items-end justify-between">
                   <span className="text-sm text-ink-300">Tổng cộng</span>
                   <span className="text-3xl font-bold tabular-nums">{money(total)}</span>
@@ -525,15 +562,6 @@ function StepTitle({ n, title, done, dark }: { n: number; title: string; done: b
         {done ? <Check className="w-4 h-4" /> : n}
       </span>
       <h3 className={cn("font-bold", dark ? "text-white" : "text-ink-900")}>{title}</h3>
-    </div>
-  );
-}
-
-function Row({ label, value, className }: { label: React.ReactNode; value: string; className?: string }) {
-  return (
-    <div className={cn("flex items-center justify-between text-ink-200", className)}>
-      <dt>{label}</dt>
-      <dd className="font-semibold tabular-nums">{value}</dd>
     </div>
   );
 }

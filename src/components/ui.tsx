@@ -403,7 +403,7 @@ export function CustomerPayBadge({ c }: { c: { payStatus: string; unpaidOrders: 
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-60" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-rose-500" />
       </span>
-      Còn nợ {c.unpaidOrders} đơn
+      Chưa trả {c.unpaidOrders} đơn
     </span>
   );
 }

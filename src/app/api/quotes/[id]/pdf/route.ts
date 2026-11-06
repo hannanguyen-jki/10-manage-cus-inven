@@ -103,9 +103,6 @@ function renderQuoteHtml(quote: QuoteData): string {
       </td>
       <td class="text-center font-bold text-slate-800 text-sm" style="width: 70px;">${item.quantity}</td>
       <td class="text-right font-medium text-slate-700 text-sm" style="width: 100px;">$${item.unitPrice.toFixed(2)}</td>
-      <td class="text-right font-semibold text-amber-600 text-sm" style="width: 80px;">
-        ${item.discount > 0 ? `-${item.discount}%` : "-"}
-      </td>
       <td class="text-right font-bold text-slate-900 text-sm" style="width: 110px;">$${item.lineTotal.toFixed(2)}</td>
     </tr>
   `
@@ -340,7 +337,7 @@ function renderQuoteHtml(quote: QuoteData): string {
     /* Calculation & Summary */
     .summary-section {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 24px;
       margin-bottom: 24px;
     }
@@ -352,7 +349,7 @@ function renderQuoteHtml(quote: QuoteData): string {
       padding: 16px;
     }
     .totals-card {
-      flex: 1;
+      flex: 0 0 320px;
       background: #ffffff;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
@@ -480,7 +477,7 @@ function renderQuoteHtml(quote: QuoteData): string {
         </div>` : ""}
         <div class="info-row">
           <span class="info-label">Salon Address:</span>
-          <span class="info-value">${quote.customer.address || "10606 Bellaire Blvd"}, ${quote.customer.city || "Houston"}, ${quote.customer.state || "TX"} ${quote.customer.zipCode || "77036"}</span>
+          <span class="info-value">${[quote.customer.address, quote.customer.city, [quote.customer.state, quote.customer.zipCode].filter(Boolean).join(" ")].filter(Boolean).join(", ") || "—"}</span>
         </div>
       </div>
 
@@ -503,10 +500,6 @@ function renderQuoteHtml(quote: QuoteData): string {
           <span class="info-label">Sales Representative:</span>
           <span class="info-value">${quote.createdUser || "Johnny Tran"} (Houston Hub)</span>
         </div>
-        <div class="info-row" style="margin-top: 8px;">
-          <span class="info-label">Status:</span>
-          <span class="status-badge status-${quote.status}">${quote.status}</span>
-        </div>
       </div>
     </div>
 
@@ -519,7 +512,6 @@ function renderQuoteHtml(quote: QuoteData): string {
           <th style="text-align: left;">Description</th>
           <th style="text-align: center;">Qty</th>
           <th style="text-align: right;">Unit Price</th>
-          <th style="text-align: right;">Discount %</th>
           <th style="text-align: right;">Total</th>
         </tr>
       </thead>
@@ -528,68 +520,13 @@ function renderQuoteHtml(quote: QuoteData): string {
       </tbody>
     </table>
 
-    <!-- Totals & Notes -->
+    <!-- Total -->
     <div class="summary-section">
-      <div class="notes-card">
-        <div class="card-title">Special Notes & Shipping Terms</div>
-        <p style="font-size: 12px; color: #334155; margin-bottom: 8px;">
-          ${quote.notes || "Free local delivery for wholesale orders in Greater Houston Hub."}
-        </p>
-        <div style="font-size: 11.5px; color: #64748b; line-height: 1.5; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
-          <strong style="color: #056690;">Quality Guarantee:</strong> 100% genuine Kolinsky bristles, 30-day full replacement warranty against manufacturing defects.
-        </div>
-      </div>
-
       <div class="totals-card">
-        <div class="total-row">
-          <span>Subtotal:</span>
-          <span style="font-weight: 600;">$${quote.subtotal.toFixed(2)}</span>
-        </div>
-        <div class="total-row">
-          <span>Wholesale Discount:</span>
-          <span style="font-weight: 600; color: #d97706;">-$${quote.totalDiscount.toFixed(2)}</span>
-        </div>
-        <div class="total-row">
-          <span>Shipping / Handling:</span>
-          <span style="font-weight: 600; color: #16a34a;">${quote.shipping === 0 ? "FREE ($0.00)" : `$${quote.shipping.toFixed(2)}`}</span>
-        </div>
-        <div class="total-row">
-          <span>Tax (Resale Exempt):</span>
-          <span style="font-weight: 600;">$0.00</span>
-        </div>
         <div class="total-row grand-total">
-          <span>Grand Total (USD):</span>
+          <span>Total (USD):</span>
           <span class="grand-badge">$${quote.totalAmount.toFixed(2)}</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Payment Terms -->
-    <div class="terms-box">
-      <h4>Payment Terms (Net 15, Net 30, Due upon receipt)</h4>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
-        <div>
-          • <strong>Zelle:</strong> <span style="font-family: monospace; font-weight: 700;">pay@jkiocean.com</span> (JKIOCEAN LLC)<br>
-          • <strong>Company Check:</strong> Payable to <em>"JKIOCEAN LLC"</em> (Houston Hub)
-        </div>
-        <div>
-          • <strong>Credit Card:</strong> Visa / Mastercard / Amex (Online Invoice Portal)<br>
-          • <strong>Local Delivery:</strong> Dedicated Houston Hub fleet delivery within 24 business hours
-        </div>
-      </div>
-    </div>
-
-    <!-- Signatures -->
-    <div class="signature-section">
-      <div class="signature-box">
-        <div style="font-size: 11.5px; font-weight: 700; color: #475569;">AUTHORIZED SIGNATURE</div>
-        <div class="signature-line">${quote.createdUser || "Johnny Tran"}</div>
-        <div class="signature-sub">Houston Distribution Hub Manager</div>
-      </div>
-      <div class="signature-box">
-        <div style="font-size: 11.5px; font-weight: 700; color: #475569;">CUSTOMER ACCEPTANCE</div>
-        <div class="signature-line">${quote.customer.contactPerson}</div>
-        <div class="signature-sub">${quote.customer.businessName}</div>
       </div>
     </div>
 

@@ -36,7 +36,6 @@ import {
   QuoteBadge,
   Skeleton,
   SpotlightCard,
-  TierBadge,
   cn,
   formatDate,
   normalizePay,
@@ -156,7 +155,6 @@ export default function CustomerDetailPage() {
               <div className="min-w-0">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">{c.businessName}</h1>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <TierBadge tier={c.tier} />
                   <CustomerPayBadge c={c} />
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
                     <span className={cn("w-2 h-2 rounded-full", status.dot)} />

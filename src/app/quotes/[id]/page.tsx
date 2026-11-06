@@ -17,7 +17,6 @@ import {
   MapPin,
   Building,
   User,
-  ShieldCheck,
   Check,
   RefreshCw,
   Share2,
@@ -50,15 +49,11 @@ export default function QuoteDetailPage() {
       `Address: ${quote.customer.address || ""}, ${quote.customer.city || ""}, ${quote.customer.state || ""}`,
       `Valid Until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}`,
       `------------------------------------------`,
-      ...quote.items.map((it, idx) => `${idx + 1}. ${it.productName} [${it.sku}]\n   Qty: ${it.quantity} x $${it.unitPrice.toFixed(2)}${it.discount > 0 ? ` (-${it.discount}%)` : ""} = $${it.lineTotal.toFixed(2)}`),
+      ...quote.items.map((it, idx) => `${idx + 1}. ${it.productName} [${it.sku}]\n   Qty: ${it.quantity} x $${it.unitPrice.toFixed(2)} = $${it.lineTotal.toFixed(2)}`),
       `------------------------------------------`,
-      `Subtotal: $${quote.subtotal.toFixed(2)}`,
-      quote.totalDiscount > 0 ? `Wholesale Discount: -$${quote.totalDiscount.toFixed(2)}` : null,
-      quote.shipping > 0 ? `Shipping: $${quote.shipping.toFixed(2)}` : `Delivery: Free Greater Houston Hub delivery`,
-      `GRAND TOTAL: $${quote.totalAmount.toFixed(2)}`,
+      `TOTAL: $${quote.totalAmount.toFixed(2)}`,
       `------------------------------------------`,
-      `Zelle Payment: pay@jkiocean.com (JKIOCEAN LLC)`,
-      `Customer Service Hotline: +1 (713) 330-6165`,
+      `Hotline: +1 (713) 330-6165`,
     ].filter(Boolean).join("\n");
 
     navigator.clipboard.writeText(lines);
@@ -68,7 +63,7 @@ export default function QuoteDetailPage() {
 
   const handleExportCsv = () => {
     if (!quote) return;
-    const headers = ["Item #", "SKU", "Product Name", "Category", "Quantity", "Unit Price ($)", "Discount (%)", "Line Total ($)"];
+    const headers = ["Item #", "SKU", "Product Name", "Category", "Quantity", "Unit Price ($)", "Line Total ($)"];
     const rows = quote.items.map((it, idx) => [
       idx + 1,
       `"${it.sku}"`,
@@ -76,14 +71,11 @@ export default function QuoteDetailPage() {
       `"${(it.category || '').replace(/"/g, '""')}"`,
       it.quantity,
       it.unitPrice.toFixed(2),
-      it.discount,
       it.lineTotal.toFixed(2)
     ]);
     const summaryRows = [
       [],
-      ["", "", "", "", "", "Subtotal:", "", quote.subtotal.toFixed(2)],
-      ["", "", "", "", "", "Total Discount:", "", quote.totalDiscount.toFixed(2)],
-      ["", "", "", "", "", "GRAND TOTAL:", "", quote.totalAmount.toFixed(2)]
+      ["", "", "", "", "", "TOTAL:", quote.totalAmount.toFixed(2)]
     ];
 
     const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(",")), ...summaryRows.map(r => r.join(","))].join("\r\n");
@@ -301,11 +293,6 @@ export default function QuoteDetailPage() {
           <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-2">
             <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-dashed border-slate-300 pb-1.5 flex items-center justify-between">
               <span>Prepared For (B2B Customer / Salon)</span>
-              {quote.customer.tier && (
-                <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-bold">
-                  {quote.customer.tier}
-                </span>
-              )}
             </div>
             <div className="text-base font-extrabold text-brand-700">{quote.customer.businessName}</div>
             <div className="text-xs text-slate-600 space-y-1">
@@ -326,8 +313,9 @@ export default function QuoteDetailPage() {
               <div className="flex justify-between">
                 <span className="text-slate-400">Salon Address:</span>
                 <span className="text-slate-800 font-medium text-right">
-                  {quote.customer.address || "10606 Bellaire Blvd"}, {quote.customer.city || "Houston"},{" "}
-                  {quote.customer.state || "TX"} {quote.customer.zipCode || "77036"}
+                  {[quote.customer.address, quote.customer.city, [quote.customer.state, quote.customer.zipCode].filter(Boolean).join(" ")]
+                    .filter(Boolean)
+                    .join(", ") || "—"}
                 </span>
               </div>
             </div>
@@ -355,22 +343,6 @@ export default function QuoteDetailPage() {
                 <span className="text-slate-400">Sales Representative:</span>
                 <span className="font-semibold text-slate-800">{quote.createdUser || "Johnny Tran"} (Houston Hub)</span>
               </div>
-              <div className="flex justify-between items-center pt-1">
-                <span className="text-slate-400">Status:</span>
-                <span
-                  className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${
-                    quote.status === "ACCEPTED"
-                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                      : quote.status === "SENT"
-                      ? "bg-sky-50 text-sky-700 border-sky-200"
-                      : quote.status === "REJECTED"
-                      ? "bg-rose-50 text-rose-700 border-rose-200"
-                      : "bg-slate-100 text-slate-700 border-slate-200"
-                  }`}
-                >
-                  {quote.status}
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -392,9 +364,6 @@ export default function QuoteDetailPage() {
                 </th>
                 <th className="py-3 px-3 text-right" style={{ width: "100px" }}>
                   Unit Price
-                </th>
-                <th className="py-3 px-3 text-right" style={{ width: "80px" }}>
-                  Discount %
                 </th>
                 <th className="py-3 px-3 text-right" style={{ width: "110px" }}>
                   Total
@@ -431,9 +400,6 @@ export default function QuoteDetailPage() {
                   <td className="py-3 px-3 text-right font-medium text-slate-700 text-sm">
                     ${it.unitPrice.toFixed(2)}
                   </td>
-                  <td className="py-3 px-3 text-right font-bold text-amber-600 text-sm">
-                    {it.discount > 0 ? `-${it.discount}%` : "-"}
-                  </td>
                   <td className="py-3 px-3 text-right font-mono font-extrabold text-slate-900 text-sm">
                     ${it.lineTotal.toFixed(2)}
                   </td>
@@ -443,89 +409,11 @@ export default function QuoteDetailPage() {
           </table>
         </div>
 
-        {/* Calculation & Terms */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 mb-6">
-          <div className="sm:col-span-7 bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-3">
-            <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 border-b border-dashed border-slate-300 pb-1.5">
-              Special Notes & Shipping Terms
-            </div>
-            <p className="text-xs text-slate-700 leading-relaxed">
-              {quote.notes || "Free local delivery for wholesale salon orders in Greater Houston Hub."}
-            </p>
-            <div className="pt-2 border-t border-dashed border-slate-200 text-[11px] text-slate-500 leading-relaxed">
-              <strong className="text-brand-700">Quality Guarantee:</strong> 100% genuine Kolinsky bristles,
-              30-day full replacement warranty against manufacturing defects.
-            </div>
-          </div>
-
-          <div className="sm:col-span-5 bg-white border border-slate-300 rounded-xl p-4 shadow-sm space-y-2 text-xs">
-            <div className="flex justify-between text-slate-600">
-              <span>Subtotal:</span>
-              <span className="font-bold text-slate-800">${quote.subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-amber-600 font-semibold">
-              <span>Wholesale Discount:</span>
-              <span>-${quote.totalDiscount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Shipping / Handling (Houston Local):</span>
-              <span className="font-bold text-emerald-600">
-                {quote.shipping === 0 ? "FREE ($0.00)" : `$${quote.shipping.toFixed(2)}`}
-              </span>
-            </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Tax (Resale Exempt):</span>
-              <span className="font-bold text-slate-800">$0.00</span>
-            </div>
-
-            {/* Grand Total */}
-            <div className="pt-3 border-t-2 border-brand-700 flex justify-between items-center">
-              <div>
-                <span className="text-xs font-black text-slate-900 uppercase block">Grand Total (USD)</span>
-              </div>
-              <span className="bg-brand-700 text-white px-3 py-1 rounded-lg font-mono font-black text-lg">
-                ${quote.totalAmount.toFixed(2)}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Terms Info Box */}
-        <div className="bg-sky-50/70 border border-sky-200 rounded-xl p-4 mb-6 text-xs text-sky-900 space-y-2">
-          <div className="font-extrabold uppercase tracking-wider text-sky-800 flex items-center space-x-1.5">
-            <ShieldCheck className="w-4 h-4 text-sky-600" />
-            <span>Payment Terms (Net 15, Net 30, Due upon receipt)</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] leading-relaxed pt-1">
-            <div>
-              • <strong>Zelle:</strong> <span className="font-mono font-bold">pay@jkiocean.com</span> (JKIOCEAN LLC)
-              <br />• <strong>Company Check:</strong> Payable to <em>"JKIOCEAN LLC"</em> (Houston Hub)
-            </div>
-            <div>
-              • <strong>Credit Card:</strong> Visa / Mastercard / Amex (Online Invoice Portal)
-              <br />• <strong>Delivery:</strong> Dedicated Houston Hub local fleet delivery within 24 business hours
-            </div>
-          </div>
-        </div>
-
-        {/* Signatures */}
-        <div className="grid grid-cols-2 gap-8 pt-4 border-t border-slate-200 text-center">
-          <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">AUTHORIZED SIGNATURE</div>
-            <div className="mt-14 border-b border-dashed border-slate-400 pb-1 font-bold text-slate-900 text-xs">
-              {quote.createdUser || "Johnny Tran"}
-            </div>
-            <div className="text-[11px] text-slate-400 mt-1">Houston Distribution Hub Manager</div>
-          </div>
-
-          <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              CUSTOMER ACCEPTANCE
-            </div>
-            <div className="mt-14 border-b border-dashed border-slate-400 pb-1 font-bold text-slate-900 text-xs">
-              {quote.customer.contactPerson}
-            </div>
-            <div className="text-[11px] text-slate-400 mt-1">{quote.customer.businessName}</div>
+        {/* Total */}
+        <div className="flex justify-end mb-6">
+          <div className="w-full sm:w-80 rounded-xl border border-slate-200 p-4 flex justify-between items-center">
+            <span className="text-xs font-black text-slate-900 uppercase">Total (USD)</span>
+            <span className="bg-brand-700 text-white px-3 py-1 rounded-lg font-mono font-black text-lg">${quote.totalAmount.toFixed(2)}</span>
           </div>
         </div>
 

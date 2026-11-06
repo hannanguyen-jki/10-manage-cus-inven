@@ -9,30 +9,22 @@ import {
   FileText,
   Plus,
   ArrowRight,
-  Phone,
-  MessageSquare,
   Wallet,
   MapPin,
   Sparkles,
-  BellRing,
   Receipt,
-  PartyPopper,
 } from "lucide-react";
 import {
   Aurora,
-  Avatar,
-  CountUp,
   EmptyState,
   FadeIn,
   PayBadge,
   ProgressRing,
   QUOTE_META,
   QuoteBadge,
-  SegmentBar,
   Skeleton,
   SpotlightCard,
   StatCard,
-  TIER_META,
   timeAgo,
 } from "@/components/ui";
 
@@ -83,23 +75,15 @@ export default function DashboardPage() {
                 <span className="shiny-text text-brand-100">Tổng quan hôm nay</span>
               </span>
               <h1 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-                {t.customersOwing > 0 ? (
-                  <>
-                    Có <span className="gradient-text">{t.customersOwing} khách</span> chưa trả hết tiền
-                  </>
-                ) : (
-                  <>
-                    Tất cả khách <span className="gradient-text">đã trả đủ</span> 🎉
-                  </>
-                )}
+                <span className="gradient-text">{paidPct}%</span> khách đã thanh toán đủ
               </h1>
-              <p className="mt-2 text-ink-300">Nhắc thanh toán hoặc gửi báo giá mới chỉ với một chạm.</p>
+              <p className="mt-2 text-ink-300">Theo dõi thanh toán và gửi báo giá chỉ với một chạm.</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 <Link href="/quotes/create" className="btn-primary">
                   <Plus className="w-4 h-4" /> Tạo báo giá
                 </Link>
                 <Link href="/payments" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
-                  <Wallet className="w-4 h-4" /> Xem ai chưa trả
+                  <Wallet className="w-4 h-4" /> Xem thanh toán
                 </Link>
                 <Link href="/customers?add=1" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
                   <Users className="w-4 h-4" /> Thêm khách
@@ -121,7 +105,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-                  <span className="text-ink-300">Còn nợ</span>
+                  <span className="text-ink-300">Chưa trả hết</span>
                   <b className="ml-auto pl-4">{t.customersOwing}</b>
                 </div>
                 {t.customersNoOrder > 0 && (
@@ -138,7 +122,7 @@ export default function DashboardPage() {
       </FadeIn>
 
       {/* STATS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <FadeIn delay={50}>
           <Link href="/customers">
             <StatCard label="Tổng khách hàng" value={t.customers} icon={Users} tone="brand" />
@@ -150,50 +134,14 @@ export default function DashboardPage() {
           </Link>
         </FadeIn>
         <FadeIn delay={150}>
-          <Link href="/payments">
-            <StatCard label="Còn nợ" value={t.customersOwing} icon={AlertCircle} tone="rose" />
-          </Link>
-        </FadeIn>
-        <FadeIn delay={200}>
           <Link href="/quotes">
             <StatCard label="Báo giá" value={t.quotes} icon={FileText} tone="violet" />
           </Link>
         </FadeIn>
       </div>
 
-      {/* REMIND + QUOTE FUNNEL */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <FadeIn delay={100} className="lg:col-span-2">
-          <SpotlightCard className="p-6 h-full">
-            <SectionTitle icon={BellRing} tone="bg-rose-50 text-rose-600" title="Cần nhắc thanh toán" link="/payments" linkText="Xem tất cả" />
-            {data.toRemind.length === 0 ? (
-              <EmptyState icon={PartyPopper} title="Không ai nợ cả!" hint="Mọi khách đều đã thanh toán đủ." />
-            ) : (
-              <div className="mt-4 divide-y divide-ink-100">
-                {data.toRemind.map((c: any) => (
-                  <div key={c.id} className="flex items-center gap-3 py-3 group">
-                    <Avatar name={c.businessName} />
-                    <Link href={`/customers/${c.id}`} className="min-w-0 flex-1">
-                      <p className="font-semibold text-ink-900 truncate group-hover:text-brand-600 transition-colors">{c.businessName}</p>
-                      <p className="text-xs text-ink-400 truncate">
-                        {c.unpaidOrders} đơn chưa trả · từ {timeAgo(c.oldestUnpaid)}
-                      </p>
-                    </Link>
-                    <div className="flex items-center gap-1">
-                      <a href={`tel:${c.phone}`} className="icon-btn" title="Gọi điện">
-                        <Phone className="w-4 h-4" />
-                      </a>
-                      <Link href={`/customers/${c.id}?sms=reminder`} className="icon-btn" title="Nhắn tin nhắc">
-                        <MessageSquare className="w-4 h-4" />
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </SpotlightCard>
-        </FadeIn>
-
+      {/* QUOTES + STATES + RECENT */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <FadeIn delay={150}>
           <SpotlightCard className="p-6 h-full">
             <SectionTitle icon={FileText} tone="bg-violet-50 text-violet-600" title="Báo giá" link="/quotes" linkText="Mở" />
@@ -230,36 +178,6 @@ export default function DashboardPage() {
             </Link>
           </SpotlightCard>
         </FadeIn>
-      </div>
-
-      {/* TIERS + STATES + RECENT */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <FadeIn delay={100}>
-          <SpotlightCard className="p-6 h-full">
-            <SectionTitle icon={Users} tone="bg-amber-50 text-amber-600" title="Nhóm khách" />
-            <div className="mt-6">
-              <SegmentBar
-                segments={(["VIP", "WHOLESALE", "STANDARD"] as const).map((k) => ({
-                  label: TIER_META[k].label,
-                  value: data.tiers[k] || 0,
-                  color: TIER_META[k].color,
-                }))}
-              />
-            </div>
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              {(["VIP", "WHOLESALE", "STANDARD"] as const).map((k) => (
-                <div key={k} className="rounded-2xl bg-ink-50 p-3 text-center">
-                  <div className="text-xl">{TIER_META[k].emoji}</div>
-                  <div className="text-xl font-bold mt-1">
-                    <CountUp to={data.tiers[k] || 0} />
-                  </div>
-                  <div className="text-[11px] text-ink-500">{TIER_META[k].label}</div>
-                </div>
-              ))}
-            </div>
-          </SpotlightCard>
-        </FadeIn>
-
         <FadeIn delay={150}>
           <SpotlightCard className="p-6 h-full">
             <SectionTitle icon={MapPin} tone="bg-brand-50 text-brand-600" title="Khách theo bang" />

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UserPlus, UserPen, Loader2, Save } from "lucide-react";
-import { Modal, TIER_META, cn } from "@/components/ui";
+import { Modal, cn } from "@/components/ui";
 
 export const STATUS_META: Record<string, { label: string; cls: string; dot: string }> = {
   ACTIVE: { label: "Đang mua", cls: "text-emerald-700", dot: "bg-emerald-500" },
@@ -127,25 +127,6 @@ export default function CustomerFormModal({
             </Field>
           </div>
         </div>
-
-        <Field label="Nhóm khách">
-          <div className="grid grid-cols-3 gap-2">
-            {Object.entries(TIER_META).map(([k, m]) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => set("tier", k)}
-                className={cn(
-                  "rounded-2xl border p-3 text-sm font-semibold transition-all",
-                  form.tier === k ? "border-brand-400 bg-brand-50 text-brand-700 shadow-glow" : "border-ink-200 text-ink-600 hover:border-brand-200"
-                )}
-              >
-                <span className="mr-1">{m.emoji}</span>
-                {m.label}
-              </button>
-            ))}
-          </div>
-        </Field>
 
         <Field label="Tình trạng">
           <div className="grid grid-cols-3 gap-2">

@@ -30,7 +30,6 @@ import {
   SegmentBar,
   Skeleton,
   SpotlightCard,
-  TierBadge,
   cn,
   formatDate,
   timeAgo,
@@ -198,7 +197,7 @@ export default function PaymentsPage() {
         <div className="inline-flex rounded-2xl bg-white border border-ink-100 p-1 shadow-sm self-start">
           {(
             [
-              { k: "OWING", label: "Còn nợ", n: stats.owingCustomers, dot: "bg-rose-500" },
+              { k: "OWING", label: "Chưa trả", n: stats.owingCustomers, dot: "bg-rose-500" },
               { k: "PAID", label: "Đã trả hết", n: stats.paidCustomers, dot: "bg-emerald-500" },
               { k: "ALL", label: "Tất cả", n: groups.length, dot: "bg-ink-300" },
             ] as const
@@ -242,7 +241,7 @@ export default function PaymentsPage() {
       ) : visible.length === 0 ? (
         <div className="card">
           {tab === "OWING" && !search ? (
-            <EmptyState icon={PartyPopper} title="Tuyệt vời! Không còn ai nợ" hint="Mọi đơn hàng đều đã được thanh toán." />
+            <EmptyState icon={PartyPopper} title="Tất cả đơn đã được thanh toán" hint="Không còn đơn nào chưa trả." />
           ) : (
             <EmptyState icon={Receipt} title="Không có kết quả" hint="Thử đổi từ khóa hoặc chọn tab khác." />
           )}
@@ -279,7 +278,6 @@ export default function PaymentsPage() {
                   </div>
 
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <TierBadge tier={g.customer.tier} />
                     {owing ? (
                       <span className="text-xs font-semibold text-rose-600">
                         {g.unpaid.length}/{g.orders.length} đơn chưa trả · từ {timeAgo(g.oldest)}
