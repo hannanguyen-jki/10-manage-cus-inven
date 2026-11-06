@@ -26,8 +26,10 @@ import {
   AlertCircle,
   Copy,
   FileSpreadsheet,
+  ThumbsUp,
 } from "lucide-react";
 import { QuoteData } from "@/lib/quotesData";
+import { EmptyState, Modal, QuoteBadge, Skeleton } from "@/components/ui";
 
 export default function QuoteDetailPage() {
   const params = useParams();
@@ -128,9 +130,7 @@ export default function QuoteDetailPage() {
   const handleOpenSms = () => {
     if (!quote) return;
     setSmsContent(
-      `JKIOCEAN Houston Hub: Hi ${quote.customer.contactPerson} (${quote.customer.businessName}), here is your official wholesale price quote #${quote.quoteNumber}. Total: $${quote.totalAmount.toFixed(
-        2
-      )}. Valid until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Free local delivery from Houston Hub. Download PDF or call our hotline at +1 (713) 330-6165.`
+      `JKIOCEAN Houston Hub: Hi ${quote.customer.contactPerson} (${quote.customer.businessName}), here is your official wholesale price quote #${quote.quoteNumber}. Valid until: ${new Date(quote.validUntil).toLocaleDateString("en-US")}. Free local delivery from Houston Hub. Download PDF or call our hotline at +1 (713) 330-6165.`
     );
     setSmsSuccess(false);
     setShowSmsModal(true);
@@ -198,26 +198,25 @@ export default function QuoteDetailPage() {
 
   if (loading) {
     return (
-      <div className="py-24 flex flex-col items-center justify-center space-y-3">
-        <RefreshCw className="w-8 h-8 animate-spin text-[#253c68]" />
-        <span className="text-sm font-semibold text-slate-600">Loading quote details...</span>
+      <div className="space-y-4">
+        <Skeleton className="h-16" />
+        <Skeleton className="h-[600px] rounded-3xl" />
       </div>
     );
   }
 
   if (!quote) {
     return (
-      <div className="py-16 text-center space-y-4">
-        <AlertCircle className="w-12 h-12 text-rose-500 mx-auto" />
-        <h2 className="text-lg font-bold text-slate-800">Quote Not Found</h2>
-        <p className="text-xs text-slate-500">The requested quote does not exist or has been removed.</p>
-        <Link
-          href="/quotes"
-          className="inline-flex items-center space-x-2 px-4 py-2 bg-[#253c68] text-white rounded-xl text-xs font-bold"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Return to Quotes List</span>
-        </Link>
+      <div className="card max-w-lg mx-auto mt-10">
+        <EmptyState
+          icon={AlertCircle}
+          title="Không tìm thấy báo giá"
+          action={
+            <Link href="/quotes" className="btn-primary">
+              <ArrowLeft className="w-4 h-4" /> Về danh sách
+            </Link>
+          }
+        />
       </div>
     );
   }
@@ -234,142 +233,65 @@ export default function QuoteDetailPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-20">
-      {/* Top Action Bar (Hidden when printing) */}
-      <div className="print:hidden flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-        <div className="flex items-center space-x-3">
-          <Link
-            href="/quotes"
-            className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition"
-          >
+    <div className="max-w-5xl mx-auto space-y-6">
+      {/* Action bar */}
+      <div className="print:hidden flex flex-col lg:flex-row lg:items-center justify-between gap-4 animate-fade-up">
+        <div className="flex items-center gap-3">
+          <Link href="/quotes" className="icon-btn bg-white border border-ink-100 shadow-sm" title="Quay lại">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold text-slate-400">Quote:</span>
-              <span className="text-lg font-black text-slate-900 font-mono">{quote.quoteNumber}</span>
-              <span
-                className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
-                  quote.status === "ACCEPTED"
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : quote.status === "SENT"
-                    ? "bg-sky-50 text-sky-700 border-sky-200"
-                    : quote.status === "REJECTED"
-                    ? "bg-rose-50 text-rose-700 border-rose-200"
-                    : "bg-slate-100 text-slate-700 border-slate-200"
-                }`}
-              >
-                {quote.status}
-              </span>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-ink-900 font-mono">{quote.quoteNumber}</h1>
+              <QuoteBadge status={quote.status} />
             </div>
-            <p className="text-xs text-slate-500">Customer: {quote.customer.businessName}</p>
+            <p className="text-sm text-ink-500">{quote.customer.businessName}</p>
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Status Quick Toggle */}
+          <div className="flex items-center rounded-2xl bg-white border border-ink-100 p-1 shadow-sm">
+            <button onClick={handleCopyQuoteText} className="icon-btn" title={copiedToast ? "Đã chép" : "Chép nội dung để dán vào tin nhắn"}>
+              {copiedToast ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+            </button>
+            <button onClick={handleExportCsv} className="icon-btn" title="Xuất file Excel (CSV)">
+              <FileSpreadsheet className="w-4 h-4" />
+            </button>
+            <button onClick={handlePrint} className="icon-btn" title="In">
+              <Printer className="w-4 h-4" />
+            </button>
+          </div>
           {quote.status !== "ACCEPTED" && (
-            <button
-              disabled={updatingStatus}
-              onClick={() => handleStatusChange("ACCEPTED")}
-              className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5"
-            >
-              <CheckCircle className="w-3.5 h-3.5" />
-              <span>Mark as Accepted</span>
+            <button disabled={updatingStatus} onClick={() => handleStatusChange("ACCEPTED")} className="btn-ghost !text-emerald-700 hover:!border-emerald-300">
+              <ThumbsUp className="w-4 h-4" /> Khách đồng ý
             </button>
           )}
-
-          {/* Send Quo SMS */}
-          <button
-            onClick={handleOpenSms}
-            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm shadow-emerald-600/20"
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Send Quo SMS</span>
+          <button onClick={handleOpenSms} className="btn-dark">
+            <MessageSquare className="w-4 h-4" /> Gửi tin nhắn
           </button>
-
-          {/* 1-Click Copy Text for SMS */}
-          <button
-            onClick={handleCopyQuoteText}
-            className={`px-3.5 py-2 border rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm ${
-              copiedToast
-                ? "bg-emerald-600 text-white border-emerald-600"
-                : "bg-white border-sky-300 text-sky-800 hover:bg-sky-50"
-            }`}
-          >
-            {copiedToast ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-sky-600" />}
-            <span>{copiedToast ? "Quote Copied!" : "Copy Quote (SMS/Text)"}</span>
-          </button>
-
-          {/* Export Excel */}
-          <button
-            onClick={handleExportCsv}
-            className="px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Export CSV</span>
-          </button>
-
-          {/* Print / Save PDF Fast */}
-          <button
-            onClick={handlePrint}
-            className="px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print / Fast PDF</span>
-          </button>
-
-          {/* Download PDF */}
-          <button
-            disabled={downloadingPdf}
-            onClick={handleDownloadPdf}
-            className="px-4 py-2 bg-gradient-to-r from-[#253c68] to-[#1e3054] text-white rounded-xl text-xs font-bold shadow-lg shadow-[#253c68]/20 hover:scale-[1.01] transition-all flex items-center space-x-1.5"
-          >
-            {downloadingPdf ? (
-              <>
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Generating PDF...</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-3.5 h-3.5" />
-                <span>Download Official PDF</span>
-              </>
-            )}
+          <button disabled={downloadingPdf} onClick={handleDownloadPdf} className="btn-primary">
+            {downloadingPdf ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Tải PDF
           </button>
         </div>
       </div>
 
       {/* Branded Live Quotation Document Preview (Pixel-Perfect 1:1 with PDF) */}
-      <div className="bg-white rounded-2xl border border-slate-300 shadow-xl overflow-hidden p-6 sm:p-10 text-slate-900 print:border-none print:shadow-none print:p-0">
+      <div className="bg-white rounded-3xl border border-ink-100 shadow-lift overflow-hidden p-6 sm:p-10 animate-fade-up text-slate-900 print:border-none print:shadow-none print:p-0">
         {/* Brand Header */}
-        <div className="bg-gradient-to-r from-[#1a2c4e] to-[#253c68] text-white p-6 sm:p-7 rounded-2xl mb-6 flex flex-col sm:flex-row justify-between items-start gap-4 border-l-8 border-[#38bdf8] shadow-md">
+        <div className="mb-6 pb-6 border-b-4 border-brand-500 flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl sm:text-3xl font-black tracking-wider text-white">JKIOCEAN</span>
-            </div>
-            <div className="text-xs italic text-[#93c5fd] uppercase tracking-widest mt-1">
-              Let Beauty Begin
-            </div>
-            <div className="inline-block bg-[#38bdf8]/20 border border-[#38bdf8]/40 text-[#7dd3fc] text-[10px] font-extrabold px-2.5 py-0.5 rounded mt-3 uppercase tracking-wider">
-              ★ Houston Logistics & Distribution Hub ★
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-full.png" alt="JKI OCEAN" className="h-16 w-auto" />
+            <div className="text-xs italic text-brand-600 uppercase tracking-widest mt-2">Let Beauty Begin</div>
           </div>
-
-          <div className="text-left sm:text-right text-xs text-slate-200 leading-relaxed">
-            <strong className="text-white text-sm">JKIOCEAN GLOBAL LLC</strong>
+          <div className="text-left sm:text-right text-xs text-slate-500 leading-relaxed">
+            <strong className="text-slate-900 text-sm">JKIOCEAN GLOBAL LLC</strong>
             <br />
-            10606 Bellaire Blvd, Suite 108
+            10606 Bellaire Blvd, Suite 108, Houston, TX 77036
             <br />
-            Houston, TX 77036
+            Tel: <span className="text-brand-600 font-bold">+1 (713) 330-6165</span> · support@jkiocean.com
             <br />
-            Tel:{" "}
-            <span className="text-[#38bdf8] font-bold font-mono text-sm">+1 (713) 330-6165</span>
-            <br />
-            Email: <span className="text-[#38bdf8] font-semibold">support@jkiocean.com</span>
-            <br />
-            Web: <strong>www.jkioceanhub.com</strong>
+            www.jkioceanhub.com
           </div>
         </div>
 
@@ -385,7 +307,7 @@ export default function QuoteDetailPage() {
                 </span>
               )}
             </div>
-            <div className="text-base font-extrabold text-[#253c68]">{quote.customer.businessName}</div>
+            <div className="text-base font-extrabold text-brand-700">{quote.customer.businessName}</div>
             <div className="text-xs text-slate-600 space-y-1">
               <div className="flex justify-between">
                 <span className="text-slate-400">Contact Person:</span>
@@ -419,7 +341,7 @@ export default function QuoteDetailPage() {
             <div className="text-xs text-slate-600 space-y-1.5 pt-1">
               <div className="flex justify-between">
                 <span className="text-slate-400">Quote #:</span>
-                <span className="font-mono font-bold text-[#253c68] text-sm">{quote.quoteNumber}</span>
+                <span className="font-mono font-bold text-brand-700 text-sm">{quote.quoteNumber}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Issue Date:</span>
@@ -457,7 +379,7 @@ export default function QuoteDetailPage() {
         <div className="mb-6 overflow-hidden rounded-xl border border-slate-200">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#253c68] text-white text-[11px] font-bold uppercase tracking-wider">
+              <tr className="bg-brand-700 text-white text-[11px] font-bold uppercase tracking-wider">
                 <th className="py-3 px-3 text-center" style={{ width: "40px" }}>
                   Item #
                 </th>
@@ -499,7 +421,7 @@ export default function QuoteDetailPage() {
                         {it.sku}
                       </span>
                       {it.category && (
-                        <span className="text-[10px] bg-sky-50 text-[#253c68] font-bold px-2 py-0.5 rounded">
+                        <span className="text-[10px] bg-sky-50 text-brand-700 font-bold px-2 py-0.5 rounded">
                           {it.category}
                         </span>
                       )}
@@ -531,7 +453,7 @@ export default function QuoteDetailPage() {
               {quote.notes || "Free local delivery for wholesale salon orders in Greater Houston Hub."}
             </p>
             <div className="pt-2 border-t border-dashed border-slate-200 text-[11px] text-slate-500 leading-relaxed">
-              <strong className="text-[#253c68]">Quality Guarantee:</strong> 100% genuine Kolinsky bristles,
+              <strong className="text-brand-700">Quality Guarantee:</strong> 100% genuine Kolinsky bristles,
               30-day full replacement warranty against manufacturing defects.
             </div>
           </div>
@@ -557,11 +479,11 @@ export default function QuoteDetailPage() {
             </div>
 
             {/* Grand Total */}
-            <div className="pt-3 border-t-2 border-[#253c68] flex justify-between items-center">
+            <div className="pt-3 border-t-2 border-brand-700 flex justify-between items-center">
               <div>
                 <span className="text-xs font-black text-slate-900 uppercase block">Grand Total (USD)</span>
               </div>
-              <span className="bg-[#253c68] text-white px-3 py-1 rounded-lg font-mono font-black text-lg">
+              <span className="bg-brand-700 text-white px-3 py-1 rounded-lg font-mono font-black text-lg">
                 ${quote.totalAmount.toFixed(2)}
               </span>
             </div>
@@ -612,83 +534,34 @@ export default function QuoteDetailPage() {
         </div>
       </div>
 
-      {/* Quo SMS Modal */}
-      {showSmsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-slate-900 text-base">Send Quote via Quo SMS</h3>
-                  <p className="text-xs text-slate-500">Houston Hub Hotline: +1 (713) 330-6165</p>
-                </div>
-              </div>
-              <button onClick={() => setShowSmsModal(false)} className="text-slate-400 hover:text-slate-600 p-1">
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Recipient Salon Phone:</label>
-                <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
-                  <span className="font-bold text-slate-800">{quote.customer.businessName}</span>
-                  <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    {quote.customer.phone}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">SMS Message Content:</label>
-                <textarea
-                  rows={4}
-                  value={smsContent}
-                  onChange={(e) => setSmsContent(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-sans text-xs text-slate-800 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
-
-              {smsSuccess && (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 flex items-center space-x-2 font-bold">
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span>SMS sent successfully! Quote status updated to SENT.</span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100">
-              <button
-                disabled={sendingSms}
-                onClick={() => setShowSmsModal(false)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold text-xs hover:bg-slate-200 transition"
-              >
-                Close
-              </button>
-              <button
-                disabled={sendingSms || smsSuccess}
-                onClick={handleSendSms}
-                className="px-5 py-2 bg-emerald-600 text-white rounded-xl font-bold text-xs hover:bg-emerald-700 transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20 disabled:opacity-50"
-              >
-                {sendingSms ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Sending via Quo SMS...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Send SMS via Quo</span>
-                  </>
-                )}
-              </button>
-            </div>
+      <Modal
+        open={showSmsModal}
+        onClose={() => setShowSmsModal(false)}
+        title="Gửi báo giá qua tin nhắn"
+        icon={MessageSquare}
+        footer={
+          <>
+            <button onClick={() => setShowSmsModal(false)} className="btn-ghost">
+              Hủy
+            </button>
+            <button disabled={sendingSms || smsSuccess} onClick={handleSendSms} className="btn-primary">
+              {sendingSms ? <RefreshCw className="w-4 h-4 animate-spin" /> : smsSuccess ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+              {smsSuccess ? "Đã gửi" : "Gửi"}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="flex items-center justify-between rounded-2xl bg-ink-50 px-4 py-3">
+            <p className="text-sm font-semibold text-ink-900 truncate">{quote.customer.businessName}</p>
+            <span className="text-sm font-mono font-semibold text-brand-700">{quote.customer.phone}</span>
+          </div>
+          <div>
+            <p className="label">Nội dung</p>
+            <textarea rows={5} value={smsContent} onChange={(e) => setSmsContent(e.target.value)} className="input resize-none" />
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

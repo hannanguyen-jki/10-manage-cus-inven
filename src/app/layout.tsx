@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import Navbar from "@/components/Navbar";
+import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "JKIOCEAN Management Hub - CRM & Inventory",
-  description: "JKIOCEAN B2B Customer Management, Sales, Inventory & Accounts Receivable ERP Hub",
+  title: "JKI OCEAN – Quản lý khách hàng",
+  description: "Theo dõi khách hàng, tình trạng thanh toán và tạo báo giá",
+  icons: { icon: "/favicon.png", apple: "/logo.png" },
 };
 
 export default function RootLayout({
@@ -14,15 +14,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex">
-        <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <Navbar />
-          <main className="flex-1 overflow-y-auto p-6 md:p-8">
-            {children}
-          </main>
-        </div>
+    <html lang="vi">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="text-ink-900 font-sans antialiased">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

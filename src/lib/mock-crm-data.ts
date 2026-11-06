@@ -119,7 +119,9 @@ export const initialMockCustomers: MockCustomer[] = (rawCustomers as any[]) as M
 
 export const initialMockLeads: MockLead[] = [];
 
-let mockCustomersStore: MockCustomer[] = [...initialMockCustomers];
+// Kept on globalThis so every API route shares the same in-memory data (route modules are loaded separately in dev)
+const crmGlobal = globalThis as unknown as { __jkiCustomersStore?: MockCustomer[] };
+const mockCustomersStore: MockCustomer[] = (crmGlobal.__jkiCustomersStore ??= JSON.parse(JSON.stringify(initialMockCustomers)));
 let mockLeadsStore: MockLead[] = [...initialMockLeads];
 
 export function getMockCustomers(): MockCustomer[] {
@@ -172,7 +174,8 @@ export function updateMockCustomer(id: string, updates: Partial<MockCustomer>): 
 
 export function deleteMockCustomer(id: string): boolean {
   const initialLength = mockCustomersStore.length;
-  mockCustomersStore = mockCustomersStore.filter((c) => c.id !== id);
+  const idx = mockCustomersStore.findIndex((c) => c.id === id);
+  if (idx !== -1) mockCustomersStore.splice(idx, 1);
   return mockCustomersStore.length < initialLength;
 }
 

@@ -5,6 +5,7 @@ import {
   addMockCustomer,
   MockCustomer,
 } from "@/lib/mock-crm-data";
+import { summarizeOrders } from "@/lib/payments";
 
 export async function GET(req: Request) {
   try {
@@ -152,6 +153,16 @@ export async function GET(req: Request) {
         };
       });
     }
+
+    customersData = customersData.map((c) => {
+      const { totalSpent, totalPaid, debtAmount, profit, aov, rev2024, rev2025, rev2026, orders, quotes, smsLogs, churnSurveys, ...rest } = c;
+      return {
+        ...rest,
+        ...summarizeOrders(orders || []),
+        quoteCount: (quotes || []).length,
+        lastContactDate: c.lastContactDate || null,
+      };
+    });
 
     return NextResponse.json({
       success: true,

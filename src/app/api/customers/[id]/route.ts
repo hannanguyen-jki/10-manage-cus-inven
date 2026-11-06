@@ -5,6 +5,8 @@ import {
   updateMockCustomer,
   MockCustomer,
 } from "@/lib/mock-crm-data";
+import { summarizeOrders } from "@/lib/payments";
+import { getQuotesList } from "@/lib/quotesData";
 
 export async function GET(
   req: Request,
@@ -117,9 +119,20 @@ export async function GET(
       );
     }
 
+    // Include quotes created in this app for the customer (not always stored on the customer record)
+    try {
+      const known = new Set((customerData.quotes || []).map((q: any) => q.id));
+      const extra = (await getQuotesList())
+        .filter((q) => q.customerId === id && !known.has(q.id))
+        .map((q) => ({ id: q.id, quoteNumber: q.quoteNumber, status: q.status, createdAt: q.createdAt }));
+      customerData.quotes = [...extra, ...(customerData.quotes || [])];
+    } catch {
+      // quotes are optional here
+    }
+
     return NextResponse.json({
       success: true,
-      customer: customerData,
+      customer: { ...customerData, ...summarizeOrders(customerData.orders || []) },
     });
   } catch (error: any) {
     console.error(`[GET /api/customers/${params.id}] Error:`, error);

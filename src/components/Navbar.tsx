@@ -1,125 +1,101 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, Clock } from "lucide-react";
+import { LogOut } from "lucide-react";
+import { Avatar } from "@/components/ui";
+
+type User = { fullName: string; role: string; department?: string; email: string };
+
+const DEFAULT_USER: User = { fullName: "Johnny Tran", role: "ADMIN", department: "BOD", email: "johnny@jkiocean.com" };
+
+const cleanName = (name?: string) =>
+  (name || "").replace(/\s*\([Ss][ếe]p\)/gi, "").replace(/\s*[Ss]ếp/gi, "").trim();
+
+function greeting(hour: number) {
+  if (hour < 11) return "Chào buổi sáng";
+  if (hour < 14) return "Chào buổi trưa";
+  if (hour < 18) return "Chào buổi chiều";
+  return "Chào buổi tối";
+}
 
 export default function Navbar() {
   const router = useRouter();
-  const [user, setUser] = useState<{ fullName: string; role: string; department?: string; email: string } | null>(null);
-  const [houstonTime, setHoustonTime] = useState("");
-  const [vnTime, setVnTime] = useState("");
-
-  const sanitizeFullName = (name?: string) => {
-    if (!name) return "";
-    return name
-      .replace(/\s*\([Ss][ếe]p\)/gi, "")
-      .replace(/\s*[Ss]ếp/gi, "")
-      .trim();
-  };
+  const [user, setUser] = useState<User | null>(null);
+  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Fetch current user from /api/auth/me
     fetch("/api/auth/me")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.authenticated && data.user) {
-          setUser({
-            ...data.user,
-            fullName: sanitizeFullName(data.user.fullName),
-          });
-        } else {
-          // Default placeholder for demo
-          setUser({ fullName: "Johnny Tran", role: "ADMIN", department: "BOD", email: "johnny@jkiocean.com" });
-        }
+        if (data?.authenticated && data.user) setUser({ ...data.user, fullName: cleanName(data.user.fullName) });
+        else setUser(DEFAULT_USER);
       })
-      .catch(() => {
-        setUser({ fullName: "Johnny Tran", role: "ADMIN", department: "BOD", email: "johnny@jkiocean.com" });
-      });
+      .catch(() => setUser(DEFAULT_USER));
 
-    // Update dual clocks (Houston CST & Vietnam GMT+7)
-    const updateClocks = () => {
-      const now = new Date();
-      setHoustonTime(
-        now.toLocaleTimeString("en-US", {
-          timeZone: "America/Chicago",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
-      );
-      setVnTime(
-        now.toLocaleTimeString("en-US", {
-          timeZone: "Asia/Ho_Chi_Minh",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
-      );
-    };
-
-    updateClocks();
-    const interval = setInterval(updateClocks, 1000);
-    return () => clearInterval(interval);
+    setNow(new Date());
+    const t = setInterval(() => setNow(new Date()), 15000);
+    return () => clearInterval(t);
   }, []);
 
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
       router.push("/login");
       router.refresh();
-    } catch {
-      router.push("/login");
     }
   };
 
-  const displayName = sanitizeFullName(user?.fullName || "");
+  const fmt = (tz: string) =>
+    now ? now.toLocaleTimeString("en-US", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false }) : "--:--";
+  const houstonHour = now ? Number(now.toLocaleString("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false })) : 9;
+  const firstName = (user?.fullName || "").split(" ")[0];
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 shadow-sm z-10">
-      {/* Dual Timezone Status */}
-      <div className="flex items-center space-x-6 text-xs text-slate-500">
-        <div className="flex items-center space-x-2 bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200/60">
-          <Clock className="w-3.5 h-3.5 text-[#253c68]" />
-          <span className="font-semibold text-slate-700">Houston (CST):</span>
-          <span className="font-mono text-slate-900 font-bold">{houstonTime || "--:--"}</span>
-        </div>
-        <div className="hidden sm:flex items-center space-x-2 bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200/60">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="font-semibold text-slate-700">VN Hub (GMT+7):</span>
-          <span className="font-mono text-slate-900 font-bold">{vnTime || "--:--"}</span>
-        </div>
-      </div>
+    <header className="shrink-0 px-4 sm:px-6 lg:px-10 pt-4 lg:pt-6">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        {/* Mobile logo */}
+        <Link href="/dashboard" className="lg:hidden">
+          <Image src="/logo-full.png" alt="JKI OCEAN" width={2373} height={1125} className="h-9 w-auto" priority />
+        </Link>
 
-      {/* User Info & Actions */}
-      <div className="flex items-center space-x-4">
-        {user && (
-          <div className="flex items-center space-x-3 border-r border-slate-200 pr-4">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#253c68] to-[#3a568c] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              {displayName.charAt(0) || "U"}
+        {/* Greeting (desktop) */}
+        <div className="hidden lg:block">
+          <p className="text-sm text-ink-400">{greeting(houstonHour)} 👋</p>
+          <p className="text-lg font-bold text-ink-900">{firstName || "bạn"}</p>
+        </div>
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Clocks */}
+          <div className="hidden sm:flex items-center gap-1 rounded-2xl bg-white/80 backdrop-blur border border-ink-100 p-1 shadow-sm">
+            <div className="flex items-center gap-1.5 rounded-xl px-3 py-1.5" title="Giờ Houston (Mỹ)">
+              <span className="text-[11px] font-semibold text-ink-400">Houston</span>
+              <span className="text-sm font-semibold tabular-nums text-ink-800">{fmt("America/Chicago")}</span>
             </div>
-            <div className="text-right hidden md:block">
-              <p className="text-sm font-bold text-slate-800 leading-tight">{displayName}</p>
-              <div className="flex items-center justify-end space-x-1.5 mt-0.5">
-                <span className="text-[10px] bg-[#253c68]/10 text-[#253c68] font-semibold px-1.5 py-0.2 rounded">
-                  {user.role}
-                </span>
-                {user.department && (
-                  <span className="text-[10px] text-slate-400 font-medium">({user.department})</span>
-                )}
-              </div>
+            <div className="w-px h-5 bg-ink-100" />
+            <div className="flex items-center gap-1.5 rounded-xl px-3 py-1.5" title="Giờ Việt Nam">
+              <span className="text-[11px] font-semibold text-ink-400">Việt Nam</span>
+              <span className="text-sm font-semibold tabular-nums text-ink-800">{fmt("Asia/Ho_Chi_Minh")}</span>
             </div>
           </div>
-        )}
 
-        <button
-          onClick={handleLogout}
-          title="Sign out"
-          aria-label="Sign out"
-          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
+          {/* User */}
+          {user && (
+            <div className="flex items-center gap-2.5 rounded-2xl bg-white/80 backdrop-blur border border-ink-100 py-1 pl-1 pr-1 sm:pr-2 shadow-sm">
+              <Avatar name={user.fullName} size="sm" />
+              <div className="hidden md:block leading-tight pr-1">
+                <p className="text-sm font-semibold text-ink-800">{user.fullName}</p>
+                <p className="text-[11px] text-ink-400">{user.department || user.role}</p>
+              </div>
+              <button onClick={handleLogout} title="Đăng xuất" aria-label="Đăng xuất" className="icon-btn hover:!text-rose-600 hover:!bg-rose-50">
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

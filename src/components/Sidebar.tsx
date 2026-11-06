@@ -1,107 +1,127 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  FileText,
-  Receipt,
-  TrendingDown,
-  PhoneCall,
-  ChevronRight,
-} from "lucide-react";
+import { LayoutGrid, Users, Wallet, FileText, Plus, Phone } from "lucide-react";
+import { cn } from "@/components/ui";
 
-interface NavItem {
-  title: string;
-  href: string;
-  icon: any;
-  badge?: string;
-  badgeColor?: string;
-}
-
-const navItems: NavItem[] = [
-  { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { title: "B2B Customers", href: "/customers", icon: Users },
-  { title: "PDF Quotes", href: "/quotes", icon: FileText },
-  { title: "Accounts Receivable (AR)", href: "/ar", icon: Receipt },
-  { title: "Churn Alerts", href: "/churn", icon: TrendingDown, badge: "Alert", badgeColor: "bg-rose-500 text-white" },
+export const navItems = [
+  { title: "Tổng quan", short: "Tổng quan", href: "/dashboard", icon: LayoutGrid },
+  { title: "Khách hàng", short: "Khách", href: "/customers", icon: Users },
+  { title: "Thanh toán", short: "Thanh toán", href: "/payments", icon: Wallet },
+  { title: "Báo giá", short: "Báo giá", href: "/quotes", icon: FileText },
 ];
+
+function isActive(pathname: string | null, href: string) {
+  if (!pathname) return false;
+  return pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 select-none min-h-screen">
-      {/* Brand Header */}
-      <div className="p-5 border-b border-slate-800/80 bg-gradient-to-b from-slate-900 to-[#1a2c4e]/40">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#3a568c] to-[#253c68] flex items-center justify-center shadow-lg shadow-[#253c68]/20 border border-slate-700">
-            <span className="text-white font-black text-lg tracking-wider">JKI</span>
-          </div>
-          <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="font-extrabold text-white text-base tracking-wide">JKIOCEAN</span>
-              <span className="text-[10px] bg-[#38bdf8]/20 text-[#38bdf8] font-bold px-1.5 py-0.5 rounded">HUB</span>
+    <aside className="hidden lg:flex w-72 shrink-0 flex-col h-screen sticky top-0 p-4">
+      <div className="flex flex-col h-full rounded-[28px] bg-white/80 backdrop-blur-xl border border-ink-100 shadow-soft overflow-hidden">
+        {/* Logo */}
+        <Link href="/dashboard" className="px-6 pt-7 pb-6 block group">
+          <Image
+            src="/logo-full.png"
+            alt="JKI OCEAN"
+            width={2373}
+            height={1125}
+            priority
+            className="h-12 w-auto transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+          <p className="mt-3 text-xs font-medium text-ink-400">Quản lý khách hàng</p>
+        </Link>
+
+        {/* Quick action */}
+        <div className="px-4">
+          <Link href="/quotes/create" className="btn-primary w-full py-3">
+            <Plus className="w-4 h-4" />
+            Tạo báo giá mới
+          </Link>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-6 space-y-1">
+          {navItems.map((item) => {
+            const active = isActive(pathname, item.href);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "relative flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 group",
+                  active ? "bg-brand-50 text-brand-700" : "text-ink-500 hover:text-ink-900 hover:bg-ink-50"
+                )}
+              >
+                {active && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-brand-500" />}
+                <span
+                  className={cn(
+                    "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300",
+                    active
+                      ? "bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-glow"
+                      : "bg-ink-50 text-ink-500 group-hover:bg-white group-hover:text-brand-600 group-hover:shadow-soft group-hover:scale-110"
+                  )}
+                >
+                  <Icon className="w-[18px] h-[18px]" />
+                </span>
+                {item.title}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Hotline */}
+        <div className="m-4 rounded-2xl bg-gradient-to-br from-ink-900 to-ink-800 p-4 text-white relative overflow-hidden">
+          <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-brand-500/40 blur-2xl" />
+          <div className="relative flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
+              <Phone className="w-4 h-4 text-brand-300" />
             </div>
-            <p className="text-[11px] text-slate-400 font-medium">Houston, TX • B2B CRM</p>
+            <div>
+              <p className="text-[11px] text-ink-300">Hotline Houston</p>
+              <a href="tel:+17133306165" className="text-sm font-semibold tracking-wide hover:text-brand-300">
+                +1 (713) 330-6165
+              </a>
+            </div>
           </div>
         </div>
       </div>
+    </aside>
+  );
+}
 
-      {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-          OPERATIONS & MANAGEMENT
-        </div>
+/** Bottom tab bar for phones / tablets */
+export function MobileNav() {
+  const pathname = usePathname();
+  return (
+    <nav className="lg:hidden fixed bottom-3 inset-x-3 z-50">
+      <div className="mx-auto max-w-md flex items-center justify-around rounded-3xl bg-white/90 backdrop-blur-xl border border-ink-100 shadow-lift px-2 py-2">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href));
+          const active = isActive(pathname, item.href);
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
-                isActive
-                  ? "bg-gradient-to-r from-[#253c68] to-[#1e3054] text-white shadow-md shadow-[#253c68]/30 font-semibold"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/60"
-              }`}
+              className={cn(
+                "flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[11px] font-semibold transition-all",
+                active ? "text-brand-600" : "text-ink-400"
+              )}
             >
-              <div className="flex items-center space-x-3">
-                <Icon
-                  className={`w-4 h-4 transition-transform duration-200 group-hover:scale-110 ${
-                    isActive ? "text-[#38bdf8]" : "text-slate-400 group-hover:text-slate-200"
-                  }`}
-                />
-                <span>{item.title}</span>
-              </div>
-              {item.badge ? (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.badgeColor}`}>
-                  {item.badge}
-                </span>
-              ) : isActive ? (
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              ) : null}
+              <span className={cn("w-10 h-8 rounded-xl flex items-center justify-center transition-all", active && "bg-brand-50")}>
+                <Icon className="w-5 h-5" />
+              </span>
+              {item.short}
             </Link>
           );
         })}
-      </nav>
-
-      {/* Footer System Status */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-900/80">
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <div className="flex items-center space-x-2">
-            <PhoneCall className="w-3.5 h-3.5 text-[#38bdf8]" />
-            <span className="font-mono text-[11px]">+1 (713) 330-6165</span>
-          </div>
-          <span className="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded">
-            ONLINE
-          </span>
-        </div>
-        <p className="text-[10px] text-slate-400 mt-2">
-          JKIOCEAN B2B Management Hub v1.0
-        </p>
       </div>
-    </aside>
+    </nav>
   );
 }

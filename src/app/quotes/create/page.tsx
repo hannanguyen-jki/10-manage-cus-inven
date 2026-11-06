@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -8,23 +8,22 @@ import {
   ArrowLeft,
   Search,
   Plus,
+  Minus,
   Trash2,
-  Building,
-  User,
-  Phone,
-  Mail,
-  MapPin,
-  Calendar,
-  DollarSign,
-  Percent,
-  Truck,
-  ShieldCheck,
   Check,
-  RefreshCw,
-  Sparkles,
-  Info,
+  Loader2,
+  Store,
+  ShoppingBasket,
+  Send,
+  Save,
+  ChevronDown,
+  Truck,
+  PackageOpen,
+  X,
+  CalendarClock,
 } from "lucide-react";
-import { QuoteCustomerData, ProductCatalogItem } from "@/lib/quotesData";
+import type { QuoteCustomerData, ProductCatalogItem } from "@/lib/quotesData";
+import { Avatar, EmptyState, SpotlightCard, TierBadge, cn } from "@/components/ui";
 
 interface LineItem {
   productId: string;
@@ -37,187 +36,121 @@ interface LineItem {
   discount: number; // %
 }
 
+const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const prettyCat = (c: string) =>
+  c
+    .replace(/\s+/g, " ")
+    .replace(/\b(\w) (?=\w)/g, "$1")
+    .trim()
+    .toLowerCase()
+    .replace(/(^|\s)\S/g, (s) => s.toUpperCase());
+
+const PAYMENT_TERMS = [
+  { value: "Net 15 (Zelle / Company Check)", label: "Trả trong 15 ngày (Zelle / Check)" },
+  { value: "Net 30 (Approved Wholesale Account)", label: "Trả trong 30 ngày" },
+  { value: "Due upon receipt (Zelle prior to dispatch)", label: "Trả trước khi giao (Zelle)" },
+  { value: "Credit Card (Visa / Mastercard / Amex)", label: "Thẻ tín dụng" },
+  { value: "COD (Houston Local Hub)", label: "Trả khi nhận hàng (COD)" },
+  { value: "Bank Wire Transfer", label: "Chuyển khoản ngân hàng" },
+];
+
 function CreateQuoteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paramCustomerId = searchParams?.get("customerId");
 
-  // Catalog data
   const [customers, setCustomers] = useState<QuoteCustomerData[]>([]);
   const [products, setProducts] = useState<ProductCatalogItem[]>([]);
-  const [loadingOptions, setLoadingOptions] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // Selected customer state
-  const [selectedCustomerId, setSelectedCustomerId] = useState("");
-  const [customerSearch, setCustomerSearch] = useState("");
-  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+  const [customerId, setCustomerId] = useState("");
+  const [customerQuery, setCustomerQuery] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
 
-  // Product search state
-  const [productSearch, setProductSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("ALL");
-
-  // Quote Line Items
+  const [productQuery, setProductQuery] = useState("");
+  const [category, setCategory] = useState("ALL");
   const [items, setItems] = useState<LineItem[]>([]);
 
-  // Quote Metadata
   const [quoteNumber, setQuoteNumber] = useState("");
-  const [issueDate, setIssueDate] = useState("");
   const [validUntil, setValidUntil] = useState("");
   const [salesRep, setSalesRep] = useState("Johnny Tran");
-  const [paymentTerms, setPaymentTerms] = useState("Net 15 (Zelle / Company Check)");
-  const [notes, setNotes] = useState(
-    "Free local delivery for wholesale orders in Greater Houston Hub. 30-day replacement warranty on Kolinsky bristles."
-  );
+  const [paymentTerms, setPaymentTerms] = useState(PAYMENT_TERMS[0].value);
+  const [notes, setNotes] = useState("Free local delivery for wholesale orders in Greater Houston. 30-day replacement warranty on Kolinsky bristles.");
+  const [saving, setSaving] = useState<"DRAFT" | "SENT" | null>(null);
+  const [error, setError] = useState("");
 
-  const [saving, setSaving] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-
-  // Initialize Quote Number and Default 14-day validity
   useEffect(() => {
     const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const rand = Math.floor(1000 + Math.random() * 9000);
-    setQuoteNumber(`QT-${yyyy}${mm}-${rand}`);
-    setIssueDate(today.toISOString().split("T")[0]);
+    setQuoteNumber(`QT-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`);
+    setValidUntil(new Date(today.getTime() + 14 * 86400000).toISOString().split("T")[0]);
 
-    const twoWeeksLater = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
-    setValidUntil(twoWeeksLater.toISOString().split("T")[0]);
-
-    // Fetch customers and products
     fetch("/api/quotes/options")
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
-        if (data.success) {
-          setCustomers(data.customers);
-          setProducts(data.products);
-          if (data.customers.length > 0) {
-            if (paramCustomerId && data.customers.some((c: any) => c.id === paramCustomerId)) {
-              setSelectedCustomerId(paramCustomerId);
-            } else {
-              setSelectedCustomerId(data.customers[0].id);
-            }
-          }
-          // Seed with 2 initial popular items for quick builder UX
-          if (data.products.length >= 2) {
-            setItems([
-              {
-                productId: data.products[0].id,
-                productName: data.products[0].name,
-                sku: data.products[0].sku,
-                imageUrl: data.products[0].imageUrl,
-                category: data.products[0].category,
-                quantity: 10,
-                unitPrice: data.products[0].wholesalePrice,
-                discount: 10,
-              },
-              {
-                productId: data.products[1].id,
-                productName: data.products[1].name,
-                sku: data.products[1].sku,
-                imageUrl: data.products[1].imageUrl,
-                category: data.products[1].category,
-                quantity: 5,
-                unitPrice: data.products[1].wholesalePrice,
-                discount: 10,
-              },
-            ]);
-          }
-        }
+        if (!data.success) return;
+        setCustomers(data.customers);
+        setProducts(data.products);
+        if (paramCustomerId && data.customers.some((c: any) => c.id === paramCustomerId)) setCustomerId(paramCustomerId);
       })
-      .catch((err) => console.error("Error loading options:", err))
-      .finally(() => setLoadingOptions(false));
-  }, []);
+      .finally(() => setLoading(false));
+  }, [paramCustomerId]);
 
-  const selectedCustomer = customers.find((c) => c.id === selectedCustomerId);
+  const customer = customers.find((c) => c.id === customerId);
 
-  // Add product to items table
-  const handleAddProduct = (prod: ProductCatalogItem) => {
-    const existingIndex = items.findIndex((it) => it.productId === prod.id);
-    if (existingIndex >= 0) {
-      // Increase qty
-      const updated = [...items];
-      updated[existingIndex].quantity += 5;
-      setItems(updated);
-    } else {
-      setItems([
-        ...items,
-        {
-          productId: prod.id,
-          productName: prod.name,
-          sku: prod.sku,
-          imageUrl: prod.imageUrl,
-          category: prod.category,
-          quantity: 10,
-          unitPrice: prod.wholesalePrice,
-          discount: 10,
-        },
-      ]);
-    }
+  const categories = useMemo(() => {
+    const counts: Record<string, number> = {};
+    products.forEach((p) => (counts[p.category] = (counts[p.category] || 0) + 1));
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([k]) => k);
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    const q = productQuery.trim().toLowerCase();
+    return products.filter((p) => (category === "ALL" || p.category === category) && (!q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)));
+  }, [products, category, productQuery]);
+
+  const filteredCustomers = useMemo(() => {
+    const q = customerQuery.trim().toLowerCase();
+    return customers.filter((c) => !q || [c.businessName, c.contactPerson, c.phone, c.city].some((v) => (v || "").toLowerCase().includes(q)));
+  }, [customers, customerQuery]);
+
+  const addProduct = (p: ProductCatalogItem) => {
+    setItems((prev) => {
+      const i = prev.findIndex((it) => it.productId === p.id);
+      if (i >= 0) return prev.map((it, idx) => (idx === i ? { ...it, quantity: it.quantity + 1 } : it));
+      return [
+        ...prev,
+        { productId: p.id, productName: p.name, sku: p.sku, imageUrl: p.imageUrl, category: p.category, quantity: 10, unitPrice: p.wholesalePrice, discount: 0 },
+      ];
+    });
   };
+  const update = (i: number, patch: Partial<LineItem>) => setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+  const remove = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
 
-  // Update item field
-  const handleUpdateItem = (index: number, field: keyof LineItem, value: any) => {
-    const updated = [...items];
-    (updated[index] as any)[field] = value;
-    setItems(updated);
-  };
+  const subtotal = items.reduce((s, it) => s + it.quantity * it.unitPrice, 0);
+  const discount = items.reduce((s, it) => s + it.quantity * it.unitPrice * (it.discount / 100), 0);
+  const freeShip = subtotal >= 500;
+  const shipping = items.length === 0 || freeShip ? 0 : 25;
+  const total = Math.max(0, subtotal - discount + shipping);
+  const pieces = items.reduce((s, it) => s + it.quantity, 0);
 
-  // Remove item
-  const handleRemoveItem = (index: number) => {
-    setItems(items.filter((_, idx) => idx !== index));
-  };
+  const step = !customer ? 1 : items.length === 0 ? 2 : 3;
 
-  // Real-time calculations
-  const subtotal = items.reduce((sum, it) => sum + it.quantity * it.unitPrice, 0);
-  const totalDiscount = items.reduce(
-    (sum, it) => sum + it.quantity * it.unitPrice * (it.discount / 100),
-    0
-  );
-  // Free local shipping for wholesale >= $500
-  const isFreeShipping = subtotal >= 500;
-  const shipping = isFreeShipping ? 0 : 25.0;
-  const totalAmount = Math.max(0, subtotal - totalDiscount + shipping);
-
-  // Filter products catalog
-  const filteredProducts = products.filter((p) => {
-    const matchCategory = selectedCategory === "ALL" || p.category === selectedCategory;
-    const matchSearch =
-      productSearch.trim() === "" ||
-      p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-      p.sku.toLowerCase().includes(productSearch.toLowerCase());
-    return matchCategory && matchSearch;
-  });
-
-  // Filter customers for dropdown search
-  const filteredCustomers = customers.filter(
-    (c) =>
-      c.businessName.toLowerCase().includes(customerSearch.toLowerCase()) ||
-      c.contactPerson.toLowerCase().includes(customerSearch.toLowerCase()) ||
-      c.phone.includes(customerSearch)
-  );
-
-  // Save Quote Handler
-  const handleSaveQuote = async (status: "DRAFT" | "SENT") => {
-    setErrorMsg("");
-    if (!selectedCustomerId) {
-      setErrorMsg("Please select a B2B salon / wholesale customer");
-      return;
-    }
-    if (items.length === 0) {
-      setErrorMsg("Please add at least 1 product to the wholesale quotation");
-      return;
-    }
-
+  const save = async (status: "DRAFT" | "SENT") => {
+    setError("");
+    if (!customerId) return setError("Hãy chọn khách hàng trước");
+    if (items.length === 0) return setError("Hãy thêm ít nhất 1 sản phẩm");
+    setSaving(status);
     try {
-      setSaving(true);
       const res = await fetch("/api/quotes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           quoteNumber,
-          customerId: selectedCustomerId,
-          customer: selectedCustomer,
+          customerId,
+          customer,
           items: items.map((it) => ({
             productId: it.productId,
             productName: it.productName,
@@ -234,533 +167,345 @@ function CreateQuoteContent() {
           createdUser: salesRep,
         }),
       });
-
       const data = await res.json();
-      if (data.success && data.quote) {
-        router.push(`/quotes/${data.quote.id}`);
-      } else {
-        setErrorMsg(data.error || "Failed to create quote. Please try again.");
-      }
-    } catch (err: any) {
-      setErrorMsg(err.message || "Network error while saving wholesale quotation");
+      if (data.success && data.quote) router.push(`/quotes/${data.quote.id}`);
+      else setError(data.error || "Không lưu được, thử lại nhé");
+    } catch {
+      setError("Lỗi kết nối, thử lại nhé");
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   };
 
-  const categories = ["ALL", "Z Brushes", "Art Brushes", "French Brushes", "Liner Brushes", "Gel Brushes", "Accessories"];
-
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-16">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        <div className="flex items-center space-x-3">
-          <Link
-            href="/quotes"
-            className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition"
-          >
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-up">
+        <div className="flex items-center gap-3">
+          <Link href="/quotes" className="icon-btn bg-white border border-ink-100 shadow-sm" title="Quay lại">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight">Create Wholesale Quote</h1>
-              <span className="font-mono text-xs bg-[#253c68] text-white font-extrabold px-2.5 py-0.5 rounded-full">
-                {quoteNumber}
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Draft official JKIOCEAN wholesale price quotes with high-resolution images, automated volume discounts & PDF export
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight text-ink-900">Tạo báo giá</h1>
+            <p className="text-xs font-mono text-ink-400">{quoteNumber}</p>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-3">
-          <button
-            type="button"
-            disabled={saving}
-            onClick={() => handleSaveQuote("DRAFT")}
-            className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 transition shadow-sm disabled:opacity-50"
-          >
-            Save as Draft
-          </button>
-          <button
-            type="button"
-            disabled={saving}
-            onClick={() => handleSaveQuote("SENT")}
-            className="px-5 py-2 bg-gradient-to-r from-[#253c68] to-[#1e3054] text-white rounded-xl text-xs font-bold shadow-lg shadow-[#253c68]/20 hover:scale-[1.01] transition-all flex items-center space-x-1.5 disabled:opacity-50"
-          >
-            {saving ? (
-              <>
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Creating Quote...</span>
-              </>
-            ) : (
-              <>
-                <FileText className="w-3.5 h-3.5" />
-                <span>Generate Official PDF</span>
-              </>
-            )}
-          </button>
-        </div>
+        {/* Stepper */}
+        <ol className="flex items-center gap-2 text-xs font-semibold">
+          {[
+            { n: 1, label: "Chọn khách", icon: Store },
+            { n: 2, label: "Thêm sản phẩm", icon: ShoppingBasket },
+            { n: 3, label: "Lưu & gửi", icon: Send },
+          ].map((s, i) => {
+            const done = step > s.n;
+            const on = step === s.n;
+            const Icon = s.icon;
+            return (
+              <li key={s.n} className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all",
+                    done ? "bg-emerald-50 text-emerald-700" : on ? "bg-brand-500 text-white shadow-glow" : "bg-white text-ink-400 border border-ink-100"
+                  )}
+                >
+                  {done ? <Check className="w-3.5 h-3.5" /> : <Icon className="w-3.5 h-3.5" />}
+                  <span className="hidden sm:inline">{s.label}</span>
+                </span>
+                {i < 2 && <span className={cn("w-4 h-0.5 rounded-full", done ? "bg-emerald-300" : "bg-ink-200")} />}
+              </li>
+            );
+          })}
+        </ol>
       </div>
 
-      {errorMsg && (
-        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-xl flex items-center justify-between">
-          <span>{errorMsg}</span>
-          <button onClick={() => setErrorMsg("")} className="text-rose-400 hover:text-rose-600">✕</button>
+      {error && (
+        <div className="flex items-center justify-between rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm font-medium text-rose-700 animate-pop-in">
+          {error}
+          <button onClick={() => setError("")}>
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
-      {/* Main Grid: Left: Customer & Items; Right: Products Picker & Financial Summary */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column (8 cols): Customer Info + Items Table + Terms */}
-        <div className="lg:col-span-8 space-y-6">
-          {/* Customer Selection Card */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                  <Building className="w-4 h-4" />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* LEFT */}
+        <div className="lg:col-span-7 xl:col-span-8 space-y-4">
+          {/* 1. Customer */}
+          <SpotlightCard className="p-5 !overflow-visible z-20">
+            <StepTitle n={1} title="Khách hàng" done={!!customer} />
+            <div className="relative mt-4">
+              <button
+                type="button"
+                onClick={() => setPickerOpen((o) => !o)}
+                className={cn("w-full flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all", pickerOpen ? "border-brand-400 ring-4 ring-brand-500/10" : "border-ink-200 hover:border-brand-300")}
+              >
+                {customer ? (
+                  <>
+                    <Avatar name={customer.businessName} />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-ink-900 truncate">{customer.businessName}</p>
+                      <p className="text-xs text-ink-400 truncate">
+                        {customer.contactPerson} · {customer.phone} · {[customer.city, customer.state].filter(Boolean).join(", ")}
+                      </p>
+                    </div>
+                    {customer.tier && <TierBadge tier={customer.tier} />}
+                  </>
+                ) : (
+                  <>
+                    <div className="w-10 h-10 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center">
+                      <Store className="w-5 h-5" />
+                    </div>
+                    <span className="flex-1 text-ink-400">{loading ? "Đang tải..." : "Bấm để chọn khách"}</span>
+                  </>
+                )}
+                <ChevronDown className={cn("w-4 h-4 text-ink-400 transition-transform", pickerOpen && "rotate-180")} />
+              </button>
+
+              {pickerOpen && (
+                <div className="absolute left-0 right-0 mt-2 rounded-3xl bg-white border border-ink-100 shadow-2xl p-2 animate-pop-in">
+                  <div className="relative p-1">
+                    <Search className="w-4 h-4 text-ink-400 absolute left-5 top-1/2 -translate-y-1/2" />
+                    <input autoFocus value={customerQuery} onChange={(e) => setCustomerQuery(e.target.value)} placeholder="Tìm tên tiệm, SĐT..." className="input pl-11" />
+                  </div>
+                  <div className="max-h-72 overflow-y-auto mt-1">
+                    {filteredCustomers.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setCustomerId(c.id);
+                          setPickerOpen(false);
+                          setCustomerQuery("");
+                        }}
+                        className={cn("w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left hover:bg-brand-50/60", c.id === customerId && "bg-brand-50")}
+                      >
+                        <Avatar name={c.businessName} size="sm" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-ink-800 truncate">{c.businessName}</p>
+                          <p className="text-xs text-ink-400 truncate">
+                            {c.contactPerson} · {[c.city, c.state].filter(Boolean).join(", ")}
+                          </p>
+                        </div>
+                        {c.id === customerId && <Check className="w-4 h-4 text-brand-600" />}
+                      </button>
+                    ))}
+                    {filteredCustomers.length === 0 && <p className="py-6 text-center text-sm text-ink-400">Không tìm thấy</p>}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm">Customer Selection</h3>
-                  <p className="text-[11px] text-slate-400">Select customer salon from directory or search</p>
-                </div>
-              </div>
-              {selectedCustomer?.tier && (
-                <span className="text-[10px] bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded border border-emerald-200">
-                  {selectedCustomer.tier} PARTNER
+              )}
+            </div>
+          </SpotlightCard>
+
+          {/* 2. Items */}
+          <SpotlightCard className="p-5">
+            <div className="flex items-center justify-between">
+              <StepTitle n={2} title="Sản phẩm trong báo giá" done={items.length > 0} />
+              {items.length > 0 && (
+                <span className="text-xs font-semibold text-ink-500">
+                  {items.length} loại · {pieces.toLocaleString("en-US")} cái
                 </span>
               )}
             </div>
 
-            {/* Customer Dropdown with Search */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Select Customer / Salon:</label>
-                <div className="relative">
-                  <select
-                    value={selectedCustomerId}
-                    onChange={(e) => setSelectedCustomerId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
-                  >
-                    {customers.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.businessName} - {c.contactPerson} ({c.city}, {c.state})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Expiration Date:</label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={validUntil}
-                    onChange={(e) => setValidUntil(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Selected Customer Details Preview */}
-            {selectedCustomer && (
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="flex items-center space-x-2 text-slate-600">
-                  <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="font-medium text-slate-800">{selectedCustomer.contactPerson}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-slate-600">
-                  <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="font-mono font-bold text-slate-800">{selectedCustomer.phone}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-slate-600">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="truncate text-slate-700">
-                    {selectedCustomer.address || "10606 Bellaire Blvd"}, {selectedCustomer.city || "Houston"},{" "}
-                    {selectedCustomer.state || "TX"}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Line Items Table */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden space-y-3 p-5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <h3 className="font-extrabold text-slate-900 text-sm">Line Items</h3>
-                <p className="text-[11px] text-slate-400">
-                  Official products with high-resolution imagery automatically formatted for print
-                </p>
-              </div>
-              <span className="text-xs font-bold text-[#253c68] bg-[#253c68]/10 px-2.5 py-1 rounded-lg">
-                {items.length} items
-              </span>
-            </div>
-
             {items.length === 0 ? (
-              <div className="py-10 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-                <p className="text-xs font-semibold">No items added to quote yet</p>
-                <p className="text-[11px] mt-1">Select products from the catalog on the right to add them</p>
+              <div className="mt-4 rounded-3xl border-2 border-dashed border-ink-200">
+                <EmptyState icon={PackageOpen} title="Chưa có sản phẩm" hint="Chọn sản phẩm ở danh mục bên cạnh (hoặc bên dưới trên điện thoại)." />
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                      <th className="py-2.5 px-2">Image</th>
-                      <th className="py-2.5 px-2">Product & SKU</th>
-                      <th className="py-2.5 px-2 text-center" style={{ width: "90px" }}>
-                        Quantity
-                      </th>
-                      <th className="py-2.5 px-2 text-right" style={{ width: "100px" }}>
-                        Unit Price
-                      </th>
-                      <th className="py-2.5 px-2 text-center" style={{ width: "95px" }}>
-                        Discount %
-                      </th>
-                      <th className="py-2.5 px-2 text-right" style={{ width: "100px" }}>
-                        Line Total
-                      </th>
-                      <th className="py-2.5 px-2 text-center" style={{ width: "40px" }}></th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 text-xs">
-                    {items.map((item, idx) => {
-                      const lineTotal = item.quantity * item.unitPrice * (1 - item.discount / 100);
-
-                      return (
-                        <tr key={idx} className="hover:bg-slate-50/60 transition group">
-                          {/* Image */}
-                          <td className="py-3 px-2">
-                            <div className="w-12 h-12 rounded-lg border border-slate-200 overflow-hidden bg-white shrink-0 shadow-xs">
-                              <img
-                                src={item.imageUrl}
-                                alt={item.productName}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          </td>
-
-                          {/* Name & SKU */}
-                          <td className="py-3 px-2">
-                            <div className="font-bold text-slate-900 leading-tight">{item.productName}</div>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <span className="font-mono text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-200 font-bold">
-                                {item.sku}
-                              </span>
-                              <span className="text-[10px] text-slate-400">{item.category}</span>
-                            </div>
-                          </td>
-
-                          {/* Qty changer */}
-                          <td className="py-3 px-2 text-center">
-                            <div className="inline-flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleUpdateItem(idx, "quantity", Math.max(1, item.quantity - 1))
-                                }
-                                className="px-2 py-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-                              >
-                                -
-                              </button>
-                              <input
-                                type="number"
-                                min={1}
-                                value={item.quantity}
-                                onChange={(e) =>
-                                  handleUpdateItem(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))
-                                }
-                                className="w-10 text-center font-bold text-slate-800 text-xs focus:outline-none"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => handleUpdateItem(idx, "quantity", item.quantity + 1)}
-                                className="px-2 py-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-                              >
-                                +
-                              </button>
-                            </div>
-                          </td>
-
-                          {/* Unit Price */}
-                          <td className="py-3 px-2 text-right">
-                            <div className="relative inline-block">
-                              <span className="absolute left-2 top-1.5 text-slate-400">$</span>
-                              <input
-                                type="number"
-                                step="0.5"
-                                value={item.unitPrice}
-                                onChange={(e) =>
-                                  handleUpdateItem(idx, "unitPrice", parseFloat(e.target.value) || 0)
-                                }
-                                className="w-20 pl-5 pr-2 py-1 text-right bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-800 text-xs focus:bg-white focus:outline-none"
-                              />
-                            </div>
-                          </td>
-
-                          {/* Discount % */}
-                          <td className="py-3 px-2 text-center">
-                            <div className="relative inline-block">
-                              <input
-                                type="number"
-                                min={0}
-                                max={50}
-                                value={item.discount}
-                                onChange={(e) =>
-                                  handleUpdateItem(idx, "discount", Math.min(50, Math.max(0, parseFloat(e.target.value) || 0)))
-                                }
-                                className="w-14 px-2 py-1 text-center bg-slate-50 border border-slate-200 rounded-lg font-bold text-amber-600 text-xs focus:bg-white focus:outline-none"
-                              />
-                              <span className="text-[10px] text-slate-400 ml-1">%</span>
-                            </div>
-                          </td>
-
-                          {/* Line Total */}
-                          <td className="py-3 px-2 text-right font-mono font-extrabold text-slate-900 text-sm">
-                            ${lineTotal.toFixed(2)}
-                          </td>
-
-                          {/* Remove */}
-                          <td className="py-3 px-2 text-center">
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveItem(idx)}
-                              title="Remove from quote"
-                              className="text-slate-300 hover:text-rose-500 p-1 transition"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-
-          {/* Notes & Payment Terms */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-            <h3 className="font-extrabold text-slate-900 text-sm">Special Notes / Terms</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Payment Terms:</label>
-                <select
-                  value={paymentTerms}
-                  onChange={(e) => setPaymentTerms(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
-                >
-                  <option value="Net 15 (Zelle / Company Check)">Net 15 (Zelle / Company Check)</option>
-                  <option value="Net 30 (Approved Wholesale Account)">Net 30 (Approved Wholesale Account)</option>
-                  <option value="Due upon receipt (Zelle prior to dispatch)">Due upon receipt (Zelle)</option>
-                  <option value="Bank Wire Transfer">Bank Wire Transfer</option>
-                  <option value="Credit Card (Visa / Mastercard / Amex)">Credit Card (Visa / Mastercard / Amex)</option>
-                  <option value="COD (Houston Local Hub)">COD (Houston Local Delivery)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Sales Representative:</label>
-                <input
-                  type="text"
-                  value={salesRep}
-                  onChange={(e) => setSalesRep(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Houston Hub Delivery Guarantee:</label>
-                <div className="p-2 bg-sky-50 border border-sky-100 rounded-xl text-xs text-sky-800 flex items-center space-x-2">
-                  <Truck className="w-4 h-4 text-sky-600 shrink-0" />
-                  <span>Free local delivery in Greater Houston for orders over $500!</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Special Notes / Terms Printed on PDF:</label>
-              <textarea
-                rows={2}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#253c68]"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column (4 cols): Product Selector & Live Total Summary */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* Financial Calculation Summary Card */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-md space-y-4 sticky top-6">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <span className="font-extrabold text-slate-900 text-sm">Quote Details & Summary</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">USD CURRENCY</span>
-            </div>
-
-            <div className="space-y-2.5 text-xs text-slate-600">
-              <div className="flex justify-between">
-                <span>Subtotal:</span>
-                <span className="font-bold text-slate-900">${subtotal.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between text-amber-600 font-semibold">
-                <span>Wholesale Discount:</span>
-                <span>-${totalDiscount.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="flex items-center gap-1">
-                  <span>Shipping / Handling:</span>
-                  {isFreeShipping && (
-                    <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-1.5 py-0.2 rounded">
-                      FREE HOUSTON
-                    </span>
-                  )}
-                </span>
-                <span className={isFreeShipping ? "text-emerald-600 font-bold" : "font-bold text-slate-900"}>
-                  {shipping === 0 ? "$0.00" : `$${shipping.toFixed(2)}`}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Tax (Resale Exempt):</span>
-                <span className="font-bold text-slate-900">$0.00</span>
-              </div>
-
-              {/* Grand Total */}
-              <div className="pt-3 border-t-2 border-slate-200 flex justify-between items-center">
-                <div>
-                  <span className="text-xs font-black text-slate-800 uppercase block">Grand Total</span>
-                  <span className="text-[10px] text-slate-400">Includes applied wholesale discounts</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-2xl font-black text-[#253c68] font-mono">
-                    ${totalAmount.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="pt-2 space-y-2">
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => handleSaveQuote("SENT")}
-                className="w-full py-3 bg-gradient-to-r from-[#253c68] to-[#1e3054] text-white rounded-xl text-xs font-bold shadow-lg shadow-[#253c68]/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center space-x-2"
-              >
-                <FileText className="w-4 h-4" />
-                <span>Generate Official PDF</span>
-              </button>
-
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => handleSaveQuote("DRAFT")}
-                className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"
-              >
-                Save as Draft
-              </button>
-            </div>
-          </div>
-
-          {/* Product Quick Picker Catalog */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-            <div>
-              <div className="flex items-center justify-between">
-                <h3 className="font-extrabold text-slate-900 text-sm">Add Product</h3>
-                <span className="text-[10px] text-slate-400">{products.length} products</span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">Click (+) to add item directly to quote</p>
-            </div>
-
-            {/* Category Filter Pills */}
-            <div className="flex flex-wrap gap-1">
-              {categories.slice(0, 5).map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-2 py-1 rounded-lg text-[10px] font-bold transition ${
-                    selectedCategory === cat
-                      ? "bg-[#253c68] text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Search Input */}
-            <div className="relative">
-              <input
-                type="text"
-                value={productSearch}
-                onChange={(e) => setProductSearch(e.target.value)}
-                placeholder="Search SKU or brush name..."
-                className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-[#253c68]"
-              />
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-            </div>
-
-            {/* Product Item Cards */}
-            <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
-              {filteredProducts.map((prod) => {
-                const inQuote = items.find((it) => it.productId === prod.id);
-
-                return (
-                  <div
-                    key={prod.id}
-                    className="p-2.5 rounded-xl border border-slate-200/80 hover:border-[#253c68]/40 hover:bg-slate-50/50 transition flex items-center justify-between gap-3 group"
-                  >
-                    <div className="flex items-center space-x-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-lg border border-slate-200 overflow-hidden bg-white shrink-0">
-                        <img
-                          src={prod.imageUrl}
-                          alt={prod.name}
-                          className="w-full h-full object-cover"
-                        />
+              <div className="mt-4 space-y-2">
+                {items.map((it, i) => {
+                  const line = it.quantity * it.unitPrice * (1 - it.discount / 100);
+                  return (
+                    <div key={it.productId} className="rounded-2xl border border-ink-100 bg-white p-3 animate-fade-up">
+                     <div className="flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={it.imageUrl} alt="" className="w-14 h-14 rounded-xl object-cover border border-ink-100 bg-ink-50 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-ink-900 leading-tight line-clamp-2">{it.productName}</p>
+                        <p className="text-[11px] font-mono text-ink-400 mt-0.5">{it.sku}</p>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold text-slate-800 truncate leading-tight group-hover:text-[#253c68]">
-                          {prod.name}
-                        </p>
-                        <div className="flex items-center space-x-2 text-[10px] text-slate-500 mt-0.5">
-                          <span className="font-mono font-bold text-slate-700">{prod.sku}</span>
-                          <span>•</span>
-                          <span className="text-emerald-700 font-bold">${prod.wholesalePrice.toFixed(2)}</span>
+                      <p className="text-sm font-bold text-ink-900 tabular-nums shrink-0">{money(line)}</p>
+                      <button type="button" onClick={() => remove(i)} className="icon-btn hover:!text-rose-600 hover:!bg-rose-50" title="Bỏ khỏi báo giá">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                     </div>
+
+                      <div className="mt-3 flex flex-wrap items-center gap-2 sm:pl-[68px]">
+                        {/* qty */}
+                        <div className="flex items-center rounded-xl border border-ink-200 bg-white">
+                          <button type="button" onClick={() => update(i, { quantity: Math.max(1, it.quantity - 1) })} className="w-8 h-9 flex items-center justify-center text-ink-500 hover:text-brand-600">
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <input
+                            type="number"
+                            min={1}
+                            value={it.quantity}
+                            onChange={(e) => update(i, { quantity: Math.max(1, parseInt(e.target.value) || 1) })}
+                            className="w-12 text-center text-sm font-semibold outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                            title="Số lượng"
+                          />
+                          <button type="button" onClick={() => update(i, { quantity: it.quantity + 1 })} className="w-8 h-9 flex items-center justify-center text-ink-500 hover:text-brand-600">
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
                         </div>
+                        {/* price */}
+                        <label className="flex items-center rounded-xl border border-ink-200 bg-white px-2 h-9" title="Giá mỗi cái">
+                          <span className="text-xs text-ink-400">$</span>
+                          <input
+                            type="number"
+                            step="0.5"
+                            value={it.unitPrice}
+                            onChange={(e) => update(i, { unitPrice: parseFloat(e.target.value) || 0 })}
+                            className="w-14 text-right text-sm font-semibold outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                        </label>
+                        {/* discount */}
+                        <label className="flex items-center rounded-xl border border-ink-200 bg-white px-2 h-9" title="Giảm giá (%)">
+                          <input
+                            type="number"
+                            min={0}
+                            max={50}
+                            value={it.discount}
+                            onChange={(e) => update(i, { discount: Math.min(50, Math.max(0, parseFloat(e.target.value) || 0)) })}
+                            className="w-8 text-right text-sm font-semibold text-amber-600 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          <span className="text-xs text-ink-400 ml-0.5">% giảm</span>
+                        </label>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            )}
+          </SpotlightCard>
 
-                    <button
-                      type="button"
-                      onClick={() => handleAddProduct(prod)}
-                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 shrink-0 transition ${
-                        inQuote
-                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                          : "bg-slate-100 hover:bg-[#253c68] hover:text-white text-slate-700"
-                      }`}
-                      title="Add to quote"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      {inQuote && <span className="text-[10px]">({inQuote.quantity})</span>}
-                    </button>
-                  </div>
-                );
-              })}
+          {/* Details */}
+          <SpotlightCard className="p-5">
+            <h3 className="font-bold text-ink-900">Thông tin thêm</h3>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="label">Hiệu lực đến</label>
+                <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} className="input" />
+              </div>
+              <div>
+                <label className="label">Cách thanh toán</label>
+                <select value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)} className="input">
+                  {PAYMENT_TERMS.map((p) => (
+                    <option key={p.value} value={p.value}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="label">Người lập</label>
+                <input value={salesRep} onChange={(e) => setSalesRep(e.target.value)} className="input" />
+              </div>
             </div>
+            <div className="mt-4">
+              <label className="label">Ghi chú in trên PDF</label>
+              <textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} className="input resize-none" />
+            </div>
+          </SpotlightCard>
+        </div>
+
+        {/* RIGHT */}
+        <div className="lg:col-span-5 xl:col-span-4 space-y-4">
+          {/* Summary */}
+          <div className="lg:sticky lg:top-2 space-y-4">
+            <div className="relative overflow-hidden rounded-3xl bg-ink-950 text-white p-5">
+              <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-brand-500/40 blur-3xl" />
+              <div className="relative">
+                <StepTitle n={3} title="Tổng báo giá" done={false} dark />
+                <dl className="mt-4 space-y-2 text-sm">
+                  <Row label="Tiền hàng" value={money(subtotal)} />
+                  {discount > 0 && <Row label="Giảm giá" value={`-${money(discount)}`} className="text-amber-300" />}
+                  <Row
+                    label={
+                      <span className="flex items-center gap-1.5">
+                        <Truck className="w-3.5 h-3.5" /> Phí giao
+                      </span>
+                    }
+                    value={freeShip ? "Miễn phí" : money(shipping)}
+                    className={freeShip ? "text-emerald-300" : ""}
+                  />
+                </dl>
+                {!freeShip && items.length > 0 && (
+                  <div className="mt-3">
+                    <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                      <div className="h-full rounded-full bg-gradient-to-r from-brand-400 to-emerald-400 transition-all duration-700" style={{ width: `${Math.min(100, (subtotal / 500) * 100)}%` }} />
+                    </div>
+                    <p className="mt-1.5 text-[11px] text-ink-300">Thêm {money(500 - subtotal)} để được miễn phí giao</p>
+                  </div>
+                )}
+                <div className="mt-4 pt-4 border-t border-white/10 flex items-end justify-between">
+                  <span className="text-sm text-ink-300">Tổng cộng</span>
+                  <span className="text-3xl font-bold tabular-nums">{money(total)}</span>
+                </div>
+                <div className="mt-5 grid grid-cols-2 gap-2">
+                  <button type="button" disabled={!!saving} onClick={() => save("DRAFT")} className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20">
+                    {saving === "DRAFT" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Lưu nháp
+                  </button>
+                  <button type="button" disabled={!!saving} onClick={() => save("SENT")} className="btn-primary">
+                    {saving === "SENT" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />} Tạo PDF
+                  </button>
+                </div>
+                <p className="mt-3 flex items-center gap-1.5 text-[11px] text-ink-400">
+                  <CalendarClock className="w-3.5 h-3.5" /> Báo giá có hiệu lực 14 ngày, có thể đổi ở trên.
+                </p>
+              </div>
+            </div>
+
+            {/* Catalog */}
+            <SpotlightCard className="p-5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-ink-900">Danh mục sản phẩm</h3>
+                <span className="text-xs text-ink-400">{filteredProducts.length} sản phẩm</span>
+              </div>
+              <div className="relative mt-3">
+                <Search className="w-4 h-4 text-ink-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                <input value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Tìm tên hoặc mã sản phẩm..." className="input pl-11" />
+              </div>
+              <div className="mt-3 flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                {["ALL", ...categories].map((c) => (
+                  <button key={c} onClick={() => setCategory(c)} className={cn("chip !py-1", category === c ? "chip-on" : "chip-off")}>
+                    {c === "ALL" ? "Tất cả" : prettyCat(c)}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 max-h-[460px] overflow-y-auto pr-1">
+                {filteredProducts.slice(0, 120).map((p) => {
+                  const inQuote = items.find((it) => it.productId === p.id);
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => addProduct(p)}
+                      className={cn(
+                        "group relative text-left rounded-2xl border p-2 transition-all hover:-translate-y-0.5 hover:shadow-lift",
+                        inQuote ? "border-brand-300 bg-brand-50/50" : "border-ink-100 bg-white hover:border-brand-200"
+                      )}
+                    >
+                      <div className="relative aspect-square rounded-xl overflow-hidden bg-ink-50">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={p.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        <span
+                          className={cn(
+                            "absolute right-1.5 bottom-1.5 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-lg transition-all",
+                            inQuote ? "bg-emerald-500" : "bg-brand-500 scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100"
+                          )}
+                        >
+                          {inQuote ? <span className="text-[10px] font-bold">{inQuote.quantity}</span> : <Plus className="w-4 h-4" />}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs font-semibold text-ink-800 line-clamp-2 leading-snug">{p.name}</p>
+                      <p className="mt-0.5 text-xs font-bold text-brand-600">{money(p.wholesalePrice)}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </SpotlightCard>
           </div>
         </div>
       </div>
@@ -768,9 +513,34 @@ function CreateQuoteContent() {
   );
 }
 
+function StepTitle({ n, title, done, dark }: { n: number; title: string; done: boolean; dark?: boolean }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span
+        className={cn(
+          "w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center",
+          done ? "bg-emerald-500 text-white" : dark ? "bg-white/15 text-white" : "bg-brand-50 text-brand-600"
+        )}
+      >
+        {done ? <Check className="w-4 h-4" /> : n}
+      </span>
+      <h3 className={cn("font-bold", dark ? "text-white" : "text-ink-900")}>{title}</h3>
+    </div>
+  );
+}
+
+function Row({ label, value, className }: { label: React.ReactNode; value: string; className?: string }) {
+  return (
+    <div className={cn("flex items-center justify-between text-ink-200", className)}>
+      <dt>{label}</dt>
+      <dd className="font-semibold tabular-nums">{value}</dd>
+    </div>
+  );
+}
+
 export default function CreateQuotePage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-slate-500 font-semibold">Preparing quote builder...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-ink-400">Đang mở...</div>}>
       <CreateQuoteContent />
     </Suspense>
   );

@@ -4,6 +4,14 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
   },
+  async redirects() {
+    return [
+      { source: "/ar", destination: "/payments", permanent: false },
+      { source: "/churn", destination: "/customers", permanent: false },
+      { source: "/leads", destination: "/customers", permanent: false },
+      { source: "/inventory/:path*", destination: "/customers", permanent: false },
+    ];
+  },
   images: {
     remotePatterns: [
       {

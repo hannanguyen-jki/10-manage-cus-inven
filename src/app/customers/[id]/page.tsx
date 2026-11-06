@@ -1,1073 +1,459 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
-  Building2,
-  Crown,
   Phone,
   Mail,
   MapPin,
-  Calendar,
-  DollarSign,
-  ShoppingBag,
-  FileText,
+  Cake,
+  UserRound,
+  CalendarDays,
   MessageSquare,
-  TrendingDown,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  Send,
-  Plus,
-  Edit,
-  ExternalLink,
+  FileText,
+  Pencil,
   Receipt,
-  User,
-  ShieldAlert,
-  ChevronRight,
-  X,
-  XCircle,
-  RefreshCw,
-  Sparkles,
-  Award,
-  BarChart3,
+  Package,
+  Check,
+  Undo2,
+  Loader2,
+  StickyNote,
+  UserX,
+  Inbox,
+  Plus,
+  ChevronDown,
 } from "lucide-react";
+import {
+  Aurora,
+  Avatar,
+  CustomerPayBadge,
+  EmptyState,
+  FadeIn,
+  PayBadge,
+  ProgressRing,
+  QuoteBadge,
+  Skeleton,
+  SpotlightCard,
+  TierBadge,
+  cn,
+  formatDate,
+  normalizePay,
+  timeAgo,
+  useToast,
+} from "@/components/ui";
+import SmsModal, { SmsTemplate } from "@/components/SmsModal";
+import CustomerFormModal, { STATUS_META } from "@/components/CustomerFormModal";
 
-interface CustomerDetail {
-  id: string;
-  rank?: string | number;
-  businessName: string;
-  contactPerson: string;
-  phone: string;
-  email: string | null;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  zipCode: string | null;
-  birthday: string | null;
-  assignedSale: string;
-  tier: "STANDARD" | "WHOLESALE" | "VIP";
-  status: "ACTIVE" | "AT_RISK" | "INACTIVE";
-  notes: string | null;
-  totalSpent: number;
-  totalPaid: number;
-  debtAmount: number;
-  orderCount: number;
-  lastOrderDate: string | null;
-  lastContactDate: string | null;
-  profit?: number;
-  aov?: number;
-  cycleDays?: number;
-  rev2024?: number;
-  orders2024?: number;
-  rev2025?: number;
-  orders2025?: number;
-  rev2026?: number;
-  orders2026?: number;
-  growth25vs24?: number | null;
-  growth26vs25?: number | null;
-  firstPurchase?: string | null;
-  lastPurchase?: string | null;
-  createdAt: string;
-  orders: any[];
-  quotes: any[];
-  smsLogs: any[];
-  churnSurveys: any[];
-}
+type Tab = "orders" | "quotes" | "sms";
 
-export default function Customer360Page() {
+export default function CustomerDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const id = params?.id as string;
-
-  const [customer, setCustomer] = useState<CustomerDetail | null>(null);
+  const [c, setC] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"orders" | "quotes" | "sms" | "churn">("orders");
-  const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [tab, setTab] = useState<Tab>("orders");
+  const [editOpen, setEditOpen] = useState(false);
+  const [smsTpl, setSmsTpl] = useState<SmsTemplate | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const toast = useToast();
 
-  // Modals & States
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isSmsModalOpen, setIsSmsModalOpen] = useState(false);
-  const [isChurnModalOpen, setIsChurnModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Edit Customer Form State
-  const [editFormData, setEditFormData] = useState({
-    businessName: "",
-    contactPerson: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "TX",
-    zipCode: "",
-    birthday: "",
-    assignedSale: "johnny",
-    tier: "STANDARD",
-    status: "ACTIVE",
-    notes: "",
-  });
-
-  // SMS Form State
-  const [smsData, setSmsData] = useState({
-    type: "FOLLOW_UP" as "PROMOTION" | "BIRTHDAY" | "AR_REMINDER" | "FOLLOW_UP",
-    content: "",
-  });
-
-  // Churn Form State
-  const [churnData, setChurnData] = useState({
-    analysisMonth: "2026-10",
-    dropPercent: -45,
-    reason: "HIGH_INVENTORY_REMAINING" as any,
-    saleNotes: "",
-    actionPlan: "",
-    saleRep: "Johnny Tran",
-  });
-
-  const showToast = (text: string, type: "success" | "error" = "success") => {
-    setToastMessage({ text, type });
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 4000);
-  };
-
-  const fetchCustomerDetail = async () => {
+  const load = async () => {
     try {
-      setLoading(true);
-      setError(null);
       const res = await fetch(`/api/customers/${id}`);
-      if (!res.ok) {
-        throw new Error("Could not find customer profile");
-      }
       const data = await res.json();
-      if (data.customer) {
-        setCustomer(data.customer);
-        // Pre-fill edit form
-        setEditFormData({
-          businessName: data.customer.businessName || "",
-          contactPerson: data.customer.contactPerson || "",
-          phone: data.customer.phone || "",
-          email: data.customer.email || "",
-          address: data.customer.address || "",
-          city: data.customer.city || "",
-          state: data.customer.state || "TX",
-          zipCode: data.customer.zipCode || "",
-          birthday: data.customer.birthday ? data.customer.birthday.slice(0, 10) : "",
-          assignedSale: data.customer.assignedSale || "johnny",
-          tier: data.customer.tier || "STANDARD",
-          status: data.customer.status || "ACTIVE",
-          notes: data.customer.notes || "",
-        });
-      } else {
-        throw new Error("Customer record missing");
-      }
-    } catch (err: any) {
-      setError(err?.message || "Failed to load customer profile");
+      setC(data.success ? data.customer : null);
+    } catch {
+      setC(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id) {
-      fetchCustomerDetail();
-    }
+    if (!id) return;
+    load();
+    if (new URLSearchParams(window.location.search).get("sms") === "reminder") setSmsTpl("AR_REMINDER");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Handle Edit Submit
-  const handleEditSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customer) return;
-
+  const setPay = async (orderId: string, status: "PAID" | "UNPAID") => {
+    setBusy(orderId);
     try {
-      setIsSubmitting(true);
-      const res = await fetch(`/api/customers/${customer.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editFormData),
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast("Đã cập nhật thông tin khách hàng thành công!");
-        setIsEditModalOpen(false);
-        fetchCustomerDetail();
-      } else {
-        showToast(data.error || "Không thể cập nhật", "error");
-      }
-    } catch (err) {
-      showToast("Lỗi kết nối máy chủ", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Handle Send SMS
-  const handleSendSms = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customer || !smsData.content.trim()) return;
-
-    try {
-      setIsSubmitting(true);
-      const res = await fetch("/api/sms", {
+      const res = await fetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerId: customer.id,
-          toPhone: customer.phone,
-          content: smsData.content,
-          type: smsData.type,
-        }),
+        body: JSON.stringify({ orderId, status }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast("Đã gửi tin nhắn Quo SMS thành công!");
-        setIsSmsModalOpen(false);
-        setSmsData({ type: "FOLLOW_UP", content: "" });
-        fetchCustomerDetail();
-      } else {
-        showToast(data.error || "Không thể gửi SMS", "error");
-      }
-    } catch (err) {
-      showToast("Lỗi kết nối gửi SMS", "error");
+        toast.show(status === "PAID" ? "Đã ghi nhận: khách đã trả" : "Đã chuyển về chưa trả");
+        load();
+      } else toast.show(data.error || "Không cập nhật được", "error");
+    } catch {
+      toast.show("Lỗi kết nối", "error");
     } finally {
-      setIsSubmitting(false);
+      setBusy(null);
     }
-  };
-
-  const applyTemplate = (type: "PROMOTION" | "BIRTHDAY" | "AR_REMINDER" | "FOLLOW_UP") => {
-    if (!customer) return;
-    let text = "";
-    if (type === "PROMOTION") {
-      text = `JKIOCEAN: Xin chào ${customer.contactPerson}, các sản phẩm cọ và phụ liệu nail chuẩn salon vừa về kho Houston Hub. JKIOCEAN xin gửi ưu đãi giá sỉ cho ${customer.businessName}!`;
-    } else if (type === "BIRTHDAY") {
-      text = `JKIOCEAN kính chúc ${customer.contactPerson} một sinh nhật nhiều niềm vui, sức khỏe và tiệm ${customer.businessName} ngày càng phát tài!`;
-    } else if (type === "AR_REMINDER") {
-      text = `JKIOCEAN xin phép gửi thông báo đến ${customer.contactPerson}: Tiệm ${customer.businessName} hiện có số dư công nợ $${customer.debtAmount.toLocaleString()}. Nhờ anh/chị hỗ trợ thanh toán qua Zelle/Check giúp bên em nhé. Cảm ơn anh/chị!`;
-    } else {
-      text = `JKIOCEAN thăm hỏi ${customer.contactPerson}: Anh/chị dùng đợt hàng vừa rồi thế nào ạ? Khi nào cần lấy thêm cọ, kềm hay phụ liệu thì nhắn em gửi hỏa tốc qua nhé!`;
-    }
-    setSmsData({ type, content: text });
-  };
-
-  const formatSalesRep = (rep: string) => {
-    if (!rep) return "Johnny Tran";
-    const low = rep.toLowerCase();
-    if (low === "johnny" || low === "johnny tran") return "Johnny Tran";
-    if (low === "hanna" || low === "hanna nguyen") return "Hanna Nguyen";
-    if (low === "alice" || low === "alice nguyen") return "Alice Nguyen";
-    if (low === "tan" || low === "tan ho") return "Tan Ho";
-    if (low === "kate") return "Kate";
-    if (low === "admin") return "Admin";
-    return rep;
   };
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center p-8">
-        <RefreshCw className="w-10 h-10 text-[#253c68] animate-spin mb-3" />
-        <p className="text-slate-600 font-semibold text-sm">Đang tải hồ sơ 360° khách hàng...</p>
+      <div className="space-y-6">
+        <Skeleton className="h-64 rounded-[32px]" />
+        <Skeleton className="h-96 rounded-3xl" />
       </div>
     );
   }
 
-  if (error || !customer) {
+  if (!c) {
     return (
-      <div className="max-w-xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 text-center shadow-sm">
-        <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-slate-800">Không Tìm Thấy Khách Hàng</h2>
-        <p className="text-slate-500 text-sm mt-1">{error || "Khách hàng không tồn tại."}</p>
-        <Link
-          href="/customers"
-          className="mt-5 inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#253c68] text-white text-sm font-semibold hover:bg-[#1a2c4e] transition btn-press"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Quay lại danh sách</span>
-        </Link>
+      <div className="card max-w-lg mx-auto mt-10">
+        <EmptyState
+          icon={UserX}
+          title="Không tìm thấy khách này"
+          action={
+            <Link href="/customers" className="btn-primary">
+              <ArrowLeft className="w-4 h-4" /> Về danh sách
+            </Link>
+          }
+        />
       </div>
     );
   }
+
+  const orders: any[] = [...(c.orders || [])].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const quotes: any[] = c.quotes || [];
+  const smsLogs: any[] = c.smsLogs || [];
+  const status = STATUS_META[c.status] || STATUS_META.ACTIVE;
+
+  const info = [
+    { icon: UserRound, label: "Người liên hệ", value: c.contactPerson },
+    { icon: Phone, label: "Điện thoại", value: c.phone, href: `tel:${c.phone}` },
+    { icon: Mail, label: "Email", value: c.email, href: c.email ? `mailto:${c.email}` : undefined },
+    { icon: MapPin, label: "Địa chỉ", value: [c.address, c.city, c.state, c.zipCode].filter(Boolean).join(", ") },
+    { icon: Cake, label: "Sinh nhật", value: c.birthday ? formatDate(c.birthday) : null },
+    { icon: UserRound, label: "Nhân viên phụ trách", value: c.assignedSale },
+  ];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* Toast Alert */}
-      {toastMessage && (
-        <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-sm font-medium transition-all ${
-            toastMessage.type === "success"
-              ? "bg-[#253c68] text-white border border-[#38bdf8]/30 shadow-[#253c68]/30"
-              : "bg-rose-600 text-white"
-          }`}
-        >
-          {toastMessage.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-[#38bdf8]" />
-          ) : (
-            <XCircle className="w-5 h-5 text-white" />
-          )}
-          <span>{toastMessage.text}</span>
-        </div>
-      )}
+    <div className="space-y-6">
+      {toast.node}
 
-      {/* Top Navigation Bar */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/customers"
-          className="inline-flex items-center space-x-2 text-sm font-semibold text-slate-500 hover:text-[#253c68] transition"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Quay lại danh sách 32 khách hàng</span>
-        </Link>
+      <Link href="/customers" className="inline-flex items-center gap-2 text-sm font-semibold text-ink-500 hover:text-brand-600 group">
+        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Khách hàng
+      </Link>
 
-        <div className="flex items-center space-x-2">
-          {customer.rank && (
-            <span className="text-xs font-mono bg-blue-50 text-[#253c68] px-2.5 py-0.5 rounded font-bold border border-blue-200">
-              Rank #{customer.rank}
-            </span>
-          )}
-          <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-semibold">
-            {customer.id}
-          </span>
-        </div>
-      </div>
-
-      {/* Customer 360 Header Profile Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#253c68] via-[#3a568c] to-[#38bdf8]"></div>
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pt-2">
-          {/* Main Info */}
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-2xl md:text-3xl font-black text-[#253c68] tracking-tight">
-                {customer.businessName}
-              </h1>
-
-              {/* Tier Badge */}
-              {customer.tier === "VIP" && (
-                <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-300 shadow-sm">
-                  <Crown className="w-3.5 h-3.5 text-amber-600" />
-                  <span>VIP MEMBER</span>
-                </span>
-              )}
-              {customer.tier === "WHOLESALE" && (
-                <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
-                  <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>WHOLESALE</span>
-                </span>
-              )}
-              {customer.tier === "STANDARD" && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-                  STANDARD
-                </span>
-              )}
-
-              {/* Status Badge */}
-              {customer.status === "ACTIVE" && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
-                  Active
-                </span>
-              )}
-              {customer.status === "AT_RISK" && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
-                  <AlertTriangle className="w-3.5 h-3.5 mr-1 text-rose-600" />
-                  Nguy Cơ Churn (Sụt giảm doanh số)
-                </span>
-              )}
-            </div>
-
-            {/* Sub Info Row */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-600">
-              <div className="flex items-center space-x-1.5">
-                <User className="w-4 h-4 text-slate-400" />
-                <span className="font-semibold text-slate-800">{customer.contactPerson}</span>
-                <span className="text-xs text-slate-400">(Người phụ trách / Attn)</span>
-              </div>
-
-              <div className="flex items-center space-x-1.5">
-                <Phone className="w-4 h-4 text-sky-600" />
-                <a
-                  href={`tel:${customer.phone}`}
-                  className="font-mono text-sky-700 hover:underline font-bold"
-                >
-                  {customer.phone}
-                </a>
-              </div>
-
-              {customer.email && (
-                <div className="flex items-center space-x-1.5">
-                  <Mail className="w-4 h-4 text-slate-400" />
-                  <span className="text-slate-600">{customer.email}</span>
+      {/* Profile hero */}
+      <FadeIn>
+        <div className="relative overflow-hidden rounded-[32px] bg-ink-950 text-white p-6 sm:p-8">
+          <Aurora className="opacity-70" />
+          <div className="relative flex flex-col lg:flex-row gap-6 lg:items-center justify-between">
+            <div className="flex items-center gap-4 min-w-0">
+              <Avatar name={c.businessName} size="lg" />
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">{c.businessName}</h1>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <TierBadge tier={c.tier} />
+                  <CustomerPayBadge c={c} />
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
+                    <span className={cn("w-2 h-2 rounded-full", status.dot)} />
+                    {status.label}
+                  </span>
                 </div>
-              )}
-
-              <div className="flex items-center space-x-1.5">
-                <MapPin className="w-4 h-4 text-slate-400" />
-                <span>
-                  {customer.city}, {customer.state}
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-1.5">
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
-                  Phụ trách: <strong>{formatSalesRep(customer.assignedSale)}</strong>
-                </span>
               </div>
             </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href={`/quotes/create?customerId=${customer.id}`}
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-[#253c68] text-[#253c68] hover:bg-[#253c68]/5 font-bold text-sm btn-press transition"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Tạo Báo Giá Mới</span>
-            </Link>
-
-            <button
-              onClick={() => {
-                setSmsData({
-                  type: "FOLLOW_UP",
-                  content: `JKIOCEAN: Xin chào ${customer.contactPerson} (${customer.businessName})...`,
-                });
-                setIsSmsModalOpen(true);
-              }}
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm shadow-md shadow-sky-600/20 btn-press transition"
-            >
-              <MessageSquare className="w-4 h-4" />
-              <span>Gửi Quo SMS</span>
-            </button>
-
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm btn-press transition"
-            >
-              <Edit className="w-4 h-4" />
-              <span>Chỉnh Sửa</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Customer Notes */}
-        {customer.notes && (
-          <div className="mt-5 p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl text-xs text-amber-900 flex items-start space-x-2.5">
-            <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <strong className="font-bold">Ghi chú khách hàng:</strong> {customer.notes}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* KPI Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Lifetime Spent */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Tổng Tiền Đã Mua (LTV)</span>
-            <DollarSign className="w-4 h-4 text-[#253c68]" />
-          </div>
-          <div className="text-2xl font-black text-[#253c68] mt-2">
-            ${Number(customer.totalSpent).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
-          </div>
-          <p className="text-xs text-slate-500 mt-1">Tổng cộng: {customer.orderCount} đơn hàng</p>
-        </div>
-
-        {/* Gross Profit */}
-        <div className="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm card-hover bg-gradient-to-br from-white to-emerald-50/40">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">Lợi Nhuận Gộp Đóng Góp</span>
-            <Award className="w-4 h-4 text-emerald-700" />
-          </div>
-          <div className="text-2xl font-black text-emerald-700 mt-2">
-            +${Number(customer.profit || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
-          </div>
-          <p className="text-xs text-emerald-600 mt-1">Đóng góp lợi nhuận ròng</p>
-        </div>
-
-        {/* Total Orders & AOV */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Đơn Hàng TB (AOV)</span>
-            <ShoppingBag className="w-4 h-4 text-sky-600" />
-          </div>
-          <div className="text-2xl font-black text-slate-900 mt-2">
-            ${Number(customer.aov || (customer.totalSpent / Math.max(1, customer.orderCount))).toFixed(0)}
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Chu kỳ: <strong>{customer.cycleDays ? `${customer.cycleDays} ngày/đơn` : "Mua một lần"}</strong>
-          </p>
-        </div>
-
-        {/* Debt Amount */}
-        <div
-          className={`p-5 rounded-2xl border shadow-sm card-hover ${
-            customer.debtAmount > 0
-              ? "bg-rose-50/50 border-rose-200"
-              : "bg-white border-slate-200"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Công Nợ AR Còn Lại
-            </span>
-            <Receipt className={`w-4 h-4 ${customer.debtAmount > 0 ? "text-rose-600" : "text-emerald-600"}`} />
-          </div>
-          <div
-            className={`text-2xl font-black mt-2 ${
-              customer.debtAmount > 0 ? "text-rose-600" : "text-emerald-700"
-            }`}
-          >
-            ${customer.debtAmount.toLocaleString()}
-          </div>
-          <p className="text-xs text-slate-500 mt-1">
-            {customer.debtAmount > 0 ? "Cần nhắc hẹn thu hồi công nợ" : "Đã thanh toán đầy đủ 100%"}
-          </p>
-        </div>
-      </div>
-
-      {/* CHI TIẾT DOANH SỐ MUA HÀNG THEO TỪNG NĂM (2024 - 2025 - 2026) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <div className="flex items-center space-x-2.5 pb-4 border-b border-slate-100 mb-5">
-          <div className="w-8 h-8 rounded-lg bg-[#253c68]/10 text-[#253c68] flex items-center justify-center">
-            <BarChart3 className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-900 text-base">Thống Kê Khách Mua Hàng Qua Các Năm (Sheet Thực Tế)</h3>
-            <p className="text-xs text-slate-500">Chi tiết doanh số mua và số lượng đơn hàng năm 2024, 2025 và 2026</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Năm 2024 */}
-          <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
-            <div className="text-xs font-bold text-slate-400 uppercase">Năm 2024</div>
-            <div className="text-xl font-black text-slate-800">
-              ${Number(customer.rev2024 || 0).toLocaleString()}
-            </div>
-            <div className="text-xs text-slate-500">
-              {customer.orders2024 || 0} đơn hàng đã hoàn tất
-            </div>
-          </div>
-
-          {/* Năm 2025 */}
-          <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
-            <div className="text-xs font-bold text-slate-400 uppercase">Năm 2025</div>
-            <div className="text-xl font-black text-slate-800">
-              ${Number(customer.rev2025 || 0).toLocaleString()}
-            </div>
-            <div className="text-xs text-slate-500">
-              {customer.orders2025 || 0} đơn hàng đã hoàn tất
-              {customer.growth25vs24 !== undefined && customer.growth25vs24 !== null && (
-                <span className={`ml-2 font-bold ${customer.growth25vs24 >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
-                  ({customer.growth25vs24 >= 0 ? "+" : ""}{(customer.growth25vs24 * 100).toFixed(1)}%)
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Năm 2026 */}
-          <div className="p-4 rounded-xl border border-[#253c68]/30 bg-blue-50/30 space-y-1">
-            <div className="text-xs font-bold text-[#253c68] uppercase">Năm 2026 (YTD)</div>
-            <div className="text-xl font-black text-[#253c68]">
-              ${Number(customer.rev2026 || 0).toLocaleString()}
-            </div>
-            <div className="text-xs text-slate-500">
-              {customer.orders2026 || 0} đơn hàng
-              {customer.growth26vs25 !== undefined && customer.growth26vs25 !== null && (
-                <span className={`ml-2 font-bold ${customer.growth26vs25 >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
-                  ({customer.growth26vs25 >= 0 ? "+" : ""}{(customer.growth26vs25 * 100).toFixed(1)}% so với 2025)
-                </span>
-              )}
+            <div className="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap">
+              <QuickAction href={`tel:${c.phone}`} icon={Phone} label="Gọi" />
+              <QuickAction onClick={() => setSmsTpl(c.payStatus === "OWING" ? "AR_REMINDER" : "FOLLOW_UP")} icon={MessageSquare} label="Nhắn tin" />
+              <QuickAction href={`/quotes/create?customerId=${c.id}`} icon={FileText} label="Báo giá" primary />
+              <QuickAction onClick={() => setEditOpen(true)} icon={Pencil} label="Sửa" />
             </div>
           </div>
         </div>
-      </div>
+      </FadeIn>
 
-      {/* Detail Tabs Navigation */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        {/* Tab Headers */}
-        <div className="flex border-b border-slate-200 bg-slate-50/80 px-4 pt-3 space-x-2 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab("orders")}
-            className={`flex items-center space-x-2 px-4 py-3 rounded-t-xl text-sm font-bold transition border-b-2 -mb-[1px] whitespace-nowrap ${
-              activeTab === "orders"
-                ? "bg-white border-[#253c68] text-[#253c68] shadow-sm"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Lịch Sử Đơn Hàng & Sản Phẩm Đã Mua ({customer.orders?.length || 0})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("quotes")}
-            className={`flex items-center space-x-2 px-4 py-3 rounded-t-xl text-sm font-bold transition border-b-2 -mb-[1px] whitespace-nowrap ${
-              activeTab === "quotes"
-                ? "bg-white border-[#253c68] text-[#253c68] shadow-sm"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>Báo Giá PDF Kèm Ảnh ({customer.quotes?.length || 0})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("sms")}
-            className={`flex items-center space-x-2 px-4 py-3 rounded-t-xl text-sm font-bold transition border-b-2 -mb-[1px] whitespace-nowrap ${
-              activeTab === "sms"
-                ? "bg-white border-[#253c68] text-[#253c68] shadow-sm"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span>Tin Nhắn Quo SMS ({customer.smsLogs?.length || 0})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("churn")}
-            className={`flex items-center space-x-2 px-4 py-3 rounded-t-xl text-sm font-bold transition border-b-2 -mb-[1px] whitespace-nowrap ${
-              activeTab === "churn"
-                ? "bg-white border-[#253c68] text-[#253c68] shadow-sm"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <TrendingDown className="w-4 h-4 text-rose-500" />
-            <span>Phân Tích Xu Hướng Mua & Churn ({customer.churnSurveys?.length || 0})</span>
-          </button>
-        </div>
-
-        {/* Tab Contents */}
-        <div className="p-6">
-          {/* TAB 1: ORDER HISTORY & PURCHASED ITEMS */}
-          {activeTab === "orders" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-800">Chi Tiết Từng Đơn Hàng & Mặt Hàng Khách Mua</h3>
-                <span className="text-xs text-slate-400">Xuất kho từ JKIOCEAN Houston Hub</span>
-              </div>
-
-              {(!customer.orders || customer.orders.length === 0) ? (
-                <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
-                  <ShoppingBag className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">Chưa có đơn hàng nào được ghi nhận cho salon này.</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Left column: info + payment ring */}
+        <div className="space-y-4">
+          <FadeIn delay={60}>
+            <SpotlightCard className="p-6">
+              <h2 className="font-bold text-ink-900">Thanh toán</h2>
+              <div className="mt-4 flex items-center gap-5">
+                <ProgressRing value={c.paidOrders || 0} total={c.orderCount || 0} size={112} stroke={12} color="#10b981">
+                  <span className="text-2xl font-bold text-ink-900">
+                    {c.paidOrders || 0}/{c.orderCount || 0}
+                  </span>
+                  <span className="text-[11px] text-ink-400">đơn đã trả</span>
+                </ProgressRing>
+                <div className="space-y-2 text-sm">
+                  <p className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Đã trả: <b>{c.paidOrders || 0}</b>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Chưa trả: <b>{c.unpaidOrders || 0}</b>
+                  </p>
+                  <p className="flex items-center gap-2 text-ink-400 text-xs">
+                    <CalendarDays className="w-3.5 h-3.5" /> Mua gần nhất: {timeAgo(c.lastOrderDate)}
+                  </p>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {customer.orders.map((order: any) => (
-                    <div
-                      key={order.id}
-                      className="border border-slate-200 rounded-xl p-4.5 hover:border-slate-300 transition bg-white shadow-sm"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                        <div className="flex items-center space-x-3">
-                          <span className="font-extrabold text-[#253c68] text-base font-mono">{order.orderNumber}</span>
-                          <span className="text-xs text-slate-400">
-                            Ngày đặt: {new Date(order.createdAt).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </span>
-                        </div>
+              </div>
+            </SpotlightCard>
+          </FadeIn>
 
-                        <div className="flex items-center space-x-3">
-                          <span
-                            className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                              order.paymentStatus === "PAID"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : order.paymentStatus === "PARTIAL"
-                                ? "bg-amber-100 text-amber-800"
-                                : "bg-rose-100 text-rose-800"
-                            }`}
-                          >
-                            {order.paymentStatus === "PAID"
-                              ? "ĐÃ THANH TOÁN"
-                              : order.paymentStatus === "PARTIAL"
-                              ? "TRẢ 1 PHẦN"
-                              : "CHƯA THANH TOÁN"}
-                          </span>
-                          <span className="font-black text-slate-900 text-lg">
-                            ${Number(order.totalAmount).toLocaleString()}
-                          </span>
-                        </div>
+          <FadeIn delay={120}>
+            <SpotlightCard className="p-6">
+              <h2 className="font-bold text-ink-900">Thông tin</h2>
+              <ul className="mt-4 space-y-3.5">
+                {info.map((row) => {
+                  const Icon = row.icon;
+                  return (
+                    <li key={row.label} className="flex items-start gap-3">
+                      <span className="w-9 h-9 shrink-0 rounded-xl bg-ink-50 text-ink-500 flex items-center justify-center">
+                        <Icon className="w-4 h-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[11px] text-ink-400">{row.label}</p>
+                        {row.value ? (
+                          row.href ? (
+                            <a href={row.href} className="text-sm font-medium text-ink-800 hover:text-brand-600 break-all">
+                              {row.value}
+                            </a>
+                          ) : (
+                            <p className="text-sm font-medium text-ink-800 break-words">{row.value}</p>
+                          )
+                        ) : (
+                          <p className="text-sm text-ink-300">Chưa có</p>
+                        )}
                       </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              {c.notes && (
+                <div className="mt-5 rounded-2xl bg-amber-50/70 border border-amber-100 p-3.5 flex gap-2.5">
+                  <StickyNote className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-ink-700">{c.notes}</p>
+                </div>
+              )}
+            </SpotlightCard>
+          </FadeIn>
+        </div>
 
-                      {/* Items list */}
-                      {order.items && order.items.length > 0 && (
-                        <div className="mt-3 pt-2 text-xs">
-                          <div className="text-slate-400 font-bold uppercase text-[10px] mb-1.5">
-                            Sản phẩm trong đơn hàng:
+        {/* Right: tabs */}
+        <FadeIn delay={100} className="lg:col-span-2">
+          <div className="card p-2 sm:p-3">
+            <div className="flex gap-1 p-1 rounded-2xl bg-ink-50 overflow-x-auto no-scrollbar">
+              {(
+                [
+                  { k: "orders", label: "Đơn hàng", icon: Receipt, n: orders.length },
+                  { k: "quotes", label: "Báo giá", icon: FileText, n: quotes.length },
+                  { k: "sms", label: "Tin nhắn", icon: MessageSquare, n: smsLogs.length },
+                ] as const
+              ).map((t) => {
+                const Icon = t.icon;
+                return (
+                  <button
+                    key={t.k}
+                    onClick={() => setTab(t.k)}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all whitespace-nowrap",
+                      tab === t.k ? "bg-white text-ink-900 shadow-soft" : "text-ink-500 hover:text-ink-800"
+                    )}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {t.label}
+                    <span className="rounded-full bg-ink-100 px-1.5 text-xs">{t.n}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="p-2 sm:p-3 mt-1">
+              {tab === "orders" &&
+                (orders.length === 0 ? (
+                  <EmptyState icon={Receipt} title="Chưa có đơn hàng" />
+                ) : (
+                  <div className="space-y-2">
+                    {orders.map((o, i) => {
+                      const st = normalizePay(o.paymentStatus);
+                      const open = expanded === o.id;
+                      const items: any[] = o.items || [];
+                      return (
+                        <div key={o.id} className="rounded-2xl border border-ink-100 bg-white animate-fade-up" style={{ animationDelay: `${Math.min(i, 10) * 30}ms` }}>
+                          <div className="flex items-center gap-3 p-3.5">
+                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", st === "PAID" ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600")}>
+                              <Receipt className="w-5 h-5" />
+                            </div>
+                            <button className="min-w-0 flex-1 text-left" onClick={() => setExpanded(open ? null : o.id)}>
+                              <p className="text-sm font-semibold font-mono text-ink-800">{o.orderNumber}</p>
+                              <p className="text-xs text-ink-400 flex items-center gap-2">
+                                {formatDate(o.createdAt)}
+                                {items.length > 0 && (
+                                  <span className="inline-flex items-center gap-1">
+                                    · <Package className="w-3 h-3" /> {items.length} món
+                                    <ChevronDown className={cn("w-3 h-3 transition-transform", open && "rotate-180")} />
+                                  </span>
+                                )}
+                              </p>
+                            </button>
+                            <PayBadge status={st} />
+                            {st === "PAID" ? (
+                              <button onClick={() => setPay(o.id, "UNPAID")} disabled={busy === o.id} className="icon-btn" title="Hoàn tác">
+                                {busy === o.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Undo2 className="w-4 h-4" />}
+                              </button>
+                            ) : (
+                              <button onClick={() => setPay(o.id, "PAID")} disabled={busy === o.id} className="btn-success !px-3 !py-1.5 !text-xs !rounded-xl">
+                                {busy === o.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                                Đã trả
+                              </button>
+                            )}
                           </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {order.items.map((item: any) => (
-                              <div
-                                key={item.id}
-                                className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-100"
-                              >
-                                <div>
-                                  <div className="font-bold text-slate-800">
-                                    {item.product?.name || item.productName || "Sản phẩm Nail Chuyên Nghiệp"}
-                                  </div>
-                                  <div className="text-slate-400 text-[11px] font-mono">
-                                    Mã SKU: {item.product?.sku || item.sku || "N/A"}
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="font-semibold text-slate-700">
-                                    {item.quantity} cái x ${item.unitPrice}
-                                  </div>
-                                  <div className="font-bold text-[#253c68]">
-                                    ${Number(item.quantity * item.unitPrice).toLocaleString()}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
+                          {open && items.length > 0 && (
+                            <ul className="border-t border-ink-100 px-4 py-3 space-y-1.5 animate-fade-up">
+                              {items.map((it: any) => (
+                                <li key={it.id} className="flex items-center justify-between text-sm">
+                                  <span className="text-ink-700 truncate">{it.product?.name || it.productName || "Sản phẩm"}</span>
+                                  <span className="text-ink-400 tabular-nums shrink-0 pl-3">× {Number(it.quantity).toLocaleString("en-US")}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
-                      )}
+                      );
+                    })}
+                  </div>
+                ))}
 
-                      {order.notes && (
-                        <div className="mt-2 text-xs text-slate-500 italic">
-                          Ghi chú giao vận: {order.notes}
+              {tab === "quotes" &&
+                (quotes.length === 0 ? (
+                  <EmptyState
+                    icon={FileText}
+                    title="Chưa có báo giá"
+                    action={
+                      <Link href={`/quotes/create?customerId=${c.id}`} className="btn-primary">
+                        <Plus className="w-4 h-4" /> Tạo báo giá
+                      </Link>
+                    }
+                  />
+                ) : (
+                  <div className="space-y-2">
+                    {quotes.map((q: any) => (
+                      <Link key={q.id} href={`/quotes/${q.id}`} className="flex items-center gap-3 rounded-2xl border border-ink-100 p-3.5 card-hover bg-white">
+                        <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
+                          <FileText className="w-5 h-5" />
                         </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold font-mono text-ink-800">{q.quoteNumber}</p>
+                          <p className="text-xs text-ink-400">{formatDate(q.createdAt)}</p>
+                        </div>
+                        <QuoteBadge status={q.status} />
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+
+              {tab === "sms" &&
+                (smsLogs.length === 0 ? (
+                  <EmptyState icon={Inbox} title="Chưa nhắn tin lần nào" />
+                ) : (
+                  <div className="space-y-3">
+                    {smsLogs.map((log: any) => (
+                      <div key={log.id} className="flex gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                          <MessageSquare className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 rounded-2xl rounded-tl-md bg-ink-50 px-4 py-3">
+                          <p className="text-sm text-ink-700">{log.content}</p>
+                          <p className="mt-1 text-[11px] text-ink-400">{formatDate(log.createdAt)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
             </div>
-          )}
-
-          {/* TAB 2: QUOTES */}
-          {activeTab === "quotes" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-slate-800">Báo Giá Gửi Khách Hàng</h3>
-                  <p className="text-xs text-slate-500">Các bảng báo giá xuất mẫu kèm hình ảnh và đơn giá sỉ</p>
-                </div>
-                <Link
-                  href={`/quotes/create?customerId=${customer.id}`}
-                  className="flex items-center space-x-1.5 text-xs font-bold text-white bg-[#253c68] px-3.5 py-2 rounded-xl hover:bg-[#1a2c4e] transition"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Tạo Báo Giá Cho Khách</span>
-                </Link>
-              </div>
-
-              {(!customer.quotes || customer.quotes.length === 0) ? (
-                <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
-                  <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">Chưa có báo giá nào cho đối tác này.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {customer.quotes.map((q: any) => (
-                    <div
-                      key={q.id}
-                      className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition bg-white"
-                    >
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <span className="font-bold text-slate-800">{q.quoteNumber}</span>
-                          <span className="text-xs text-slate-400">• {new Date(q.createdAt).toLocaleDateString()}</span>
-                        </div>
-                        <div className="text-xs text-slate-500 mt-1">{q.notes}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-black text-slate-900">${q.totalAmount}</div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">
-                          {q.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 3: SMS LOG */}
-          {activeTab === "sms" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-slate-800">Lịch Sử Quo SMS</h3>
-                  <p className="text-xs text-slate-500">Tin nhắn chăm sóc, báo giá và nhắc công nợ gửi tới {customer.phone}</p>
-                </div>
-                <button
-                  onClick={() => setIsSmsModalOpen(true)}
-                  className="flex items-center space-x-1.5 text-xs font-bold text-white bg-sky-600 px-3.5 py-2 rounded-xl hover:bg-sky-700 transition"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Gửi Tin Nhắn Mới</span>
-                </button>
-              </div>
-
-              {(!customer.smsLogs || customer.smsLogs.length === 0) ? (
-                <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
-                  <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">Chưa có tin nhắn nào được gửi.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {customer.smsLogs.map((log: any) => (
-                    <div
-                      key={log.id}
-                      className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1"
-                    >
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-sky-700">{log.type}</span>
-                        <span className="text-slate-400">{new Date(log.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <p className="text-xs text-slate-700 mt-1">{log.content}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 4: CHURN TRENDS */}
-          {activeTab === "churn" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-slate-800">Phân Tích Xu Hướng Mua & Cảnh Báo Sụt Giảm</h3>
-                  <p className="text-xs text-slate-500">Theo dõi khách hàng có dấu hiệu giảm đơn hoặc tồn kho cao</p>
-                </div>
-              </div>
-
-              {(!customer.churnSurveys || customer.churnSurveys.length === 0) ? (
-                <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
-                  <p className="font-semibold text-slate-700 text-sm">Xu hướng mua hàng ổn định!</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Không phát hiện sụt giảm bất thường.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {customer.churnSurveys.map((survey: any) => (
-                    <div
-                      key={survey.id}
-                      className="border border-rose-200 bg-rose-50/20 rounded-xl p-4.5 space-y-2 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-black text-rose-600 bg-rose-100 px-2.5 py-0.5 rounded text-xs">
-                          {survey.dropPercent}% doanh số
-                        </span>
-                        <span className="text-xs text-slate-400">
-                          Phụ trách: <strong>{survey.saleRep}</strong>
-                        </span>
-                      </div>
-                      <div className="text-xs text-slate-700">
-                        <strong>Lý do chính:</strong> {survey.reason}
-                      </div>
-                      {survey.saleNotes && (
-                        <div className="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200">
-                          <strong>Ghi chú sale:</strong> {survey.saleNotes}
-                        </div>
-                      )}
-                      {survey.actionPlan && (
-                        <div className="text-xs text-emerald-800 bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
-                          <strong>Kế hoạch hành động:</strong> {survey.actionPlan}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+          </div>
+        </FadeIn>
       </div>
 
-      {/* Quo SMS Modal */}
-      {isSmsModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center space-x-2">
-                <MessageSquare className="w-5 h-5 text-sky-600" />
-                <h3 className="font-extrabold text-slate-900 text-base">Gửi Tin Nhắn Quo SMS</h3>
-              </div>
-              <button onClick={() => setIsSmsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div>
-              <p className="text-xs text-slate-500">Người nhận:</p>
-              <p className="font-bold text-slate-800 text-sm">
-                {customer.contactPerson} ({customer.businessName}) -{" "}
-                <span className="font-mono text-sky-700">{customer.phone}</span>
-              </p>
-            </div>
-
-            {/* Quick Templates */}
-            <div>
-              <span className="text-xs font-bold text-slate-600">Mẫu tin nhắn nhanh:</span>
-              <div className="flex flex-wrap gap-1.5 mt-1">
-                <button
-                  type="button"
-                  onClick={() => applyTemplate("PROMOTION")}
-                  className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 hover:bg-slate-200 text-slate-700"
-                >
-                  Ưu Đãi Báo Giá
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyTemplate("AR_REMINDER")}
-                  className="px-2.5 py-1 rounded-lg text-xs bg-rose-50 hover:bg-rose-100 text-rose-700"
-                >
-                  Nhắc Công Nợ
-                </button>
-                <button
-                  type="button"
-                  onClick={() => applyTemplate("FOLLOW_UP")}
-                  className="px-2.5 py-1 rounded-lg text-xs bg-sky-50 hover:bg-sky-100 text-sky-700"
-                >
-                  Thăm Hỏi
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Nội dung tin nhắn:</label>
-              <textarea
-                rows={4}
-                value={smsData.content}
-                onChange={(e) => setSmsData({ ...smsData, content: e.target.value })}
-                className="w-full p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-600"
-              />
-            </div>
-
-            <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setIsSmsModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
-              >
-                Hủy
-              </button>
-              <button
-                type="button"
-                onClick={handleSendSms}
-                disabled={isSubmitting}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white hover:bg-sky-700 shadow-md shadow-sky-600/20"
-              >
-                {isSubmitting ? "Đang gửi..." : "Gửi SMS Ngay"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Customer Modal */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center space-x-2">
-                <Edit className="w-5 h-5 text-[#253c68]" />
-                <h3 className="font-extrabold text-slate-900 text-base">Chỉnh Sửa Thông Tin Khách Hàng</h3>
-              </div>
-              <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleEditSubmit} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Tên Tiệm / Supply Store *</label>
-                <input
-                  type="text"
-                  required
-                  value={editFormData.businessName}
-                  onChange={(e) => setEditFormData({ ...editFormData, businessName: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Người Phụ Trách (Attn) *</label>
-                  <input
-                    type="text"
-                    required
-                    value={editFormData.contactPerson}
-                    onChange={(e) => setEditFormData({ ...editFormData, contactPerson: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Số Điện Thoại *</label>
-                  <input
-                    type="text"
-                    required
-                    value={editFormData.phone}
-                    onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Thành Phố</label>
-                  <input
-                    type="text"
-                    value={editFormData.city}
-                    onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Tiểu Bang (State)</label>
-                  <input
-                    type="text"
-                    value={editFormData.state}
-                    onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Ghi Chú</label>
-                <textarea
-                  rows={2}
-                  value={editFormData.notes}
-                  onChange={(e) => setEditFormData({ ...editFormData, notes: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
-                />
-              </div>
-
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-[#253c68] text-white hover:bg-[#1a2c4e] shadow-md shadow-[#253c68]/20"
-                >
-                  {isSubmitting ? "Đang lưu..." : "Lưu Thay Đổi"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <CustomerFormModal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        customerId={c.id}
+        initial={{
+          businessName: c.businessName || "",
+          contactPerson: c.contactPerson || "",
+          phone: c.phone || "",
+          email: c.email || "",
+          address: c.address || "",
+          city: c.city || "",
+          state: c.state || "TX",
+          zipCode: c.zipCode || "",
+          birthday: c.birthday ? String(c.birthday).slice(0, 10) : "",
+          assignedSale: c.assignedSale || "",
+          tier: c.tier || "STANDARD",
+          status: c.status || "ACTIVE",
+          notes: c.notes || "",
+        }}
+        onSaved={(ok, msg) => {
+          toast.show(msg, ok ? "success" : "error");
+          if (ok) load();
+        }}
+      />
+      <SmsModal
+        open={!!smsTpl}
+        onClose={() => setSmsTpl(null)}
+        customer={c}
+        initialTemplate={smsTpl || "FOLLOW_UP"}
+        onSent={(ok, msg) => {
+          toast.show(msg, ok ? "success" : "error");
+          if (ok) load();
+        }}
+      />
     </div>
+  );
+}
+
+function QuickAction({
+  icon: Icon,
+  label,
+  href,
+  onClick,
+  primary,
+}: {
+  icon: any;
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  primary?: boolean;
+}) {
+  const cls = cn(
+    "flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 rounded-2xl px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all active:scale-95",
+    primary ? "bg-brand-500 text-white hover:bg-brand-400 shadow-glow" : "bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur"
+  );
+  const inner = (
+    <>
+      <Icon className="w-4 h-4" />
+      {label}
+    </>
+  );
+  if (href) {
+    return href.startsWith("/") ? (
+      <Link href={href} className={cls}>
+        {inner}
+      </Link>
+    ) : (
+      <a href={href} className={cls}>
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <button onClick={onClick} className={cls}>
+      {inner}
+    </button>
   );
 }

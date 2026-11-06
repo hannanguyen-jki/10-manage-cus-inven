@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
 import { getQuoteDetail, QuoteData } from "@/lib/quotesData";
 import fs from "fs";
+import path from "path";
+
+// JKI OCEAN logo embedded as a data URI so Puppeteer never needs network access
+function logoDataUri(): string {
+  try {
+    const buf = fs.readFileSync(path.join(process.cwd(), "public", "logo-full.png"));
+    return `data:image/png;base64,${buf.toString("base64")}`;
+  } catch {
+    return "";
+  }
+}
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +67,7 @@ async function launchBrowser() {
 
 // Generate the high-end branded HTML template for JKIOCEAN
 function renderQuoteHtml(quote: QuoteData): string {
+  const logo = logoDataUri();
   const formattedCreated = new Date(quote.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -149,15 +161,19 @@ function renderQuoteHtml(quote: QuoteData): string {
 
     /* Brand Header */
     .brand-header {
-      background: linear-gradient(135deg, #1a2c4e 0%, #253c68 100%);
-      color: #ffffff;
-      padding: 24px 28px;
-      border-radius: 12px;
+      background: #ffffff;
+      color: #111318;
+      padding: 8px 0 20px;
       margin-bottom: 24px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      border-left: 6px solid #38bdf8;
+      align-items: flex-end;
+      border-bottom: 4px solid #039dd5;
+    }
+    .brand-logo {
+      height: 64px;
+      width: auto;
+      display: block;
     }
     .brand-title {
       font-size: 26px;
@@ -171,7 +187,7 @@ function renderQuoteHtml(quote: QuoteData): string {
     .brand-slogan {
       font-size: 12px;
       font-style: italic;
-      color: #93c5fd;
+      color: #027fb3;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       margin-top: 2px;
@@ -192,15 +208,15 @@ function renderQuoteHtml(quote: QuoteData): string {
     .hub-contact {
       text-align: right;
       font-size: 11px;
-      color: #e2e8f0;
+      color: #51596a;
       line-height: 1.6;
     }
     .hub-contact strong {
-      color: #ffffff;
+      color: #111318;
       font-size: 12px;
     }
     .contact-highlight {
-      color: #38bdf8;
+      color: #039dd5;
       font-weight: 700;
       font-family: monospace;
       font-size: 12px;
@@ -235,7 +251,7 @@ function renderQuoteHtml(quote: QuoteData): string {
     .customer-name {
       font-size: 16px;
       font-weight: 800;
-      color: #253c68;
+      color: #056690;
       margin-bottom: 4px;
     }
     .info-row {
@@ -269,7 +285,7 @@ function renderQuoteHtml(quote: QuoteData): string {
       margin-bottom: 24px;
     }
     .quote-table th {
-      background: #253c68;
+      background: #056690;
       color: #ffffff;
       padding: 10px 12px;
       font-size: 11px;
@@ -315,7 +331,7 @@ function renderQuoteHtml(quote: QuoteData): string {
     .category-pill {
       font-size: 10px;
       background: #eff6ff;
-      color: #253c68;
+      color: #056690;
       padding: 2px 6px;
       border-radius: 4px;
       font-weight: 600;
@@ -354,13 +370,13 @@ function renderQuoteHtml(quote: QuoteData): string {
     .total-row.grand-total {
       margin-top: 8px;
       padding-top: 10px;
-      border-top: 2px solid #253c68;
+      border-top: 2px solid #056690;
       font-size: 16px;
       font-weight: 800;
-      color: #253c68;
+      color: #056690;
     }
     .grand-badge {
-      background: #253c68;
+      background: #056690;
       color: #ffffff;
       padding: 4px 12px;
       border-radius: 6px;
@@ -430,11 +446,8 @@ function renderQuoteHtml(quote: QuoteData): string {
     <!-- Brand Header -->
     <div class="brand-header">
       <div>
-        <div class="brand-title">
-          <span>JKIOCEAN</span>
-        </div>
+        ${logo ? `<img class="brand-logo" src="${logo}" alt="JKI OCEAN" />` : `<div class="brand-title"><span>JKIOCEAN</span></div>`}
         <div class="brand-slogan">Let Beauty Begin</div>
-        <div class="hub-badge">★ JKIOCEAN LLC - Houston Distribution Hub ★</div>
       </div>
       <div class="hub-contact">
         <strong>JKIOCEAN GLOBAL LLC</strong><br>
@@ -476,7 +489,7 @@ function renderQuoteHtml(quote: QuoteData): string {
         <div class="card-title">Quote Details</div>
         <div class="info-row">
           <span class="info-label">Quote #:</span>
-          <span class="info-value font-mono font-bold" style="color: #253c68;">${quote.quoteNumber}</span>
+          <span class="info-value font-mono font-bold" style="color: #056690;">${quote.quoteNumber}</span>
         </div>
         <div class="info-row">
           <span class="info-label">Issue Date:</span>
@@ -523,7 +536,7 @@ function renderQuoteHtml(quote: QuoteData): string {
           ${quote.notes || "Free local delivery for wholesale orders in Greater Houston Hub."}
         </p>
         <div style="font-size: 11.5px; color: #64748b; line-height: 1.5; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
-          <strong style="color: #253c68;">Quality Guarantee:</strong> 100% genuine Kolinsky bristles, 30-day full replacement warranty against manufacturing defects.
+          <strong style="color: #056690;">Quality Guarantee:</strong> 100% genuine Kolinsky bristles, 30-day full replacement warranty against manufacturing defects.
         </div>
       </div>
 

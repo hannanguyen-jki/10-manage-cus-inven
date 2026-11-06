@@ -88,7 +88,9 @@ export const SAMPLE_PRODUCTS: ProductCatalogItem[] = (rawProducts as any[]).map(
 }));
 
 // In-Memory store for quotes created by users (no test quotes)
-let quotesStore: QuoteData[] = [];
+// Kept on globalThis so every API route shares the same list (route modules are loaded separately in dev)
+const quotesGlobal = globalThis as unknown as { __jkiQuotesStore?: QuoteData[] };
+const quotesStore: QuoteData[] = (quotesGlobal.__jkiQuotesStore ??= []);
 
 // Helper: Query quotes from Prisma or fallback to Memory Store
 export async function getQuotesList(search?: string, status?: string) {

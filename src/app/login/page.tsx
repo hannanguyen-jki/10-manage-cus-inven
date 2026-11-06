@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogIn, AlertCircle, Loader2, ShieldCheck } from "lucide-react";
+import { LogIn, AlertCircle, Loader2, User, Lock, Users, Wallet, FileText } from "lucide-react";
+import { Aurora } from "@/components/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,129 +15,129 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const saved = localStorage.getItem("jki_erp_remember_id");
-    if (saved) setIdentifier(saved);
+    try {
+      const saved = localStorage.getItem("jki_erp_remember_id");
+      if (saved) setIdentifier(saved);
+    } catch {
+      /* storage unavailable */
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier, password, rememberMe }),
       });
-
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Login failed");
+      if (!res.ok) throw new Error(data.error || "Đăng nhập không thành công");
+      try {
+        if (rememberMe) localStorage.setItem("jki_erp_remember_id", identifier.trim());
+        else localStorage.removeItem("jki_erp_remember_id");
+      } catch {
+        /* storage unavailable */
       }
-
-      if (rememberMe) {
-        localStorage.setItem("jki_erp_remember_id", identifier.trim());
-      } else {
-        localStorage.removeItem("jki_erp_remember_id");
-      }
-
       router.push("/dashboard");
       router.refresh();
     } catch (err: any) {
-      setError(err?.message || "Server connection error");
+      setError(err?.message || "Không kết nối được máy chủ");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-[#1a2c4e] to-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8">
-        
-        {/* Brand Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#253c68] to-[#3a568c] items-center justify-center shadow-lg shadow-[#253c68]/30 mb-4 border border-slate-700">
-            <span className="text-white font-black text-2xl tracking-wider">JKI</span>
+    <div className="min-h-screen grid lg:grid-cols-2 bg-white">
+      {/* Brand panel */}
+      <div className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-ink-950 p-12 text-white">
+        <Aurora />
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:22px_22px]" />
+        <div className="relative">
+          <div className="inline-flex rounded-3xl bg-white p-4 shadow-2xl">
+            <Image src="/logo-full.png" alt="JKI OCEAN" width={2373} height={1125} className="h-14 w-auto" priority />
           </div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">JKIOCEAN HUB</h1>
-          <p className="text-xs uppercase tracking-widest text-[#253c68] font-bold mt-1">Let Beauty Begin</p>
-          <p className="text-xs text-slate-500 mt-2">B2B Customer CRM, Wholesale Distribution & Inventory Hub</p>
         </div>
-
-        {/* Error Alert */}
-        {error && (
-          <div className="mb-6 p-3.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center space-x-2.5 text-xs text-rose-700">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
-            <span>{error}</span>
+        <div className="relative max-w-md">
+          <h2 className="text-4xl font-bold leading-tight tracking-tight">
+            Quản lý khách hàng <span className="gradient-text">nhẹ nhàng</span>, rõ ràng.
+          </h2>
+          <div className="mt-8 space-y-4">
+            {[
+              { icon: Users, text: "Danh sách khách và thông tin liên hệ" },
+              { icon: Wallet, text: "Biết ngay ai đã trả, ai chưa trả" },
+              { icon: FileText, text: "Tạo báo giá PDF có ảnh sản phẩm" },
+            ].map(({ icon: Icon, text }, i) => (
+              <div key={text} className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: `${200 + i * 120}ms` }}>
+                <span className="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-brand-300" />
+                </span>
+                <span className="text-ink-200">{text}</span>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+        <p className="relative text-xs text-ink-400">© JKIOCEAN · Let Beauty Begin</p>
+      </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              Email or Employee ID
+      {/* Form */}
+      <div className="flex items-center justify-center p-6 sm:p-12 app-bg">
+        <div className="w-full max-w-sm animate-fade-up">
+          <div className="lg:hidden mb-8 flex justify-center">
+            <Image src="/logo-full.png" alt="JKI OCEAN" width={2373} height={1125} className="h-14 w-auto" priority />
+          </div>
+          <h1 className="text-2xl font-bold text-ink-900">Đăng nhập</h1>
+          <p className="mt-1 text-sm text-ink-500">Dùng tài khoản chấm công JKI của bạn.</p>
+
+          {error && (
+            <div className="mt-6 flex items-center gap-2.5 rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm text-rose-700 animate-pop-in">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div>
+              <label className="label">Email hoặc mã nhân viên</label>
+              <div className="relative">
+                <User className="w-4 h-4 text-ink-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                <input
+                  required
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder="vd: johnny"
+                  className="input pl-11 py-3"
+                  autoComplete="username"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="label">Mật khẩu</label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-ink-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input pl-11 py-3"
+                  autoComplete="current-password"
+                />
+              </div>
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="w-4 h-4 rounded accent-brand-500" />
+              <span className="text-sm text-ink-600">Ghi nhớ đăng nhập</span>
             </label>
-            <input
-              type="text"
-              required
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="e.g. johnny, hanna, or johnny@jkiocean.com"
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition-all"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              Password
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••"
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#253c68] focus:bg-white transition-all"
-            />
-          </div>
-
-          <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 text-[#253c68] rounded border-slate-300 focus:ring-[#253c68]"
-              />
-              <span className="text-xs text-slate-600">Remember login</span>
-            </label>
-            <span className="text-xs text-slate-400">Shared Nextcloud SSO</span>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 px-4 bg-[#253c68] hover:bg-[#1a2c4e] text-white rounded-xl text-sm font-bold shadow-md shadow-[#253c68]/20 flex items-center justify-center space-x-2 transition-all btn-press disabled:opacity-60"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Connecting to SSO...</span>
-              </>
-            ) : (
-              <>
-                <LogIn className="w-4 h-4" />
-                <span>Sign In to ERP</span>
-              </>
-            )}
-          </button>
-        </form>
-
-        <div className="mt-8 pt-5 border-t border-slate-100 flex items-center justify-center space-x-2 text-[11px] text-slate-400">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Enterprise Security • JKIOCEAN Centralized Authentication Gateway</span>
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3 text-base">
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </button>
+          </form>
         </div>
       </div>
     </div>

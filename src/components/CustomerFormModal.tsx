@@ -1,0 +1,184 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { UserPlus, UserPen, Loader2, Save } from "lucide-react";
+import { Modal, TIER_META, cn } from "@/components/ui";
+
+export const STATUS_META: Record<string, { label: string; cls: string; dot: string }> = {
+  ACTIVE: { label: "Đang mua", cls: "text-emerald-700", dot: "bg-emerald-500" },
+  AT_RISK: { label: "Cần hỏi thăm", cls: "text-amber-700", dot: "bg-amber-500" },
+  INACTIVE: { label: "Ngừng mua", cls: "text-ink-500", dot: "bg-ink-300" },
+};
+
+const EMPTY = {
+  businessName: "",
+  contactPerson: "",
+  phone: "",
+  email: "",
+  address: "",
+  city: "Houston",
+  state: "TX",
+  zipCode: "",
+  birthday: "",
+  assignedSale: "Johnny Tran",
+  tier: "STANDARD",
+  status: "ACTIVE",
+  notes: "",
+};
+
+export type CustomerForm = typeof EMPTY;
+
+export default function CustomerFormModal({
+  open,
+  onClose,
+  initial,
+  customerId,
+  onSaved,
+}: {
+  open: boolean;
+  onClose: () => void;
+  initial?: Partial<CustomerForm> | null;
+  customerId?: string;
+  onSaved?: (ok: boolean, message: string) => void;
+}) {
+  const [form, setForm] = useState<CustomerForm>(EMPTY);
+  const [saving, setSaving] = useState(false);
+  const editing = !!customerId;
+
+  useEffect(() => {
+    if (open) setForm({ ...EMPTY, ...(initial || {}) } as CustomerForm);
+    // Only reset when the dialog opens, not on every parent render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const set = (k: keyof CustomerForm, v: string) => setForm((f) => ({ ...f, [k]: v }));
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.businessName.trim() || !form.contactPerson.trim() || !form.phone.trim()) {
+      onSaved?.(false, "Cần nhập tên tiệm, người liên hệ và số điện thoại");
+      return;
+    }
+    setSaving(true);
+    try {
+      const res = await fetch(editing ? `/api/customers/${customerId}` : "/api/customers", {
+        method: editing ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      onSaved?.(!!data.success, data.success ? (editing ? "Đã lưu thay đổi" : "Đã thêm khách mới") : data.error || "Không lưu được");
+      if (data.success) onClose();
+    } catch {
+      onSaved?.(false, "Lỗi kết nối, thử lại sau");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      size="lg"
+      title={editing ? "Sửa thông tin khách" : "Thêm khách mới"}
+      icon={editing ? UserPen : UserPlus}
+      footer={
+        <>
+          <button type="button" onClick={onClose} className="btn-ghost">
+            Hủy
+          </button>
+          <button type="submit" form="customer-form" disabled={saving} className="btn-primary">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            Lưu
+          </button>
+        </>
+      }
+    >
+      <form id="customer-form" onSubmit={submit} className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Tên tiệm *" className="sm:col-span-2">
+            <input className="input" value={form.businessName} onChange={(e) => set("businessName", e.target.value)} placeholder="VD: Glamour Nail Supply" />
+          </Field>
+          <Field label="Người liên hệ *">
+            <input className="input" value={form.contactPerson} onChange={(e) => set("contactPerson", e.target.value)} placeholder="Chủ tiệm / quản lý" />
+          </Field>
+          <Field label="Số điện thoại *">
+            <input className="input font-mono" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="1 713-330-6165" />
+          </Field>
+          <Field label="Email">
+            <input className="input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
+          </Field>
+          <Field label="Sinh nhật">
+            <input className="input" type="date" value={form.birthday} onChange={(e) => set("birthday", e.target.value)} />
+          </Field>
+          <Field label="Địa chỉ" className="sm:col-span-2">
+            <input className="input" value={form.address} onChange={(e) => set("address", e.target.value)} />
+          </Field>
+          <Field label="Thành phố">
+            <input className="input" value={form.city} onChange={(e) => set("city", e.target.value)} />
+          </Field>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Bang">
+              <input className="input uppercase" maxLength={2} value={form.state} onChange={(e) => set("state", e.target.value.toUpperCase())} />
+            </Field>
+            <Field label="Zip">
+              <input className="input" value={form.zipCode} onChange={(e) => set("zipCode", e.target.value)} />
+            </Field>
+          </div>
+        </div>
+
+        <Field label="Nhóm khách">
+          <div className="grid grid-cols-3 gap-2">
+            {Object.entries(TIER_META).map(([k, m]) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => set("tier", k)}
+                className={cn(
+                  "rounded-2xl border p-3 text-sm font-semibold transition-all",
+                  form.tier === k ? "border-brand-400 bg-brand-50 text-brand-700 shadow-glow" : "border-ink-200 text-ink-600 hover:border-brand-200"
+                )}
+              >
+                <span className="mr-1">{m.emoji}</span>
+                {m.label}
+              </button>
+            ))}
+          </div>
+        </Field>
+
+        <Field label="Tình trạng">
+          <div className="grid grid-cols-3 gap-2">
+            {Object.entries(STATUS_META).map(([k, m]) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => set("status", k)}
+                className={cn(
+                  "flex items-center justify-center gap-2 rounded-2xl border p-3 text-sm font-semibold transition-all",
+                  form.status === k ? "border-brand-400 bg-brand-50 text-brand-700" : "border-ink-200 text-ink-600 hover:border-brand-200"
+                )}
+              >
+                <span className={cn("w-2 h-2 rounded-full", m.dot)} />
+                {m.label}
+              </button>
+            ))}
+          </div>
+        </Field>
+
+        <Field label="Ghi chú">
+          <textarea rows={3} className="input resize-none" value={form.notes} onChange={(e) => set("notes", e.target.value)} />
+        </Field>
+      </form>
+    </Modal>
+  );
+}
+
+function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={className}>
+      <label className="label">{label}</label>
+      {children}
+    </div>
+  );
+}
