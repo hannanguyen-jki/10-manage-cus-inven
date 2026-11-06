@@ -57,7 +57,7 @@ async function main() {
 
   if (fs.existsSync(customersFile)) {
     try {
-      const raw = fs.readFileSync(customersFile, "utf-8");
+      const raw = fs.readFileSync(customersFile, "utf-8").replace(/^\uFEFF/, "");
       customersToSeed = JSON.parse(raw);
       console.log(`Loaded ${customersToSeed.length} real B2B customers from JSON.`);
     } catch (err) {
