@@ -1,118 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { PaymentStatus } from "@prisma/client";
+import rawCustomers from "../../../../data/customers_extracted.json";
 
-// In-memory mock storage fallback when PostgreSQL is offline in development
-let mockOrdersState: any[] = [
-  {
-    id: "ord-mock-001",
-    orderNumber: "INV-2026-1089",
-    customerId: "cus-001",
-    totalAmount: 3450.0,
-    paidAmount: 1200.0,
-    paymentStatus: PaymentStatus.PARTIAL,
-    dueDate: new Date(Date.now() - 12 * 86400000).toISOString(), // 12 days ago (Current 0-30)
-    createdAt: new Date(Date.now() - 25 * 86400000).toISOString(),
-    saleRep: "Johnny Tran",
-    notes: "Kolinsky #14 and oval brush order",
-    customer: {
-      id: "cus-001",
-      businessName: "Nails of America - Galleria",
-      contactPerson: "Cindy Cindy",
-      phone: "+17135550192",
-      email: "cindy@nailsofamerica.com",
-      state: "TX",
-      city: "Houston",
-    },
-  },
-  {
-    id: "ord-mock-002",
-    orderNumber: "INV-2026-1045",
-    customerId: "cus-002",
-    totalAmount: 4850.0,
-    paidAmount: 0.0,
-    paymentStatus: PaymentStatus.OVERDUE,
-    dueDate: new Date(Date.now() - 42 * 86400000).toISOString(), // 42 days overdue (31-60)
-    createdAt: new Date(Date.now() - 60 * 86400000).toISOString(),
-    saleRep: "Kevin Tran",
-    notes: "Z-Brush Master Set batch (50 pcs)",
-    customer: {
-      id: "cus-002",
-      businessName: "Venetian Nail Spa - Katy",
-      contactPerson: "Jennifer Le",
-      phone: "+12815550143",
-      email: "jenny@venetianspa.com",
-      state: "TX",
-      city: "Katy",
-    },
-  },
-  {
-    id: "ord-mock-003",
-    orderNumber: "INV-2026-0982",
-    customerId: "cus-003",
-    totalAmount: 2600.0,
-    paidAmount: 800.0,
-    paymentStatus: PaymentStatus.OVERDUE,
-    dueDate: new Date(Date.now() - 74 * 86400000).toISOString(), // 74 days overdue (61-90)
-    createdAt: new Date(Date.now() - 95 * 86400000).toISOString(),
-    saleRep: "Johnny Tran",
-    notes: "Owner requested payment deferral until grand opening of new branch",
-    customer: {
-      id: "cus-003",
-      businessName: "Luxury Nails & Spa Austin",
-      contactPerson: "David Vu",
-      phone: "+15125550188",
-      email: "davidvu@luxurynails.com",
-      state: "TX",
-      city: "Austin",
-    },
-  },
-  {
-    id: "ord-mock-004",
-    orderNumber: "INV-2026-0850",
-    customerId: "cus-004",
-    totalAmount: 6200.0,
-    paidAmount: 1000.0,
-    paymentStatus: PaymentStatus.OVERDUE,
-    dueDate: new Date(Date.now() - 110 * 86400000).toISOString(), // 110 days overdue (>90)
-    createdAt: new Date(Date.now() - 130 * 86400000).toISOString(),
-    saleRep: "Alex Dang",
-    notes: "Followed up 3 times via Quo SMS, scheduled in-person visit",
-    customer: {
-      id: "cus-004",
-      businessName: "Diamond Nail Bar Dallas",
-      contactPerson: "Michael Hoang",
-      phone: "+12145550177",
-      email: "michael@diamondnailbar.com",
-      state: "TX",
-      city: "Dallas",
-    },
-  },
-  {
-    id: "ord-mock-005",
-    orderNumber: "INV-2026-1120",
-    customerId: "cus-005",
-    totalAmount: 1850.0,
-    paidAmount: 0.0,
-    paymentStatus: PaymentStatus.UNPAID,
-    dueDate: new Date(Date.now() + 5 * 86400000).toISOString(), // 5 days remaining (Current 0-30)
-    createdAt: new Date(Date.now() - 10 * 86400000).toISOString(),
-    saleRep: "Johnny Tran",
-    notes: "Order delivered last week, Net-15 payment terms",
-    customer: {
-      id: "cus-005",
-      businessName: "Regal Nails Woodlands",
-      contactPerson: "Kimberly Pham",
-      phone: "+18325550129",
-      email: "kim@regalwoodlands.com",
-      state: "TX",
-      city: "The Woodlands",
-    },
-  },
-];
+// Initialize mock orders state directly from authentic customers extracted from sheet
+const initialOrders: any[] = [];
+(rawCustomers as any[]).forEach((c) => {
+  if (c.orders && c.orders.length > 0) {
+    c.orders.forEach((o: any) => {
+      if (o.totalAmount > o.paidAmount || o.paymentStatus !== "PAID") {
+        initialOrders.push({
+          ...o,
+          customerId: c.id,
+          customer: {
+            id: c.id,
+            businessName: c.businessName,
+            contactPerson: c.contactPerson,
+            phone: c.phone,
+            email: c.email,
+            state: c.state,
+            city: c.city,
+          },
+        });
+      }
+    });
+  }
+});
 
-export async function GET() {
+let mockOrdersState: any[] = initialOrders;
+
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const filterBucket = searchParams.get("bucket"); // "all", "0-30", "31-60", "61-90", "90+"
+    const search = searchParams.get("search")?.toLowerCase().trim();
+
     let orders: any[] = [];
     let isDbConnected = true;
 
@@ -169,54 +91,84 @@ export async function GET() {
     const enrichedOrders = orders.map((order) => {
       const totalAmount = Number(order.totalAmount || 0);
       const paidAmount = Number(order.paidAmount || 0);
-      const balanceDue = Math.max(0, totalAmount - paidAmount);
+      const balance = Math.max(0, totalAmount - paidAmount);
 
-      totalOutstanding += balanceDue;
+      totalOutstanding += balance;
       totalPaid += paidAmount;
 
-      const dueDate = new Date(order.dueDate);
-      const diffTime = now.getTime() - dueDate.getTime();
-      const daysPastDue = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const due = new Date(order.dueDate || order.createdAt);
+      const diffTime = now.getTime() - due.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-      let agingBucket: "0-30" | "31-60" | "61-90" | ">90" = "0-30";
-      let bucketLabel = "Current (0-30 Days)";
+      let agingBucket = "0-30";
+      let isOverdue = false;
 
-      if (daysPastDue > 90) {
-        agingBucket = ">90";
-        bucketLabel = ">90 Days (Severely Overdue)";
-        bucketOver90 += balanceDue;
-        countOver90 += 1;
-        totalOverdue += balanceDue;
-      } else if (daysPastDue >= 61) {
-        agingBucket = "61-90";
-        bucketLabel = "61-90 Days (High Alert)";
-        bucket61_90 += balanceDue;
-        count61_90 += 1;
-        totalOverdue += balanceDue;
-      } else if (daysPastDue >= 31) {
-        agingBucket = "31-60";
-        bucketLabel = "31-60 Days (Past Due)";
-        bucket31_60 += balanceDue;
-        count31_60 += 1;
-        totalOverdue += balanceDue;
-      } else {
+      if (diffDays <= 0) {
         agingBucket = "0-30";
-        bucketLabel = daysPastDue > 0 ? `Past due by ${daysPastDue} days` : "Current / Within Terms";
-        bucket0_30 += balanceDue;
-        count0_30 += 1;
-        if (daysPastDue > 0) {
-          totalOverdue += balanceDue;
-        }
+      } else if (diffDays <= 30) {
+        agingBucket = "0-30";
+        isOverdue = true;
+      } else if (diffDays <= 60) {
+        agingBucket = "31-60";
+        isOverdue = true;
+      } else if (diffDays <= 90) {
+        agingBucket = "61-90";
+        isOverdue = true;
+      } else {
+        agingBucket = "90+";
+        isOverdue = true;
+      }
+
+      if (isOverdue && balance > 0) {
+        totalOverdue += balance;
+      }
+
+      if (agingBucket === "0-30") {
+        bucket0_30 += balance;
+        count0_30++;
+      } else if (agingBucket === "31-60") {
+        bucket31_60 += balance;
+        count31_60++;
+      } else if (agingBucket === "61-90") {
+        bucket61_90 += balance;
+        count61_90++;
+      } else {
+        bucketOver90 += balance;
+        countOver90++;
       }
 
       return {
         ...order,
-        balanceDue,
-        daysPastDue,
+        totalAmount,
+        paidAmount,
+        balance,
+        daysOverdue: Math.max(0, diffDays),
         agingBucket,
-        bucketLabel,
+        isOverdue: isOverdue && balance > 0,
       };
     });
+
+    // Apply filters
+    let filteredOrders = enrichedOrders;
+
+    if (filterBucket && filterBucket !== "all") {
+      filteredOrders = filteredOrders.filter(
+        (o) => o.agingBucket === filterBucket
+      );
+    }
+
+    if (search) {
+      filteredOrders = filteredOrders.filter(
+        (o) =>
+          o.orderNumber.toLowerCase().includes(search) ||
+          o.customer?.businessName?.toLowerCase().includes(search) ||
+          o.customer?.contactPerson?.toLowerCase().includes(search) ||
+          o.customer?.phone?.includes(search)
+      );
+    }
+
+    // Sort: highest balance first
+    filteredOrders.sort((a, b) => b.balance - a.balance);
 
     return NextResponse.json({
       success: true,
@@ -225,44 +177,19 @@ export async function GET() {
         totalOutstanding,
         totalOverdue,
         totalPaid,
-        totalInvoices: enrichedOrders.length,
-        buckets: {
-          current: {
-            key: "0-30",
-            label: "Current (0-30 Days)",
-            amount: bucket0_30,
-            count: count0_30,
-            severity: "normal",
-          },
-          bucket31_60: {
-            key: "31-60",
-            label: "31-60 Days",
-            amount: bucket31_60,
-            count: count31_60,
-            severity: "warning",
-          },
-          bucket61_90: {
-            key: "61-90",
-            label: "61-90 Days",
-            amount: bucket61_90,
-            count: count61_90,
-            severity: "danger",
-          },
-          bucketOver90: {
-            key: ">90",
-            label: ">90 Days",
-            amount: bucketOver90,
-            count: countOver90,
-            severity: "critical",
-          },
+        agingBuckets: {
+          "0-30": { amount: bucket0_30, count: count0_30 },
+          "31-60": { amount: bucket31_60, count: count31_60 },
+          "61-90": { amount: bucket61_90, count: count61_90 },
+          "90+": { amount: bucketOver90, count: countOver90 },
         },
       },
-      orders: enrichedOrders,
+      orders: filteredOrders,
     });
   } catch (error: any) {
     console.error("[API AR GET Error]:", error);
     return NextResponse.json(
-      { success: false, error: error?.message || "Failed to fetch AR aging data" },
+      { success: false, error: error?.message || "Failed to fetch AR records" },
       { status: 500 }
     );
   }
@@ -273,9 +200,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { orderId, amountPaid, paymentMethod = "Zelle", notes = "" } = body;
 
-    if (!orderId) {
+    if (!orderId || amountPaid === undefined) {
       return NextResponse.json(
-        { success: false, error: "Missing required parameter 'orderId'" },
+        { success: false, error: "Order ID and amountPaid are required" },
         { status: 400 }
       );
     }

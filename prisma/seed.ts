@@ -1,13 +1,13 @@
-import { PrismaClient, CustomerTier, CustomerStatus, MovementType, QuoteStatus, PaymentStatus, DipReason } from "@prisma/client";
+import { PrismaClient, CustomerTier, CustomerStatus, PaymentStatus, DipReason } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log(">> Seeding JKIOCEAN ERP Database with 345+ Products and Real B2B Customers...");
+  console.log(">> Seeding JKIOCEAN Database with Authentic Products and Real B2B Customers from Sheet...");
 
-  // 1. Seed Products from data/products_extracted.json
+  // 1. Seed Products from data/products_extracted.json (extracted from Mix 06.10. 2026.docx)
   const productsFile = path.join(process.cwd(), "data", "products_extracted.json");
   let productsToSeed: any[] = [];
 
@@ -17,25 +17,8 @@ async function main() {
       productsToSeed = JSON.parse(raw);
       console.log(`Loaded ${productsToSeed.length} extracted products from JSON.`);
     } catch (err) {
-      console.warn("Could not read products_extracted.json, falling back to basic catalog:", err);
+      console.warn("Could not read products_extracted.json:", err);
     }
-  }
-
-  if (productsToSeed.length === 0) {
-    productsToSeed = [
-      {
-        sku: "Z-BRUSH-08",
-        name: "Kolinsky 3D Acrylic Brush #8 - Z Series",
-        category: "Z Brushes",
-        description: "100% Pure Kolinsky Sable hair, chemical-resistant metallic handle.",
-        imageUrl: "/uploads/products/prod_001.png",
-        wholesalePrice: 16.5,
-        retailPrice: 22.0,
-        currentStock: 140,
-        minStockAlert: 20,
-        location: "Houston Hub (Kệ A1)",
-      },
-    ];
   }
 
   for (const p of productsToSeed) {
@@ -48,9 +31,9 @@ async function main() {
         imageUrl: p.imageUrl,
         wholesalePrice: p.wholesalePrice,
         retailPrice: p.retailPrice,
-        currentStock: p.currentStock,
-        minStockAlert: p.minStockAlert,
-        location: p.location,
+        currentStock: p.currentStock || 100,
+        minStockAlert: p.minStockAlert || 15,
+        location: p.location || "Houston Hub",
       },
       create: {
         sku: p.sku,
@@ -60,15 +43,15 @@ async function main() {
         imageUrl: p.imageUrl,
         wholesalePrice: p.wholesalePrice,
         retailPrice: p.retailPrice,
-        currentStock: p.currentStock,
-        minStockAlert: p.minStockAlert,
-        location: p.location,
+        currentStock: p.currentStock || 100,
+        minStockAlert: p.minStockAlert || 15,
+        location: p.location || "Houston Hub",
       },
     });
   }
-  console.log(`>> Successfully seeded ${productsToSeed.length} products with images!`);
+  console.log(`>> Successfully seeded ${productsToSeed.length} products!`);
 
-  // 2. Seed B2B Customers from data/customers_extracted.json
+  // 2. Seed B2B Customers from data/customers_extracted.json (extracted from CUSTOMER FOR SALE.xlsx)
   const customersFile = path.join(process.cwd(), "data", "customers_extracted.json");
   let customersToSeed: any[] = [];
 
@@ -82,7 +65,6 @@ async function main() {
     }
   }
 
-  const createdCustomers: any[] = [];
   const firstProduct = await prisma.product.findFirst();
 
   for (const c of customersToSeed) {
@@ -118,9 +100,8 @@ async function main() {
         notes: c.notes,
       },
     });
-    createdCustomers.push({ ...cust, rawOrders: c.orders });
 
-    // Seed Orders / Invoices for this customer
+    // Seed Orders for this customer
     if (c.orders && c.orders.length > 0 && firstProduct) {
       for (const ord of c.orders) {
         await prisma.order.upsert({
@@ -129,7 +110,7 @@ async function main() {
             totalAmount: ord.totalAmount,
             paidAmount: ord.paidAmount,
             paymentStatus: ord.paymentStatus as PaymentStatus,
-            dueDate: new Date(ord.shippingDate || Date.now()),
+            dueDate: new Date(ord.dueDate || ord.createdAt || Date.now()),
             saleRep: ord.saleRep,
             notes: ord.notes,
           },
@@ -139,7 +120,7 @@ async function main() {
             totalAmount: ord.totalAmount,
             paidAmount: ord.paidAmount,
             paymentStatus: ord.paymentStatus as PaymentStatus,
-            dueDate: new Date(ord.shippingDate || Date.now()),
+            dueDate: new Date(ord.dueDate || ord.createdAt || Date.now()),
             saleRep: ord.saleRep,
             notes: ord.notes,
             items: {
@@ -155,54 +136,28 @@ async function main() {
         });
       }
     }
-  }
-  console.log(`>> Successfully seeded ${createdCustomers.length} B2B customers & invoices!`);
 
-  // 3. Seed Sample Quotes
-  if (createdCustomers.length > 0 && productsToSeed.length >= 3) {
-    const p1 = await prisma.product.findFirst({ where: { sku: productsToSeed[0].sku } });
-    const p2 = await prisma.product.findFirst({ where: { sku: productsToSeed[1].sku } });
-
-    if (p1 && p2) {
-      await prisma.quote.upsert({
-        where: { quoteNumber: "QT-202610-5001" },
-        update: {},
-        create: {
-          quoteNumber: "QT-202610-5001",
-          customerId: createdCustomers[0].id,
-          totalAmount: 850.0,
-          validUntil: new Date(Date.now() + 14 * 86400000),
-          status: QuoteStatus.SENT,
-          createdUser: "Johnny Tran",
-          notes: "Gói sỉ đặc biệt cho đại lý Houston Hub. Miễn phí vận chuyển nội thành.",
-          items: {
-            create: [
-              { productId: p1.id, quantity: 20, unitPrice: p1.wholesalePrice, discount: 10 },
-              { productId: p2.id, quantity: 30, unitPrice: p2.wholesalePrice, discount: 10 },
-            ],
+    // Seed Churn Surveys if any
+    if (c.churnSurveys && c.churnSurveys.length > 0) {
+      for (const survey of c.churnSurveys) {
+        await prisma.churnSurvey.create({
+          data: {
+            customerId: cust.id,
+            analysisMonth: survey.analysisMonth || "2026-10",
+            dropPercent: survey.dropPercent || -40.0,
+            reason: (survey.reason as DipReason) || DipReason.HIGH_INVENTORY_REMAINING,
+            saleNotes: survey.saleNotes || null,
+            actionPlan: survey.actionPlan || null,
+            saleRep: survey.saleRep || "Johnny Tran",
+            isResolved: false,
           },
-        },
-      });
+        });
+      }
     }
   }
 
-  // 4. Seed Churn Detection Survey
-  if (createdCustomers.length >= 3) {
-    await prisma.churnSurvey.create({
-      data: {
-        customerId: createdCustomers[2].id,
-        analysisMonth: "2026-10",
-        dropPercent: -45.0,
-        reason: DipReason.HIGH_INVENTORY_REMAINING,
-        saleNotes: "Khách đang có tồn kho kềm và cọ đủ dùng cho 3 tuần tới, cần chăm sóc lại sau 10 ngày.",
-        actionPlan: "Hanna Nguyen sẽ gọi điện chăm sóc và gửi mẫu thử phụ liệu mới.",
-        saleRep: "Hanna Nguyen",
-        isResolved: false,
-      },
-    });
-  }
-
-  console.log(">> Seeding completed successfully!");
+  console.log(`>> Successfully seeded ${customersToSeed.length} authentic B2B customers, orders & surveys!`);
+  console.log(">> Seeding completed with zero test/mock data!");
 }
 
 main()

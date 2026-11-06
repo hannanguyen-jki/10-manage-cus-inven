@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
-  Target,
-  Package,
   FileText,
   Receipt,
   TrendingDown,
@@ -25,8 +23,6 @@ interface NavItem {
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "B2B Customers", href: "/customers", icon: Users },
-  { title: "B2B Leads AI", href: "/leads", icon: Target, badge: "AI", badgeColor: "bg-sky-500 text-white" },
-  { title: "Inventory & Products", href: "/inventory", icon: Package },
   { title: "PDF Quotes", href: "/quotes", icon: FileText },
   { title: "Accounts Receivable (AR)", href: "/ar", icon: Receipt },
   { title: "Churn Alerts", href: "/churn", icon: TrendingDown, badge: "Alert", badgeColor: "bg-rose-500 text-white" },
@@ -48,7 +44,7 @@ export default function Sidebar() {
               <span className="font-extrabold text-white text-base tracking-wide">JKIOCEAN</span>
               <span className="text-[10px] bg-[#38bdf8]/20 text-[#38bdf8] font-bold px-1.5 py-0.5 rounded">HUB</span>
             </div>
-            <p className="text-[11px] text-slate-400 font-medium">Houston, TX • ERP</p>
+            <p className="text-[11px] text-slate-400 font-medium">Houston, TX • B2B CRM</p>
           </div>
         </div>
       </div>
@@ -98,10 +94,13 @@ export default function Sidebar() {
             <PhoneCall className="w-3.5 h-3.5 text-[#38bdf8]" />
             <span className="font-mono text-[11px]">+1 (713) 330-6165</span>
           </div>
-          <span className="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">
-            Quo SMS
+          <span className="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded">
+            ONLINE
           </span>
         </div>
+        <p className="text-[10px] text-slate-400 mt-2">
+          JKIOCEAN B2B Management Hub v1.0
+        </p>
       </div>
     </aside>
   );

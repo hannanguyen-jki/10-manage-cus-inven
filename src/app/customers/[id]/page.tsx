@@ -32,10 +32,13 @@ import {
   XCircle,
   RefreshCw,
   Sparkles,
+  Award,
+  BarChart3,
 } from "lucide-react";
 
 interface CustomerDetail {
   id: string;
+  rank?: string | number;
   businessName: string;
   contactPerson: string;
   phone: string;
@@ -55,6 +58,19 @@ interface CustomerDetail {
   orderCount: number;
   lastOrderDate: string | null;
   lastContactDate: string | null;
+  profit?: number;
+  aov?: number;
+  cycleDays?: number;
+  rev2024?: number;
+  orders2024?: number;
+  rev2025?: number;
+  orders2025?: number;
+  rev2026?: number;
+  orders2026?: number;
+  growth25vs24?: number | null;
+  growth26vs25?: number | null;
+  firstPurchase?: string | null;
+  lastPurchase?: string | null;
   createdAt: string;
   orders: any[];
   quotes: any[];
@@ -102,82 +118,88 @@ export default function Customer360Page() {
     content: "",
   });
 
-  // Churn Survey Form State
-  const [churnFormData, setChurnFormData] = useState({
+  // Churn Form State
+  const [churnData, setChurnData] = useState({
     analysisMonth: "2026-10",
     dropPercent: -45,
-    reason: "HIGH_INVENTORY_REMAINING",
+    reason: "HIGH_INVENTORY_REMAINING" as any,
     saleNotes: "",
     actionPlan: "",
+    saleRep: "Johnny Tran",
   });
 
   const showToast = (text: string, type: "success" | "error" = "success") => {
     setToastMessage({ text, type });
-    setTimeout(() => setToastMessage(null), 4500);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
   };
 
   const fetchCustomerDetail = async () => {
-    if (!id) return;
     try {
       setLoading(true);
       setError(null);
       const res = await fetch(`/api/customers/${id}`);
+      if (!res.ok) {
+        throw new Error("Could not find customer profile");
+      }
       const data = await res.json();
-
-      if (data.success && data.customer) {
+      if (data.customer) {
         setCustomer(data.customer);
         // Pre-fill edit form
-        const c = data.customer;
         setEditFormData({
-          businessName: c.businessName || "",
-          contactPerson: c.contactPerson || "",
-          phone: c.phone || "",
-          email: c.email || "",
-          address: c.address || "",
-          city: c.city || "",
-          state: c.state || "TX",
-          zipCode: c.zipCode || "",
-          birthday: c.birthday ? c.birthday.split("T")[0] : "",
-          assignedSale: c.assignedSale || "johnny",
-          tier: c.tier || "STANDARD",
-          status: c.status || "ACTIVE",
-          notes: c.notes || "",
+          businessName: data.customer.businessName || "",
+          contactPerson: data.customer.contactPerson || "",
+          phone: data.customer.phone || "",
+          email: data.customer.email || "",
+          address: data.customer.address || "",
+          city: data.customer.city || "",
+          state: data.customer.state || "TX",
+          zipCode: data.customer.zipCode || "",
+          birthday: data.customer.birthday ? data.customer.birthday.slice(0, 10) : "",
+          assignedSale: data.customer.assignedSale || "johnny",
+          tier: data.customer.tier || "STANDARD",
+          status: data.customer.status || "ACTIVE",
+          notes: data.customer.notes || "",
         });
       } else {
-        setError(data.error || "Customer profile not found");
+        throw new Error("Customer record missing");
       }
     } catch (err: any) {
-      console.error("Fetch customer detail error:", err);
-      setError("Failed to load customer profile");
+      setError(err?.message || "Failed to load customer profile");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCustomerDetail();
+    if (id) {
+      fetchCustomerDetail();
+    }
   }, [id]);
 
   // Handle Edit Submit
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!customer) return;
+
     try {
       setIsSubmitting(true);
-      const res = await fetch(`/api/customers/${id}`, {
+      const res = await fetch(`/api/customers/${customer.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editFormData),
       });
       const data = await res.json();
       if (data.success) {
-        showToast("Customer profile updated successfully!");
+        showToast("Đã cập nhật thông tin khách hàng thành công!");
         setIsEditModalOpen(false);
         fetchCustomerDetail();
       } else {
-        showToast(data.error || "Failed to update profile", "error");
+        showToast(data.error || "Không thể cập nhật", "error");
       }
     } catch (err) {
-      showToast("Server connection error", "error");
+      showToast("Lỗi kết nối máy chủ", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -202,15 +224,15 @@ export default function Customer360Page() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast("Quo SMS sent successfully!");
+        showToast("Đã gửi tin nhắn Quo SMS thành công!");
         setIsSmsModalOpen(false);
         setSmsData({ type: "FOLLOW_UP", content: "" });
         fetchCustomerDetail();
       } else {
-        showToast(data.error || "Failed to send SMS", "error");
+        showToast(data.error || "Không thể gửi SMS", "error");
       }
     } catch (err) {
-      showToast("Error sending SMS", "error");
+      showToast("Lỗi kết nối gửi SMS", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -220,13 +242,13 @@ export default function Customer360Page() {
     if (!customer) return;
     let text = "";
     if (type === "PROMOTION") {
-      text = `JKIOCEAN: Hi ${customer.contactPerson}, the new batch of Z-Kolinsky Master #14 brushes just arrived at our Houston Hub. We reserved a VIP wholesale price for ${customer.businessName}!`;
+      text = `JKIOCEAN: Xin chào ${customer.contactPerson}, các sản phẩm cọ và phụ liệu nail chuẩn salon vừa về kho Houston Hub. JKIOCEAN xin gửi ưu đãi giá sỉ cho ${customer.businessName}!`;
     } else if (type === "BIRTHDAY") {
-      text = `JKIOCEAN wishes ${customer.contactPerson} a wonderful birthday filled with happiness, health, and continued prosperity for ${customer.businessName}!`;
+      text = `JKIOCEAN kính chúc ${customer.contactPerson} một sinh nhật nhiều niềm vui, sức khỏe và tiệm ${customer.businessName} ngày càng phát tài!`;
     } else if (type === "AR_REMINDER") {
-      text = `JKIOCEAN friendly notice for ${customer.contactPerson}: ${customer.businessName} currently has an open balance of $${customer.debtAmount.toLocaleString()} for your brush order. Please arrange payment via Check or Zelle at your earliest convenience!`;
+      text = `JKIOCEAN xin phép gửi thông báo đến ${customer.contactPerson}: Tiệm ${customer.businessName} hiện có số dư công nợ $${customer.debtAmount.toLocaleString()}. Nhờ anh/chị hỗ trợ thanh toán qua Zelle/Check giúp bên em nhé. Cảm ơn anh/chị!`;
     } else {
-      text = `JKIOCEAN follow-up for ${customer.contactPerson}: How are your nail technicians liking the latest brushes? Let us know when you need refills on acrylic or art brushes!`;
+      text = `JKIOCEAN thăm hỏi ${customer.contactPerson}: Anh/chị dùng đợt hàng vừa rồi thế nào ạ? Khi nào cần lấy thêm cọ, kềm hay phụ liệu thì nhắn em gửi hỏa tốc qua nhé!`;
     }
     setSmsData({ type, content: text });
   };
@@ -247,7 +269,7 @@ export default function Customer360Page() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-8">
         <RefreshCw className="w-10 h-10 text-[#253c68] animate-spin mb-3" />
-        <p className="text-slate-600 font-semibold text-sm">Loading Customer 360° Profile...</p>
+        <p className="text-slate-600 font-semibold text-sm">Đang tải hồ sơ 360° khách hàng...</p>
       </div>
     );
   }
@@ -256,21 +278,21 @@ export default function Customer360Page() {
     return (
       <div className="max-w-xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 text-center shadow-sm">
         <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto mb-3" />
-        <h2 className="text-xl font-bold text-slate-800">Profile Not Found</h2>
-        <p className="text-slate-500 text-sm mt-1">{error || "Customer does not exist in the database."}</p>
+        <h2 className="text-xl font-bold text-slate-800">Không Tìm Thấy Khách Hàng</h2>
+        <p className="text-slate-500 text-sm mt-1">{error || "Khách hàng không tồn tại."}</p>
         <Link
           href="/customers"
           className="mt-5 inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#253c68] text-white text-sm font-semibold hover:bg-[#1a2c4e] transition btn-press"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Customers</span>
+          <span>Quay lại danh sách</span>
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Toast Alert */}
       {toastMessage && (
         <div
@@ -296,11 +318,15 @@ export default function Customer360Page() {
           className="inline-flex items-center space-x-2 text-sm font-semibold text-slate-500 hover:text-[#253c68] transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Customers</span>
+          <span>Quay lại danh sách 32 khách hàng</span>
         </Link>
 
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-slate-400">Customer ID:</span>
+          {customer.rank && (
+            <span className="text-xs font-mono bg-blue-50 text-[#253c68] px-2.5 py-0.5 rounded font-bold border border-blue-200">
+              Rank #{customer.rank}
+            </span>
+          )}
           <span className="text-xs font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-semibold">
             {customer.id}
           </span>
@@ -309,7 +335,6 @@ export default function Customer360Page() {
 
       {/* Customer 360 Header Profile Card */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
-        {/* Accent background bar */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#253c68] via-[#3a568c] to-[#38bdf8]"></div>
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pt-2">
@@ -349,12 +374,7 @@ export default function Customer360Page() {
               {customer.status === "AT_RISK" && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
                   <AlertTriangle className="w-3.5 h-3.5 mr-1 text-rose-600" />
-                  At Risk - Attention Needed
-                </span>
-              )}
-              {customer.status === "INACTIVE" && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                  Inactive
+                  Nguy Cơ Churn (Sụt giảm doanh số)
                 </span>
               )}
             </div>
@@ -364,14 +384,14 @@ export default function Customer360Page() {
               <div className="flex items-center space-x-1.5">
                 <User className="w-4 h-4 text-slate-400" />
                 <span className="font-semibold text-slate-800">{customer.contactPerson}</span>
-                <span className="text-xs text-slate-400">(Contact Person)</span>
+                <span className="text-xs text-slate-400">(Người phụ trách / Attn)</span>
               </div>
 
               <div className="flex items-center space-x-1.5">
                 <Phone className="w-4 h-4 text-sky-600" />
                 <a
                   href={`tel:${customer.phone}`}
-                  className="font-mono text-sky-700 hover:underline font-semibold"
+                  className="font-mono text-sky-700 hover:underline font-bold"
                 >
                   {customer.phone}
                 </a>
@@ -380,23 +400,20 @@ export default function Customer360Page() {
               {customer.email && (
                 <div className="flex items-center space-x-1.5">
                   <Mail className="w-4 h-4 text-slate-400" />
-                  <a href={`mailto:${customer.email}`} className="text-slate-600 hover:underline">
-                    {customer.email}
-                  </a>
+                  <span className="text-slate-600">{customer.email}</span>
                 </div>
               )}
 
               <div className="flex items-center space-x-1.5">
                 <MapPin className="w-4 h-4 text-slate-400" />
                 <span>
-                  {customer.address ? `${customer.address}, ` : ""}
-                  {customer.city}, {customer.state} {customer.zipCode || ""}
+                  {customer.city}, {customer.state}
                 </span>
               </div>
 
               <div className="flex items-center space-x-1.5">
                 <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
-                  Assigned Sales Rep: <strong>{formatSalesRep(customer.assignedSale)}</strong>
+                  Phụ trách: <strong>{formatSalesRep(customer.assignedSale)}</strong>
                 </span>
               </div>
             </div>
@@ -404,47 +421,44 @@ export default function Customer360Page() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3">
-            {/* Create Quote Link */}
             <Link
               href={`/quotes/create?customerId=${customer.id}`}
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-[#253c68] text-[#253c68] hover:bg-[#253c68]/5 font-bold text-sm btn-press transition"
             >
               <FileText className="w-4 h-4" />
-              <span>Create New Quote</span>
+              <span>Tạo Báo Giá Mới</span>
             </Link>
 
-            {/* Send Quo SMS */}
             <button
               onClick={() => {
                 setSmsData({
                   type: "FOLLOW_UP",
-                  content: `JKIOCEAN: Hi ${customer.contactPerson} (${customer.businessName})...`,
+                  content: `JKIOCEAN: Xin chào ${customer.contactPerson} (${customer.businessName})...`,
                 });
                 setIsSmsModalOpen(true);
               }}
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm shadow-md shadow-sky-600/20 btn-press transition"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>Send Quo SMS</span>
+              <span>Gửi Quo SMS</span>
             </button>
 
-            {/* Edit Profile */}
             <button
               onClick={() => setIsEditModalOpen(true)}
               className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm btn-press transition"
             >
               <Edit className="w-4 h-4" />
-              <span>Edit Profile</span>
+              <span>Chỉnh Sửa</span>
             </button>
           </div>
         </div>
 
-        {/* Customer Notes banner if available */}
+        {/* Customer Notes */}
         {customer.notes && (
           <div className="mt-5 p-3.5 bg-amber-50/60 border border-amber-200/60 rounded-xl text-xs text-amber-900 flex items-start space-x-2.5">
             <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <strong className="font-bold">Customer Notes / Preferences:</strong> {customer.notes}
+              <strong className="font-bold">Ghi chú khách hàng:</strong> {customer.notes}
             </div>
           </div>
         )}
@@ -455,30 +469,38 @@ export default function Customer360Page() {
         {/* Total Lifetime Spent */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Lifetime Revenue (LTV)</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Tổng Tiền Đã Mua (LTV)</span>
             <DollarSign className="w-4 h-4 text-[#253c68]" />
           </div>
           <div className="text-2xl font-black text-[#253c68] mt-2">
-            ${customer.totalSpent.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+            ${Number(customer.totalSpent).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
           </div>
-          <p className="text-xs text-slate-500 mt-1">Paid to date: ${customer.totalPaid.toLocaleString()}</p>
+          <p className="text-xs text-slate-500 mt-1">Tổng cộng: {customer.orderCount} đơn hàng</p>
+        </div>
+
+        {/* Gross Profit */}
+        <div className="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm card-hover bg-gradient-to-br from-white to-emerald-50/40">
+          <div className="flex items-center justify-between text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">Lợi Nhuận Gộp Đóng Góp</span>
+            <Award className="w-4 h-4 text-emerald-700" />
+          </div>
+          <div className="text-2xl font-black text-emerald-700 mt-2">
+            +${Number(customer.profit || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+          </div>
+          <p className="text-xs text-emerald-600 mt-1">Đóng góp lợi nhuận ròng</p>
         </div>
 
         {/* Total Orders & AOV */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Total Orders</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Đơn Hàng TB (AOV)</span>
             <ShoppingBag className="w-4 h-4 text-sky-600" />
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-2">{customer.orderCount} orders</div>
+          <div className="text-2xl font-black text-slate-900 mt-2">
+            ${Number(customer.aov || (customer.totalSpent / Math.max(1, customer.orderCount))).toFixed(0)}
+          </div>
           <p className="text-xs text-slate-500 mt-1">
-            Avg Order Value:{" "}
-            <strong className="text-slate-800">
-              $
-              {customer.orderCount > 0
-                ? (customer.totalSpent / customer.orderCount).toFixed(0)
-                : 0}
-            </strong>
+            Chu kỳ: <strong>{customer.cycleDays ? `${customer.cycleDays} ngày/đơn` : "Mua một lần"}</strong>
           </p>
         </div>
 
@@ -492,7 +514,7 @@ export default function Customer360Page() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              AR Balance
+              Công Nợ AR Còn Lại
             </span>
             <Receipt className={`w-4 h-4 ${customer.debtAmount > 0 ? "text-rose-600" : "text-emerald-600"}`} />
           </div>
@@ -504,28 +526,66 @@ export default function Customer360Page() {
             ${customer.debtAmount.toLocaleString()}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            {customer.debtAmount > 0 ? "SMS payment reminder recommended" : "Zero outstanding balance"}
+            {customer.debtAmount > 0 ? "Cần nhắc hẹn thu hồi công nợ" : "Đã thanh toán đầy đủ 100%"}
           </p>
         </div>
+      </div>
 
-        {/* Health & Churn Risk */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold uppercase tracking-wider">Account Health</span>
-            <ShieldAlert className="w-4 h-4 text-slate-600" />
+      {/* CHI TIẾT DOANH SỐ MUA HÀNG THEO TỪNG NĂM (2024 - 2025 - 2026) */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div className="flex items-center space-x-2.5 pb-4 border-b border-slate-100 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-[#253c68]/10 text-[#253c68] flex items-center justify-center">
+            <BarChart3 className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-black mt-2">
-            {customer.status === "ACTIVE" ? (
-              <span className="text-emerald-600">Stable</span>
-            ) : customer.status === "AT_RISK" ? (
-              <span className="text-rose-600">Churn Risk</span>
-            ) : (
-              <span className="text-slate-500">Inactive</span>
-            )}
+          <div>
+            <h3 className="font-bold text-slate-900 text-base">Thống Kê Khách Mua Hàng Qua Các Năm (Sheet Thực Tế)</h3>
+            <p className="text-xs text-slate-500">Chi tiết doanh số mua và số lượng đơn hàng năm 2024, 2025 và 2026</p>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Last order: {customer.lastOrderDate ? new Date(customer.lastOrderDate).toLocaleDateString("en-US") : "No orders recorded"}
-          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Năm 2024 */}
+          <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
+            <div className="text-xs font-bold text-slate-400 uppercase">Năm 2024</div>
+            <div className="text-xl font-black text-slate-800">
+              ${Number(customer.rev2024 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500">
+              {customer.orders2024 || 0} đơn hàng đã hoàn tất
+            </div>
+          </div>
+
+          {/* Năm 2025 */}
+          <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
+            <div className="text-xs font-bold text-slate-400 uppercase">Năm 2025</div>
+            <div className="text-xl font-black text-slate-800">
+              ${Number(customer.rev2025 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500">
+              {customer.orders2025 || 0} đơn hàng đã hoàn tất
+              {customer.growth25vs24 !== undefined && customer.growth25vs24 !== null && (
+                <span className={`ml-2 font-bold ${customer.growth25vs24 >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                  ({customer.growth25vs24 >= 0 ? "+" : ""}{(customer.growth25vs24 * 100).toFixed(1)}%)
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Năm 2026 */}
+          <div className="p-4 rounded-xl border border-[#253c68]/30 bg-blue-50/30 space-y-1">
+            <div className="text-xs font-bold text-[#253c68] uppercase">Năm 2026 (YTD)</div>
+            <div className="text-xl font-black text-[#253c68]">
+              ${Number(customer.rev2026 || 0).toLocaleString()}
+            </div>
+            <div className="text-xs text-slate-500">
+              {customer.orders2026 || 0} đơn hàng
+              {customer.growth26vs25 !== undefined && customer.growth26vs25 !== null && (
+                <span className={`ml-2 font-bold ${customer.growth26vs25 >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                  ({customer.growth26vs25 >= 0 ? "+" : ""}{(customer.growth26vs25 * 100).toFixed(1)}% so với 2025)
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -542,7 +602,7 @@ export default function Customer360Page() {
             }`}
           >
             <ShoppingBag className="w-4 h-4" />
-            <span>Order History ({customer.orders?.length || 0})</span>
+            <span>Lịch Sử Đơn Hàng & Sản Phẩm Đã Mua ({customer.orders?.length || 0})</span>
           </button>
 
           <button
@@ -554,7 +614,7 @@ export default function Customer360Page() {
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>Quotes ({customer.quotes?.length || 0})</span>
+            <span>Báo Giá PDF Kèm Ảnh ({customer.quotes?.length || 0})</span>
           </button>
 
           <button
@@ -566,7 +626,7 @@ export default function Customer360Page() {
             }`}
           >
             <MessageSquare className="w-4 h-4" />
-            <span>Quo SMS Log ({customer.smsLogs?.length || 0})</span>
+            <span>Tin Nhắn Quo SMS ({customer.smsLogs?.length || 0})</span>
           </button>
 
           <button
@@ -578,24 +638,24 @@ export default function Customer360Page() {
             }`}
           >
             <TrendingDown className="w-4 h-4 text-rose-500" />
-            <span>Purchasing Trends & Churn ({customer.churnSurveys?.length || 0})</span>
+            <span>Phân Tích Xu Hướng Mua & Churn ({customer.churnSurveys?.length || 0})</span>
           </button>
         </div>
 
         {/* Tab Contents */}
         <div className="p-6">
-          {/* TAB 1: ORDER HISTORY */}
+          {/* TAB 1: ORDER HISTORY & PURCHASED ITEMS */}
           {activeTab === "orders" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-800">Z-Brushes Order History</h3>
-                <span className="text-xs text-slate-400">All orders fulfilled from Houston Hub</span>
+                <h3 className="text-base font-bold text-slate-800">Chi Tiết Từng Đơn Hàng & Mặt Hàng Khách Mua</h3>
+                <span className="text-xs text-slate-400">Xuất kho từ JKIOCEAN Houston Hub</span>
               </div>
 
               {(!customer.orders || customer.orders.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <ShoppingBag className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">No orders recorded for this salon yet.</p>
+                  <p className="font-medium text-sm">Chưa có đơn hàng nào được ghi nhận cho salon này.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -606,9 +666,9 @@ export default function Customer360Page() {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                         <div className="flex items-center space-x-3">
-                          <span className="font-extrabold text-[#253c68] text-base">{order.orderNumber}</span>
+                          <span className="font-extrabold text-[#253c68] text-base font-mono">{order.orderNumber}</span>
                           <span className="text-xs text-slate-400">
-                            {new Date(order.createdAt).toLocaleDateString("en-US", {
+                            Ngày đặt: {new Date(order.createdAt).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "short",
                               day: "numeric",
@@ -627,43 +687,43 @@ export default function Customer360Page() {
                             }`}
                           >
                             {order.paymentStatus === "PAID"
-                              ? "PAID"
+                              ? "ĐÃ THANH TOÁN"
                               : order.paymentStatus === "PARTIAL"
-                              ? "PARTIAL"
-                              : "UNPAID"}
+                              ? "TRẢ 1 PHẦN"
+                              : "CHƯA THANH TOÁN"}
                           </span>
                           <span className="font-black text-slate-900 text-lg">
-                            ${order.totalAmount.toLocaleString()}
+                            ${Number(order.totalAmount).toLocaleString()}
                           </span>
                         </div>
                       </div>
 
-                      {/* Items list if available */}
+                      {/* Items list */}
                       {order.items && order.items.length > 0 && (
                         <div className="mt-3 pt-2 text-xs">
                           <div className="text-slate-400 font-bold uppercase text-[10px] mb-1.5">
-                            Products in order:
+                            Sản phẩm trong đơn hàng:
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {order.items.map((item: any) => (
                               <div
                                 key={item.id}
-                                className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100"
+                                className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-100"
                               >
                                 <div>
                                   <div className="font-bold text-slate-800">
-                                    {item.product?.name || item.productName || "Z-Brushes Professional"}
+                                    {item.product?.name || item.productName || "Sản phẩm Nail Chuyên Nghiệp"}
                                   </div>
-                                  <div className="text-slate-400 text-[11px]">
-                                    SKU: {item.product?.sku || item.sku || "N/A"}
+                                  <div className="text-slate-400 text-[11px] font-mono">
+                                    Mã SKU: {item.product?.sku || item.sku || "N/A"}
                                   </div>
                                 </div>
                                 <div className="text-right">
                                   <div className="font-semibold text-slate-700">
-                                    {item.quantity} pcs x ${item.unitPrice}
+                                    {item.quantity} cái x ${item.unitPrice}
                                   </div>
                                   <div className="font-bold text-[#253c68]">
-                                    ${(item.quantity * item.unitPrice).toLocaleString()}
+                                    ${Number(item.quantity * item.unitPrice).toLocaleString()}
                                   </div>
                                 </div>
                               </div>
@@ -674,7 +734,7 @@ export default function Customer360Page() {
 
                       {order.notes && (
                         <div className="mt-2 text-xs text-slate-500 italic">
-                          Delivery Notes: {order.notes}
+                          Ghi chú giao vận: {order.notes}
                         </div>
                       )}
                     </div>
@@ -684,67 +744,47 @@ export default function Customer360Page() {
             </div>
           )}
 
-          {/* TAB 2: QUOTATIONS */}
+          {/* TAB 2: QUOTES */}
           {activeTab === "quotes" && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-800">Quotes List</h3>
+                <div>
+                  <h3 className="text-base font-bold text-slate-800">Báo Giá Gửi Khách Hàng</h3>
+                  <p className="text-xs text-slate-500">Các bảng báo giá xuất mẫu kèm hình ảnh và đơn giá sỉ</p>
+                </div>
                 <Link
                   href={`/quotes/create?customerId=${customer.id}`}
                   className="flex items-center space-x-1.5 text-xs font-bold text-white bg-[#253c68] px-3.5 py-2 rounded-xl hover:bg-[#1a2c4e] transition"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Create New Quote</span>
+                  <span>Tạo Báo Giá Cho Khách</span>
                 </Link>
               </div>
 
               {(!customer.quotes || customer.quotes.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">No quotes created for this salon yet.</p>
+                  <p className="font-medium text-sm">Chưa có báo giá nào cho đối tác này.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {customer.quotes.map((quote: any) => (
+                  {customer.quotes.map((q: any) => (
                     <div
-                      key={quote.id}
-                      className="border border-slate-200 rounded-xl p-4 hover:border-slate-300 transition bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"
+                      key={q.id}
+                      className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition bg-white"
                     >
                       <div>
                         <div className="flex items-center space-x-2">
-                          <span className="font-extrabold text-[#253c68]">{quote.quoteNumber}</span>
-                          <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                              quote.status === "ACCEPTED"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : quote.status === "SENT"
-                                ? "bg-sky-100 text-sky-800"
-                                : "bg-slate-100 text-slate-700"
-                            }`}
-                          >
-                            {quote.status}
-                          </span>
+                          <span className="font-bold text-slate-800">{q.quoteNumber}</span>
+                          <span className="text-xs text-slate-400">• {new Date(q.createdAt).toLocaleDateString()}</span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">
-                          Valid until:{" "}
-                          <strong>
-                            {new Date(quote.validUntil).toLocaleDateString("en-US")}
-                          </strong>
-                          {quote.notes && ` • Notes: ${quote.notes}`}
-                        </p>
+                        <div className="text-xs text-slate-500 mt-1">{q.notes}</div>
                       </div>
-
-                      <div className="flex items-center space-x-4">
-                        <span className="text-lg font-black text-slate-900">
-                          ${quote.totalAmount.toLocaleString()}
+                      <div className="text-right">
+                        <div className="font-black text-slate-900">${q.totalAmount}</div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">
+                          {q.status}
                         </span>
-                        <Link
-                          href={`/quotes/${quote.id}`}
-                          className="p-2 rounded-lg text-slate-500 hover:text-[#253c68] hover:bg-slate-100 transition"
-                          title="View quote details"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </Link>
                       </div>
                     </div>
                   ))}
@@ -753,69 +793,40 @@ export default function Customer360Page() {
             </div>
           )}
 
-          {/* TAB 3: QUO SMS CONVERSATIONS */}
+          {/* TAB 3: SMS LOG */}
           {activeTab === "sms" && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-800">Direct Quo SMS Log</h3>
-                  <p className="text-xs text-slate-500">
-                    Houston Hub Hotline: <strong>+1 (713) 330-6165</strong>
-                  </p>
+                  <h3 className="text-base font-bold text-slate-800">Lịch Sử Quo SMS</h3>
+                  <p className="text-xs text-slate-500">Tin nhắn chăm sóc, báo giá và nhắc công nợ gửi tới {customer.phone}</p>
                 </div>
                 <button
                   onClick={() => setIsSmsModalOpen(true)}
                   className="flex items-center space-x-1.5 text-xs font-bold text-white bg-sky-600 px-3.5 py-2 rounded-xl hover:bg-sky-700 transition"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Compose New SMS</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Gửi Tin Nhắn Mới</span>
                 </button>
               </div>
 
-              {/* SMS Timeline */}
               {(!customer.smsLogs || customer.smsLogs.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="font-medium text-sm">No SMS messages sent yet.</p>
+                  <p className="font-medium text-sm">Chưa có tin nhắn nào được gửi.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {customer.smsLogs.map((log: any) => (
                     <div
                       key={log.id}
-                      className="p-4 rounded-xl border border-slate-200 bg-white shadow-sm flex items-start space-x-3.5"
+                      className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
-                        <MessageSquare className="w-4 h-4" />
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-sky-700">{log.type}</span>
+                        <span className="text-slate-400">{new Date(log.createdAt).toLocaleDateString()}</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-bold text-xs text-slate-800">
-                              To: {log.toPhone}
-                            </span>
-                            <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                log.type === "PROMOTION"
-                                  ? "bg-purple-100 text-purple-700"
-                                  : log.type === "BIRTHDAY"
-                                  ? "bg-amber-100 text-amber-800"
-                                  : log.type === "AR_REMINDER"
-                                  ? "bg-rose-100 text-rose-700"
-                                  : "bg-sky-100 text-sky-700"
-                              }`}
-                            >
-                              {log.type}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-slate-400">
-                            {new Date(log.createdAt).toLocaleString("en-US")}
-                          </span>
-                        </div>
-                        <p className="text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-sans">
-                          {log.content}
-                        </p>
-                      </div>
+                      <p className="text-xs text-slate-700 mt-1">{log.content}</p>
                     </div>
                   ))}
                 </div>
@@ -823,34 +834,21 @@ export default function Customer360Page() {
             </div>
           )}
 
-          {/* TAB 4: CHURN NOTES & RECOVERY PLAN */}
+          {/* TAB 4: CHURN TRENDS */}
           {activeTab === "churn" && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-800">
-                    Purchasing Trends & Churn Prevention
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    Record causes of decreased order volume and customer retention strategies
-                  </p>
+                  <h3 className="text-base font-bold text-slate-800">Phân Tích Xu Hướng Mua & Cảnh Báo Sụt Giảm</h3>
+                  <p className="text-xs text-slate-500">Theo dõi khách hàng có dấu hiệu giảm đơn hoặc tồn kho cao</p>
                 </div>
-                <button
-                  onClick={() => setIsChurnModalOpen(true)}
-                  className="flex items-center space-x-1.5 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3.5 py-2 rounded-xl hover:bg-rose-100 transition"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Record New Churn Entry</span>
-                </button>
               </div>
 
               {(!customer.churnSurveys || customer.churnSurveys.length === 0) ? (
                 <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-xl">
                   <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
-                  <p className="font-semibold text-slate-700 text-sm">Consistent ordering pattern!</p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    No abnormal volume drops detected in the past 3 months.
-                  </p>
+                  <p className="font-semibold text-slate-700 text-sm">Xu hướng mua hàng ổn định!</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Không phát hiện sụt giảm bất thường.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -860,33 +858,24 @@ export default function Customer360Page() {
                       className="border border-rose-200 bg-rose-50/20 rounded-xl p-4.5 space-y-2 shadow-sm"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-bold text-sm text-slate-800">
-                            Survey Month: {survey.analysisMonth}
-                          </span>
-                          <span className="font-black text-rose-600 bg-rose-100 px-2 py-0.5 rounded text-xs">
-                            {survey.dropPercent}% order volume
-                          </span>
-                        </div>
+                        <span className="font-black text-rose-600 bg-rose-100 px-2.5 py-0.5 rounded text-xs">
+                          {survey.dropPercent}% doanh số
+                        </span>
                         <span className="text-xs text-slate-400">
-                          Recorded by: <strong>{formatSalesRep(survey.saleRep)}</strong>
+                          Phụ trách: <strong>{survey.saleRep}</strong>
                         </span>
                       </div>
-
                       <div className="text-xs text-slate-700">
-                        <strong>Primary Reason: </strong>
-                        <span className="font-semibold text-rose-800">{survey.reason}</span>
+                        <strong>Lý do chính:</strong> {survey.reason}
                       </div>
-
                       {survey.saleNotes && (
                         <div className="text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200">
-                          <strong>Salon Feedback:</strong> {survey.saleNotes}
+                          <strong>Ghi chú sale:</strong> {survey.saleNotes}
                         </div>
                       )}
-
                       {survey.actionPlan && (
                         <div className="text-xs text-emerald-800 bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
-                          <strong>Retention Action Plan:</strong> {survey.actionPlan}
+                          <strong>Kế hoạch hành động:</strong> {survey.actionPlan}
                         </div>
                       )}
                     </div>
@@ -898,294 +887,181 @@ export default function Customer360Page() {
         </div>
       </div>
 
-      {/* MODAL: EDIT CUSTOMER PROFILE */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
-              <h3 className="text-lg font-bold text-[#253c68]">Edit Salon Profile</h3>
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
-              >
+      {/* Quo SMS Modal */}
+      {isSmsModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center space-x-2">
+                <MessageSquare className="w-5 h-5 text-sky-600" />
+                <h3 className="font-extrabold text-slate-900 text-base">Gửi Tin Nhắn Quo SMS</h3>
+              </div>
+              <button onClick={() => setIsSmsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Business / Salon Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={editFormData.businessName}
-                    onChange={(e) => setEditFormData({ ...editFormData, businessName: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
+            <div>
+              <p className="text-xs text-slate-500">Người nhận:</p>
+              <p className="font-bold text-slate-800 text-sm">
+                {customer.contactPerson} ({customer.businessName}) -{" "}
+                <span className="font-mono text-sky-700">{customer.phone}</span>
+              </p>
+            </div>
 
+            {/* Quick Templates */}
+            <div>
+              <span className="text-xs font-bold text-slate-600">Mẫu tin nhắn nhanh:</span>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                <button
+                  type="button"
+                  onClick={() => applyTemplate("PROMOTION")}
+                  className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 hover:bg-slate-200 text-slate-700"
+                >
+                  Ưu Đãi Báo Giá
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate("AR_REMINDER")}
+                  className="px-2.5 py-1 rounded-lg text-xs bg-rose-50 hover:bg-rose-100 text-rose-700"
+                >
+                  Nhắc Công Nợ
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate("FOLLOW_UP")}
+                  className="px-2.5 py-1 rounded-lg text-xs bg-sky-50 hover:bg-sky-100 text-sky-700"
+                >
+                  Thăm Hỏi
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Nội dung tin nhắn:</label>
+              <textarea
+                rows={4}
+                value={smsData.content}
+                onChange={(e) => setSmsData({ ...smsData, content: e.target.value })}
+                className="w-full p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-600"
+              />
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setIsSmsModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={handleSendSms}
+                disabled={isSubmitting}
+                className="px-5 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white hover:bg-sky-700 shadow-md shadow-sky-600/20"
+              >
+                {isSubmitting ? "Đang gửi..." : "Gửi SMS Ngay"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Customer Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center space-x-2">
+                <Edit className="w-5 h-5 text-[#253c68]" />
+                <h3 className="font-extrabold text-slate-900 text-base">Chỉnh Sửa Thông Tin Khách Hàng</h3>
+              </div>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Tên Tiệm / Supply Store *</label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.businessName}
+                  onChange={(e) => setEditFormData({ ...editFormData, businessName: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Contact Person</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Người Phụ Trách (Attn) *</label>
                   <input
                     type="text"
                     required
                     value={editFormData.contactPerson}
                     onChange={(e) => setEditFormData({ ...editFormData, contactPerson: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number (+1)</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Số Điện Thoại *</label>
                   <input
-                    type="tel"
+                    type="text"
                     required
                     value={editFormData.phone}
                     onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] font-mono"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:border-[#253c68]"
                   />
                 </div>
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
-                  <input
-                    type="email"
-                    value={editFormData.email}
-                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Birthday</label>
-                  <input
-                    type="date"
-                    value={editFormData.birthday}
-                    onChange={(e) => setEditFormData({ ...editFormData, birthday: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Address</label>
-                  <input
-                    type="text"
-                    value={editFormData.address}
-                    onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Thành Phố</label>
                   <input
                     type="text"
                     value={editFormData.city}
                     onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">State</label>
-                  <select
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Tiểu Bang (State)</label>
+                  <input
+                    type="text"
                     value={editFormData.state}
                     onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })}
-                    className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  >
-                    <option value="TX">TX (Texas)</option>
-                    <option value="CA">CA (California)</option>
-                    <option value="FL">FL (Florida)</option>
-                    <option value="GA">GA (Georgia)</option>
-                    <option value="OK">OK (Oklahoma)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Customer Tier</label>
-                  <select
-                    value={editFormData.tier}
-                    onChange={(e) => setEditFormData({ ...editFormData, tier: e.target.value as any })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68] font-bold text-[#253c68]"
-                  >
-                    <option value="STANDARD">Standard</option>
-                    <option value="WHOLESALE">Wholesale</option>
-                    <option value="VIP">VIP</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Status</label>
-                  <select
-                    value={editFormData.status}
-                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as any })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  >
-                    <option value="ACTIVE">Active</option>
-                    <option value="AT_RISK">At Risk</option>
-                    <option value="INACTIVE">Inactive</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Assigned Sales Rep</label>
-                  <select
-                    value={editFormData.assignedSale}
-                    onChange={(e) => setEditFormData({ ...editFormData, assignedSale: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                  >
-                    <option value="johnny">Johnny Tran</option>
-                    <option value="hanna">Hanna Nguyen</option>
-                    <option value="alice">Alice Nguyen</option>
-                    <option value="tan">Tan Ho</option>
-                    <option value="kate">Kate</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Notes / Preferences</label>
-                  <textarea
-                    rows={2}
-                    value={editFormData.notes}
-                    onChange={(e) => setEditFormData({ ...editFormData, notes: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Ghi Chú</label>
+                <textarea
+                  rows={2}
+                  value={editFormData.notes}
+                  onChange={(e) => setEditFormData({ ...editFormData, notes: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#253c68]"
+                />
+              </div>
+
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md btn-press disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-[#253c68] text-white hover:bg-[#1a2c4e] shadow-md shadow-[#253c68]/20"
                 >
-                  {isSubmitting ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: SEND QUO SMS */}
-      {isSmsModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#253c68] text-white">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
-                  <MessageSquare className="w-5 h-5 text-sky-300" />
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold">Send Quo SMS to {customer.contactPerson}</h3>
-                  <p className="text-xs text-sky-200">{customer.businessName} • {customer.phone}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsSmsModalOpen(false)}
-                className="p-1.5 text-white/70 hover:text-white rounded-lg hover:bg-white/10"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSendSms} className="p-5 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                  Select message template:
-                </label>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => applyTemplate("PROMOTION")}
-                    className={`p-2 rounded-xl border text-left transition ${
-                      smsData.type === "PROMOTION"
-                        ? "border-[#253c68] bg-[#253c68]/5 text-[#253c68] font-bold"
-                        : "border-slate-200 hover:bg-slate-50 text-slate-600"
-                    }`}
-                  >
-                    🎉 Z-Brushes Promotion
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => applyTemplate("FOLLOW_UP")}
-                    className={`p-2 rounded-xl border text-left transition ${
-                      smsData.type === "FOLLOW_UP"
-                        ? "border-[#253c68] bg-[#253c68]/5 text-[#253c68] font-bold"
-                        : "border-slate-200 hover:bg-slate-50 text-slate-600"
-                    }`}
-                  >
-                    💬 Brush Experience Follow-up
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => applyTemplate("AR_REMINDER")}
-                    className={`p-2 rounded-xl border text-left transition ${
-                      smsData.type === "AR_REMINDER"
-                        ? "border-[#253c68] bg-[#253c68]/5 text-[#253c68] font-bold"
-                        : "border-slate-200 hover:bg-slate-50 text-slate-600"
-                    }`}
-                  >
-                    💳 Payment / AR Reminder
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => applyTemplate("BIRTHDAY")}
-                    className={`p-2 rounded-xl border text-left transition ${
-                      smsData.type === "BIRTHDAY"
-                        ? "border-[#253c68] bg-[#253c68]/5 text-[#253c68] font-bold"
-                        : "border-slate-200 hover:bg-slate-50 text-slate-600"
-                    }`}
-                  >
-                    🎂 Birthday Greeting
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Message Content
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={smsData.content}
-                  onChange={(e) => setSmsData({ ...smsData, content: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-[#253c68]"
-                />
-                <div className="flex items-center justify-between text-[11px] text-slate-400 mt-1">
-                  <span>Characters: {smsData.content.length}</span>
-                  <span>Recipient: {customer.phone}</span>
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setIsSmsModalOpen(false)}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center space-x-2 px-5 py-2 text-sm font-bold text-white bg-[#253c68] hover:bg-[#1a2c4e] rounded-xl shadow-md btn-press disabled:opacity-50"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>{isSubmitting ? "Sending..." : "Send Quo SMS Now"}</span>
+                  {isSubmitting ? "Đang lưu..." : "Lưu Thay Đổi"}
                 </button>
               </div>
             </form>

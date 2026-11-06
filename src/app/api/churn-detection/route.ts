@@ -1,140 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { DipReason, CustomerStatus } from "@prisma/client";
+import rawCustomers from "../../../../data/customers_extracted.json";
 
-// In-memory mock storage fallback when PostgreSQL is offline in development
-let mockChurnState: any[] = [
-  {
-    id: "churn-mock-001",
-    customerId: "cus-002",
-    analysisMonth: "2026-10",
-    customer: {
-      id: "cus-002",
-      businessName: "Venetian Nail Spa - Katy",
-      contactPerson: "Jennifer Le",
-      phone: "+12815550143",
-      email: "jenny@venetianspa.com",
-      city: "Katy",
-      state: "TX",
-      assignedSale: "Kevin Tran",
-      status: CustomerStatus.AT_RISK,
-    },
-    previousSpend: 5400.0,
-    currentSpend: 1200.0,
-    dropPercent: -77.8,
-    dropAmount: 4200.0,
-    reason: DipReason.HIGH_INVENTORY_REMAINING,
-    saleNotes: "Salon owner shared: Kolinsky 60-brush batch from last month is durable, currently still have ~25 unopened brushes in stock.",
-    actionPlan: "Temporarily pause Kolinsky brush pitching; pivot to accessory lines: specialized Brush Cleaner liquid and Liquid Monomer.",
-    saleRep: "Kevin Tran",
-    isResolved: false,
-    updatedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-  },
-  {
-    id: "churn-mock-002",
-    customerId: "cus-006",
-    analysisMonth: "2026-10",
-    customer: {
-      id: "cus-006",
-      businessName: "Milano Nail Spa Houston Heights",
-      contactPerson: "Tony Hoang",
-      phone: "+17135550133",
-      email: "tony@milanonails.com",
-      city: "Houston",
-      state: "TX",
-      assignedSale: "Johnny Tran",
-      status: CustomerStatus.AT_RISK,
-    },
-    previousSpend: 4250.0,
-    currentSpend: 0.0,
-    dropPercent: -100.0,
-    dropAmount: 4250.0,
-    reason: DipReason.PRICE_COMPETITION,
-    saleNotes: "Targeted by local competitor offering knockoff brushes at 15% lower price. Salon is currently trial-testing competitor product.",
-    actionPlan: "Sent Quo SMS follow-up and delivered Z-Brush Master set directly to salon for live bristle durability demo; offered buy-30-get-5-free promo.",
-    saleRep: "Johnny Tran",
-    isResolved: false,
-    updatedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-  },
-  {
-    id: "churn-mock-003",
-    customerId: "cus-007",
-    analysisMonth: "2026-10",
-    customer: {
-      id: "cus-007",
-      businessName: "Nails of America - Sugar Land",
-      contactPerson: "Lisa Tran",
-      phone: "+12815550181",
-      email: "lisa@noasugarland.com",
-      city: "Sugar Land",
-      state: "TX",
-      assignedSale: "Johnny Tran",
-      status: CustomerStatus.AT_RISK,
-    },
-    previousSpend: 3800.0,
-    currentSpend: 1450.0,
-    dropPercent: -61.8,
-    dropAmount: 2350.0,
-    reason: DipReason.PRODUCT_QUALITY_FEEDBACK,
-    saleNotes: "Two senior acrylic technicians noted previous brush handle felt lighter than usual and bristles were slightly stiffer than standard.",
-    actionPlan: "Complimentary exchange of 5 brushes with ultra-soft Z-Brush Series II; technicians were very pleased. Salon planning replenishment next week.",
-    saleRep: "Johnny Tran",
-    isResolved: true,
-    updatedAt: new Date(Date.now() - 1 * 86400000).toISOString(),
-  },
-  {
-    id: "churn-mock-004",
-    customerId: "cus-008",
-    analysisMonth: "2026-10",
-    customer: {
-      id: "cus-008",
-      businessName: "Diamond Nail Bar Dallas",
-      contactPerson: "Michael Hoang",
-      phone: "+12145550177",
-      email: "michael@diamondnailbar.com",
-      city: "Dallas",
-      state: "TX",
-      assignedSale: "Alex Dang",
-      status: CustomerStatus.AT_RISK,
-    },
-    previousSpend: 3100.0,
-    currentSpend: 0.0,
-    dropPercent: -100.0,
-    dropAmount: 3100.0,
-    reason: DipReason.STORE_TEMPORARILY_CLOSED,
-    saleNotes: "Salon temporarily closed for floor and table remodeling for 3 weeks.",
-    actionPlan: "Scheduled congratulations follow-up for Grand Reopening on Nov 5th with special VIP gift package for 20 salon nail technicians.",
-    saleRep: "Alex Dang",
-    isResolved: false,
-    updatedAt: new Date(Date.now() - 4 * 86400000).toISOString(),
-  },
-  {
-    id: "churn-mock-005",
-    customerId: "cus-009",
-    analysisMonth: "2026-10",
-    customer: {
-      id: "cus-009",
-      businessName: "Queen Nails Austin Downtown",
-      contactPerson: "Amanda Vo",
-      phone: "+15125550199",
-      email: "amanda@queennails.com",
-      city: "Austin",
-      state: "TX",
-      assignedSale: "Kevin Tran",
-      status: CustomerStatus.ACTIVE,
-    },
-    previousSpend: 2900.0,
-    currentSpend: 1300.0,
-    dropPercent: -55.2,
-    dropAmount: 1600.0,
-    reason: DipReason.OTHER,
-    saleNotes: "Salon owner on 4-week family vacation; interim manager only placing small restock for essentials.",
-    actionPlan: "Sent Quo SMS welcoming owner back to the US, preparing holiday season bulk acrylic powder & brush quote.",
-    saleRep: "Kevin Tran",
-    isResolved: true,
-    updatedAt: new Date(Date.now() - 5 * 86400000).toISOString(),
-  },
-];
+// In-memory mock storage fallback when PostgreSQL is offline, initialized directly from authentic sheet data
+const initialChurnState: any[] = [];
+(rawCustomers as any[]).forEach((c) => {
+  if (c.churnSurveys && c.churnSurveys.length > 0) {
+    c.churnSurveys.forEach((s: any) => {
+      initialChurnState.push({
+        ...s,
+        customerId: c.id,
+        customer: {
+          id: c.id,
+          businessName: c.businessName,
+          contactPerson: c.contactPerson,
+          phone: c.phone,
+          email: c.email,
+          city: c.city,
+          state: c.state,
+          assignedSale: c.assignedSale,
+          status: c.status,
+        },
+        previousSpend: c.rev2025 || 0,
+        currentSpend: c.rev2026 || 0,
+        dropAmount: Math.max(0, (c.rev2025 || 0) - (c.rev2026 || 0)),
+        updatedAt: s.createdAt,
+      });
+    });
+  }
+});
+
+let mockChurnState: any[] = initialChurnState;
 
 export async function GET() {
   try {

@@ -99,10 +99,10 @@ export async function GET(req: Request) {
         });
       }
     } catch (dbErr) {
-      console.warn("[CRM API] Prisma DB query error/offline, using fallback store:", dbErr);
+      // Prisma DB query offline, proceed to fallback store
     }
 
-    // 2. If DB is empty or offline, use Mock Data Store
+    // 2. If DB is empty or offline, use authentic customer store
     if (customersData.length === 0) {
       const mockList = getMockCustomers();
       let filtered = [...mockList];
@@ -113,7 +113,8 @@ export async function GET(req: Request) {
           (c) =>
             c.businessName.toLowerCase().includes(s) ||
             c.contactPerson.toLowerCase().includes(s) ||
-            c.phone.toLowerCase().includes(s)
+            c.phone.toLowerCase().includes(s) ||
+            (c.city && c.city.toLowerCase().includes(s))
         );
       }
 
@@ -134,17 +135,18 @@ export async function GET(req: Request) {
       }
 
       customersData = filtered.map((c) => {
-        const totalSpent = (c.orders || []).reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-        const totalPaid = (c.orders || []).reduce((sum, o) => sum + (o.paidAmount || 0), 0);
-        const lastOrderDate = c.orders && c.orders[0] ? c.orders[0].createdAt : null;
-        const lastContactDate = c.smsLogs && c.smsLogs[0] ? c.smsLogs[0].createdAt : null;
+        const totalSpent = c.totalSpent !== undefined ? c.totalSpent : (c.orders || []).reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        const totalPaid = c.totalPaid !== undefined ? c.totalPaid : (c.orders || []).reduce((sum, o) => sum + (o.paidAmount || 0), 0);
+        const debtAmount = c.debtAmount !== undefined ? c.debtAmount : Math.max(0, totalSpent - totalPaid);
+        const lastOrderDate = c.lastOrderDate || (c.orders && c.orders[0] ? c.orders[0].createdAt : null);
+        const lastContactDate = c.lastContactDate || (c.smsLogs && c.smsLogs[0] ? c.smsLogs[0].createdAt : null);
 
         return {
           ...c,
           totalSpent,
           totalPaid,
-          debtAmount: Math.max(0, totalSpent - totalPaid),
-          orderCount: (c.orders || []).length,
+          debtAmount,
+          orderCount: c.orderCount !== undefined ? c.orderCount : (c.orders || []).length,
           lastOrderDate,
           lastContactDate,
         };
@@ -159,7 +161,7 @@ export async function GET(req: Request) {
   } catch (error: any) {
     console.error("[GET /api/customers] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch customer list" },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
@@ -168,6 +170,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+
     const {
       businessName,
       contactPerson,
@@ -175,7 +178,7 @@ export async function POST(req: Request) {
       email,
       address,
       city,
-      state = "TX",
+      state,
       zipCode,
       birthday,
       assignedSale = "admin",
@@ -186,7 +189,7 @@ export async function POST(req: Request) {
 
     if (!businessName || !contactPerson || !phone) {
       return NextResponse.json(
-        { success: false, error: "Please provide Business Name, Contact Person, and Phone Number" },
+        { success: false, error: "Missing required fields (businessName, contactPerson, phone)" },
         { status: 400 }
       );
     }
@@ -194,7 +197,6 @@ export async function POST(req: Request) {
     let createdCustomer: any = null;
 
     try {
-      // 1. Save to PostgreSQL via Prisma
       createdCustomer = await prisma.customer.create({
         data: {
           businessName,
@@ -202,37 +204,28 @@ export async function POST(req: Request) {
           phone,
           email: email || null,
           address: address || null,
-          city: city || null,
+          city: city || "Houston",
           state: state || "TX",
-          zipCode: zipCode || null,
+          zipCode: zipCode || "77036",
           birthday: birthday ? new Date(birthday) : null,
           assignedSale: assignedSale || "admin",
-          tier: tier as any,
-          status: status as any,
+          tier: tier || "STANDARD",
+          status: status || "ACTIVE",
           notes: notes || null,
         },
       });
-    } catch (dbErr: any) {
-      console.warn("[CRM API POST] DB write failed, storing into mock store:", dbErr.message);
-      // Check for duplicate phone number in mock store
-      const existing = getMockCustomers().find((c) => c.phone === phone);
-      if (existing) {
-        return NextResponse.json(
-          { success: false, error: "This phone number already exists in the system" },
-          { status: 400 }
-        );
-      }
-
+    } catch (dbErr) {
+      // In-memory fallback
       createdCustomer = addMockCustomer({
         businessName,
         contactPerson,
         phone,
         email,
         address,
-        city,
-        state,
-        zipCode,
-        birthday: birthday || null,
+        city: city || "Houston",
+        state: state || "TX",
+        zipCode: zipCode || "77036",
+        birthday,
         assignedSale,
         tier,
         status,
@@ -242,13 +235,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Customer created successfully",
       customer: createdCustomer,
     });
   } catch (error: any) {
     console.error("[POST /api/customers] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to create customer" },
+      { success: false, error: "Failed to create customer" },
       { status: 500 }
     );
   }

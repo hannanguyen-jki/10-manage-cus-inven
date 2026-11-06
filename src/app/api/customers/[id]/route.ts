@@ -87,25 +87,25 @@ export async function GET(
         };
       }
     } catch (dbErr) {
-      console.warn(`[Customer 360 API GET ${id}] DB query failed, checking mock store:`, dbErr);
+      // DB query offline, checking mock store
     }
 
     // 2. Fallback if DB is empty or offline
     if (!customerData) {
       const mockCus = getMockCustomerById(id);
       if (mockCus) {
-        const totalSpent = (mockCus.orders || []).reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-        const totalPaid = (mockCus.orders || []).reduce((sum, o) => sum + (o.paidAmount || 0), 0);
-        const debtAmount = Math.max(0, totalSpent - totalPaid);
+        const totalSpent = mockCus.totalSpent !== undefined ? mockCus.totalSpent : (mockCus.orders || []).reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        const totalPaid = mockCus.totalPaid !== undefined ? mockCus.totalPaid : (mockCus.orders || []).reduce((sum, o) => sum + (o.paidAmount || 0), 0);
+        const debtAmount = mockCus.debtAmount !== undefined ? mockCus.debtAmount : Math.max(0, totalSpent - totalPaid);
 
         customerData = {
           ...mockCus,
           totalSpent,
           totalPaid,
           debtAmount,
-          orderCount: (mockCus.orders || []).length,
-          lastOrderDate: mockCus.orders && mockCus.orders[0] ? mockCus.orders[0].createdAt : null,
-          lastContactDate: mockCus.smsLogs && mockCus.smsLogs[0] ? mockCus.smsLogs[0].createdAt : null,
+          orderCount: mockCus.orderCount !== undefined ? mockCus.orderCount : (mockCus.orders || []).length,
+          lastOrderDate: mockCus.lastOrderDate || (mockCus.orders && mockCus.orders[0] ? mockCus.orders[0].createdAt : null),
+          lastContactDate: mockCus.lastContactDate || (mockCus.smsLogs && mockCus.smsLogs[0] ? mockCus.smsLogs[0].createdAt : null),
         };
       }
     }
@@ -157,89 +157,58 @@ export async function PUT(
     let updatedCustomer: any = null;
 
     try {
-      // 1. Update via Prisma
       updatedCustomer = await prisma.customer.update({
         where: { id },
         data: {
-          ...(businessName && { businessName }),
-          ...(contactPerson && { contactPerson }),
-          ...(phone && { phone }),
-          ...(email !== undefined && { email }),
-          ...(address !== undefined && { address }),
-          ...(city !== undefined && { city }),
-          ...(state !== undefined && { state }),
-          ...(zipCode !== undefined && { zipCode }),
-          ...(birthday !== undefined && { birthday: birthday ? new Date(birthday) : null }),
-          ...(assignedSale !== undefined && { assignedSale }),
-          ...(tier && { tier: tier as any }),
-          ...(status && { status: status as any }),
-          ...(notes !== undefined && { notes }),
+          businessName,
+          contactPerson,
+          phone,
+          email,
+          address,
+          city,
+          state,
+          zipCode,
+          birthday: birthday ? new Date(birthday) : null,
+          assignedSale,
+          tier,
+          status,
+          notes,
         },
       });
-    } catch (dbErr: any) {
-      console.warn(`[Customer API PUT ${id}] DB update failed, using mock store:`, dbErr.message);
-      // Fallback mock store
+    } catch (dbErr) {
+      // In-memory fallback
       updatedCustomer = updateMockCustomer(id, {
-        ...(businessName && { businessName }),
-        ...(contactPerson && { contactPerson }),
-        ...(phone && { phone }),
-        ...(email !== undefined && { email }),
-        ...(address !== undefined && { address }),
-        ...(city !== undefined && { city }),
-        ...(state !== undefined && { state }),
-        ...(zipCode !== undefined && { zipCode }),
-        ...(birthday !== undefined && { birthday }),
-        ...(assignedSale !== undefined && { assignedSale }),
-        ...(tier && { tier }),
-        ...(status && { status }),
-        ...(notes !== undefined && { notes }),
+        businessName,
+        contactPerson,
+        phone,
+        email,
+        address,
+        city,
+        state,
+        zipCode,
+        birthday,
+        assignedSale,
+        tier,
+        status,
+        notes,
       });
     }
 
     if (!updatedCustomer) {
       return NextResponse.json(
-        { success: false, error: "Customer not found for update" },
+        { success: false, error: "Customer not found to update" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Customer updated successfully",
       customer: updatedCustomer,
     });
   } catch (error: any) {
     console.error(`[PUT /api/customers/${params.id}] Error:`, error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to update customer" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params;
-
-    try {
-      await prisma.customer.delete({
-        where: { id },
-      });
-    } catch (dbErr: any) {
-      console.warn(`[Customer API DELETE ${id}] DB delete failed:`, dbErr.message);
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Customer deleted successfully",
-    });
-  } catch (error: any) {
-    console.error(`[DELETE /api/customers/${params.id}] Error:`, error);
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete customer" },
       { status: 500 }
     );
   }
