@@ -7,13 +7,13 @@ const prisma = new PrismaClient();
 async function main() {
   console.log(">> Seeding JKIOCEAN Database with Authentic Products and Real B2B Customers from Sheet...");
 
-  // 1. Seed Products from data/products_extracted.json (extracted from Mix 06.10. 2026.docx)
+  // 1. Read Authentic Products from data/products_extracted.json (extracted from Mix 06.10. 2026.docx)
   const productsFile = path.join(process.cwd(), "data", "products_extracted.json");
   let productsToSeed: any[] = [];
 
   if (fs.existsSync(productsFile)) {
     try {
-      const raw = fs.readFileSync(productsFile, "utf-8");
+      const raw = fs.readFileSync(productsFile, "utf-8").replace(/^\uFEFF/, "");
       productsToSeed = JSON.parse(raw);
       console.log(`Loaded ${productsToSeed.length} extracted products from JSON.`);
     } catch (err) {
@@ -21,6 +21,64 @@ async function main() {
     }
   }
 
+  // 2. Read Authentic Customers from data/customers_extracted.json (extracted from CUSTOMER FOR SALE.xlsx)
+  const customersFile = path.join(process.cwd(), "data", "customers_extracted.json");
+  let customersToSeed: any[] = [];
+
+  if (fs.existsSync(customersFile)) {
+    try {
+      const raw = fs.readFileSync(customersFile, "utf-8").replace(/^\uFEFF/, "");
+      customersToSeed = JSON.parse(raw);
+      console.log(`Loaded ${customersToSeed.length} real B2B customers from JSON.`);
+    } catch (err) {
+      console.warn("Could not read customers_extracted.json:", err);
+    }
+  }
+
+  // 3. PURGE ALL OLD TEST / MOCK DATA
+  console.log(">> Purging old test/mock data...");
+
+  // Remove test B2B leads (phones containing 555 or dummy leads)
+  const deletedLeads = await prisma.b2BLead.deleteMany({
+    where: {
+      OR: [
+        { phone: { contains: "555" } },
+        { phone: { startsWith: "+1" } },
+      ],
+    },
+  });
+  console.log(`>> Removed ${deletedLeads.count} mock/test leads.`);
+
+  // Remove test customers not in the authentic list (32 customers from sheet)
+  const authenticPhones = customersToSeed.map((c) => c.phone).filter(Boolean);
+  if (authenticPhones.length > 0) {
+    const deletedCust = await prisma.customer.deleteMany({
+      where: {
+        phone: { notIn: authenticPhones },
+      },
+    });
+    console.log(`>> Removed ${deletedCust.count} old mock/test customers (and cascaded dummy orders/quotes/surveys).`);
+  }
+
+  // Remove test products not in the authentic list (345 products)
+  const authenticSkus = productsToSeed.map((p) => p.sku).filter(Boolean);
+  if (authenticSkus.length > 0) {
+    const testProducts = await prisma.product.findMany({
+      where: { sku: { notIn: authenticSkus } },
+      select: { id: true, sku: true },
+    });
+
+    if (testProducts.length > 0) {
+      const testProdIds = testProducts.map((p) => p.id);
+      await prisma.orderItem.deleteMany({ where: { productId: { in: testProdIds } } });
+      await prisma.quoteItem.deleteMany({ where: { productId: { in: testProdIds } } });
+      await prisma.stockMovement.deleteMany({ where: { productId: { in: testProdIds } } });
+      const deletedProds = await prisma.product.deleteMany({ where: { id: { in: testProdIds } } });
+      console.log(`>> Removed ${deletedProds.count} old mock/test products.`);
+    }
+  }
+
+  // 4. Upsert Authentic Products
   for (const p of productsToSeed) {
     await prisma.product.upsert({
       where: { sku: p.sku },
@@ -49,23 +107,12 @@ async function main() {
       },
     });
   }
-  console.log(`>> Successfully seeded ${productsToSeed.length} products!`);
+  console.log(`>> Successfully seeded ${productsToSeed.length} authentic products!`);
 
-  // 2. Seed B2B Customers from data/customers_extracted.json (extracted from CUSTOMER FOR SALE.xlsx)
-  const customersFile = path.join(process.cwd(), "data", "customers_extracted.json");
-  let customersToSeed: any[] = [];
-
-  if (fs.existsSync(customersFile)) {
-    try {
-      const raw = fs.readFileSync(customersFile, "utf-8").replace(/^\uFEFF/, "");
-      customersToSeed = JSON.parse(raw);
-      console.log(`Loaded ${customersToSeed.length} real B2B customers from JSON.`);
-    } catch (err) {
-      console.warn("Could not read customers_extracted.json:", err);
-    }
-  }
-
-  const firstProduct = await prisma.product.findFirst();
+  // 5. Upsert Authentic Customers & Authentic Orders/Surveys
+  const firstProduct = await prisma.product.findFirst({
+    where: { sku: { in: authenticSkus } },
+  });
 
   for (const c of customersToSeed) {
     const cust = await prisma.customer.upsert({
@@ -140,18 +187,26 @@ async function main() {
     // Seed Churn Surveys if any
     if (c.churnSurveys && c.churnSurveys.length > 0) {
       for (const survey of c.churnSurveys) {
-        await prisma.churnSurvey.create({
-          data: {
+        const existing = await prisma.churnSurvey.findFirst({
+          where: {
             customerId: cust.id,
             analysisMonth: survey.analysisMonth || "2026-10",
-            dropPercent: survey.dropPercent || -40.0,
-            reason: (survey.reason as DipReason) || DipReason.HIGH_INVENTORY_REMAINING,
-            saleNotes: survey.saleNotes || null,
-            actionPlan: survey.actionPlan || null,
-            saleRep: survey.saleRep || "Johnny Tran",
-            isResolved: false,
           },
         });
+        if (!existing) {
+          await prisma.churnSurvey.create({
+            data: {
+              customerId: cust.id,
+              analysisMonth: survey.analysisMonth || "2026-10",
+              dropPercent: survey.dropPercent || -40.0,
+              reason: (survey.reason as DipReason) || DipReason.HIGH_INVENTORY_REMAINING,
+              saleNotes: survey.saleNotes || null,
+              actionPlan: survey.actionPlan || null,
+              saleRep: survey.saleRep || "Johnny Tran",
+              isResolved: false,
+            },
+          });
+        }
       }
     }
   }
