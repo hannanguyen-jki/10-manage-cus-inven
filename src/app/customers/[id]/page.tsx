@@ -88,11 +88,11 @@ export default function CustomerDetailPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.show(status === "PAID" ? "Đã ghi nhận: khách đã trả" : "Đã chuyển về chưa trả");
+        toast.show(status === "PAID" ? "Marked as paid" : "Marked as unpaid");
         load();
-      } else toast.show(data.error || "Không cập nhật được", "error");
+      } else toast.show(data.error || "Could not update", "error");
     } catch {
-      toast.show("Lỗi kết nối", "error");
+      toast.show("Connection error", "error");
     } finally {
       setBusy(null);
     }
@@ -112,10 +112,10 @@ export default function CustomerDetailPage() {
       <div className="card max-w-lg mx-auto mt-10">
         <EmptyState
           icon={UserX}
-          title="Không tìm thấy khách này"
+          title="Customer not found"
           action={
             <Link href="/customers" className="btn-primary">
-              <ArrowLeft className="w-4 h-4" /> Về danh sách
+              <ArrowLeft className="w-4 h-4" /> Back to list
             </Link>
           }
         />
@@ -129,12 +129,12 @@ export default function CustomerDetailPage() {
   const status = STATUS_META[c.status] || STATUS_META.ACTIVE;
 
   const info = [
-    { icon: UserRound, label: "Người liên hệ", value: c.contactPerson },
-    { icon: Phone, label: "Điện thoại", value: c.phone, href: `tel:${c.phone}` },
+    { icon: UserRound, label: "Contact person", value: c.contactPerson },
+    { icon: Phone, label: "Phone", value: c.phone, href: `tel:${c.phone}` },
     { icon: Mail, label: "Email", value: c.email, href: c.email ? `mailto:${c.email}` : undefined },
-    { icon: MapPin, label: "Địa chỉ", value: [c.address, c.city, c.state, c.zipCode].filter(Boolean).join(", ") },
-    { icon: Cake, label: "Sinh nhật", value: c.birthday ? formatDate(c.birthday) : null },
-    { icon: UserRound, label: "Nhân viên phụ trách", value: c.assignedSale },
+    { icon: MapPin, label: "Address", value: [c.address, c.city, c.state, c.zipCode].filter(Boolean).join(", ") },
+    { icon: Cake, label: "Birthday", value: c.birthday ? formatDate(c.birthday) : null },
+    { icon: UserRound, label: "Sales rep", value: c.assignedSale },
   ];
 
   return (
@@ -142,7 +142,7 @@ export default function CustomerDetailPage() {
       {toast.node}
 
       <Link href="/customers" className="inline-flex items-center gap-2 text-sm font-semibold text-ink-500 hover:text-brand-600 group">
-        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Khách hàng
+        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Customers
       </Link>
 
       {/* Profile hero */}
@@ -165,10 +165,10 @@ export default function CustomerDetailPage() {
             </div>
 
             <div className="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap">
-              <QuickAction href={`tel:${c.phone}`} icon={Phone} label="Gọi" />
-              <QuickAction onClick={() => setSmsTpl(c.payStatus === "OWING" ? "AR_REMINDER" : "FOLLOW_UP")} icon={MessageSquare} label="Nhắn tin" />
-              <QuickAction href={`/quotes/create?customerId=${c.id}`} icon={FileText} label="Báo giá" primary />
-              <QuickAction onClick={() => setEditOpen(true)} icon={Pencil} label="Sửa" />
+              <QuickAction href={`tel:${c.phone}`} icon={Phone} label="Call" />
+              <QuickAction onClick={() => setSmsTpl(c.payStatus === "OWING" ? "AR_REMINDER" : "FOLLOW_UP")} icon={MessageSquare} label="Text" />
+              <QuickAction href={`/quotes/create?customerId=${c.id}`} icon={FileText} label="Quote" primary />
+              <QuickAction onClick={() => setEditOpen(true)} icon={Pencil} label="Edit" />
             </div>
           </div>
         </div>
@@ -179,23 +179,23 @@ export default function CustomerDetailPage() {
         <div className="space-y-4">
           <FadeIn delay={60}>
             <SpotlightCard className="p-6">
-              <h2 className="font-bold text-ink-900">Thanh toán</h2>
+              <h2 className="font-bold text-ink-900">Payments</h2>
               <div className="mt-4 flex items-center gap-5">
                 <ProgressRing value={c.paidOrders || 0} total={c.orderCount || 0} size={112} stroke={12} color="#10b981">
                   <span className="text-2xl font-bold text-ink-900">
                     {c.paidOrders || 0}/{c.orderCount || 0}
                   </span>
-                  <span className="text-[11px] text-ink-400">đơn đã trả</span>
+                  <span className="text-[11px] text-ink-400">orders paid</span>
                 </ProgressRing>
                 <div className="space-y-2 text-sm">
                   <p className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Đã trả: <b>{c.paidOrders || 0}</b>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Paid: <b>{c.paidOrders || 0}</b>
                   </p>
                   <p className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Chưa trả: <b>{c.unpaidOrders || 0}</b>
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Unpaid: <b>{c.unpaidOrders || 0}</b>
                   </p>
                   <p className="flex items-center gap-2 text-ink-400 text-xs">
-                    <CalendarDays className="w-3.5 h-3.5" /> Mua gần nhất: {timeAgo(c.lastOrderDate)}
+                    <CalendarDays className="w-3.5 h-3.5" /> Last order: {timeAgo(c.lastOrderDate)}
                   </p>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default function CustomerDetailPage() {
 
           <FadeIn delay={120}>
             <SpotlightCard className="p-6">
-              <h2 className="font-bold text-ink-900">Thông tin</h2>
+              <h2 className="font-bold text-ink-900">Details</h2>
               <ul className="mt-4 space-y-3.5">
                 {info.map((row) => {
                   const Icon = row.icon;
@@ -224,7 +224,7 @@ export default function CustomerDetailPage() {
                             <p className="text-sm font-medium text-ink-800 break-words">{row.value}</p>
                           )
                         ) : (
-                          <p className="text-sm text-ink-300">Chưa có</p>
+                          <p className="text-sm text-ink-300">Not set</p>
                         )}
                       </div>
                     </li>
@@ -247,9 +247,9 @@ export default function CustomerDetailPage() {
             <div className="flex gap-1 p-1 rounded-2xl bg-ink-50 overflow-x-auto no-scrollbar">
               {(
                 [
-                  { k: "orders", label: "Đơn hàng", icon: Receipt, n: orders.length },
-                  { k: "quotes", label: "Báo giá", icon: FileText, n: quotes.length },
-                  { k: "sms", label: "Tin nhắn", icon: MessageSquare, n: smsLogs.length },
+                  { k: "orders", label: "Orders", icon: Receipt, n: orders.length },
+                  { k: "quotes", label: "Quotes", icon: FileText, n: quotes.length },
+                  { k: "sms", label: "Texts", icon: MessageSquare, n: smsLogs.length },
                 ] as const
               ).map((t) => {
                 const Icon = t.icon;
@@ -273,7 +273,7 @@ export default function CustomerDetailPage() {
             <div className="p-2 sm:p-3 mt-1">
               {tab === "orders" &&
                 (orders.length === 0 ? (
-                  <EmptyState icon={Receipt} title="Chưa có đơn hàng" />
+                  <EmptyState icon={Receipt} title="No orders yet" />
                 ) : (
                   <div className="space-y-2">
                     {orders.map((o, i) => {
@@ -292,7 +292,7 @@ export default function CustomerDetailPage() {
                                 {formatDate(o.createdAt)}
                                 {items.length > 0 && (
                                   <span className="inline-flex items-center gap-1">
-                                    · <Package className="w-3 h-3" /> {items.length} món
+                                    · <Package className="w-3 h-3" /> {items.length} {items.length === 1 ? "item" : "items"}
                                     <ChevronDown className={cn("w-3 h-3 transition-transform", open && "rotate-180")} />
                                   </span>
                                 )}
@@ -300,13 +300,13 @@ export default function CustomerDetailPage() {
                             </button>
                             <PayBadge status={st} />
                             {st === "PAID" ? (
-                              <button onClick={() => setPay(o.id, "UNPAID")} disabled={busy === o.id} className="icon-btn" title="Hoàn tác">
+                              <button onClick={() => setPay(o.id, "UNPAID")} disabled={busy === o.id} className="icon-btn" title="Undo">
                                 {busy === o.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Undo2 className="w-4 h-4" />}
                               </button>
                             ) : (
                               <button onClick={() => setPay(o.id, "PAID")} disabled={busy === o.id} className="btn-success !px-3 !py-1.5 !text-xs !rounded-xl">
                                 {busy === o.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                                Đã trả
+                                Paid
                               </button>
                             )}
                           </div>
@@ -314,7 +314,7 @@ export default function CustomerDetailPage() {
                             <ul className="border-t border-ink-100 px-4 py-3 space-y-1.5 animate-fade-up">
                               {items.map((it: any) => (
                                 <li key={it.id} className="flex items-center justify-between text-sm">
-                                  <span className="text-ink-700 truncate">{it.product?.name || it.productName || "Sản phẩm"}</span>
+                                  <span className="text-ink-700 truncate">{it.product?.name || it.productName || "Product"}</span>
                                   <span className="text-ink-400 tabular-nums shrink-0 pl-3">× {Number(it.quantity).toLocaleString("en-US")}</span>
                                 </li>
                               ))}
@@ -330,10 +330,10 @@ export default function CustomerDetailPage() {
                 (quotes.length === 0 ? (
                   <EmptyState
                     icon={FileText}
-                    title="Chưa có báo giá"
+                    title="No quotes yet"
                     action={
                       <Link href={`/quotes/create?customerId=${c.id}`} className="btn-primary">
-                        <Plus className="w-4 h-4" /> Tạo báo giá
+                        <Plus className="w-4 h-4" /> Create quote
                       </Link>
                     }
                   />
@@ -356,7 +356,7 @@ export default function CustomerDetailPage() {
 
               {tab === "sms" &&
                 (smsLogs.length === 0 ? (
-                  <EmptyState icon={Inbox} title="Chưa nhắn tin lần nào" />
+                  <EmptyState icon={Inbox} title="No texts yet" />
                 ) : (
                   <div className="space-y-3">
                     {smsLogs.map((log: any) => (

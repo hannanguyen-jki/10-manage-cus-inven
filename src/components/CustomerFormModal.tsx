@@ -5,9 +5,9 @@ import { UserPlus, UserPen, Loader2, Save } from "lucide-react";
 import { Modal, cn } from "@/components/ui";
 
 export const STATUS_META: Record<string, { label: string; cls: string; dot: string }> = {
-  ACTIVE: { label: "Đang mua", cls: "text-emerald-700", dot: "bg-emerald-500" },
-  AT_RISK: { label: "Cần hỏi thăm", cls: "text-amber-700", dot: "bg-amber-500" },
-  INACTIVE: { label: "Ngừng mua", cls: "text-ink-500", dot: "bg-ink-300" },
+  ACTIVE: { label: "Active", cls: "text-emerald-700", dot: "bg-emerald-500" },
+  AT_RISK: { label: "Needs follow-up", cls: "text-amber-700", dot: "bg-amber-500" },
+  INACTIVE: { label: "Inactive", cls: "text-ink-500", dot: "bg-ink-300" },
 };
 
 const EMPTY = {
@@ -56,7 +56,7 @@ export default function CustomerFormModal({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.businessName.trim() || !form.contactPerson.trim() || !form.phone.trim()) {
-      onSaved?.(false, "Cần nhập tên tiệm, người liên hệ và số điện thoại");
+      onSaved?.(false, "Shop name, contact person and phone are required");
       return;
     }
     setSaving(true);
@@ -67,10 +67,10 @@ export default function CustomerFormModal({
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      onSaved?.(!!data.success, data.success ? (editing ? "Đã lưu thay đổi" : "Đã thêm khách mới") : data.error || "Không lưu được");
+      onSaved?.(!!data.success, data.success ? (editing ? "Changes saved" : "Customer added") : data.error || "Could not save");
       if (data.success) onClose();
     } catch {
-      onSaved?.(false, "Lỗi kết nối, thử lại sau");
+      onSaved?.(false, "Connection error, please try again");
     } finally {
       setSaving(false);
     }
@@ -81,45 +81,45 @@ export default function CustomerFormModal({
       open={open}
       onClose={onClose}
       size="lg"
-      title={editing ? "Sửa thông tin khách" : "Thêm khách mới"}
+      title={editing ? "Edit customer" : "Add customer"}
       icon={editing ? UserPen : UserPlus}
       footer={
         <>
           <button type="button" onClick={onClose} className="btn-ghost">
-            Hủy
+            Cancel
           </button>
           <button type="submit" form="customer-form" disabled={saving} className="btn-primary">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            Lưu
+            Save
           </button>
         </>
       }
     >
       <form id="customer-form" onSubmit={submit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Tên tiệm *" className="sm:col-span-2">
-            <input className="input" value={form.businessName} onChange={(e) => set("businessName", e.target.value)} placeholder="VD: Glamour Nail Supply" />
+          <Field label="Shop name *" className="sm:col-span-2">
+            <input className="input" value={form.businessName} onChange={(e) => set("businessName", e.target.value)} placeholder="e.g. Glamour Nail Supply" />
           </Field>
-          <Field label="Người liên hệ *">
-            <input className="input" value={form.contactPerson} onChange={(e) => set("contactPerson", e.target.value)} placeholder="Chủ tiệm / quản lý" />
+          <Field label="Contact person *">
+            <input className="input" value={form.contactPerson} onChange={(e) => set("contactPerson", e.target.value)} placeholder="Owner / manager" />
           </Field>
-          <Field label="Số điện thoại *">
+          <Field label="Phone *">
             <input className="input font-mono" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="1 713-330-6165" />
           </Field>
           <Field label="Email">
             <input className="input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
           </Field>
-          <Field label="Sinh nhật">
+          <Field label="Birthday">
             <input className="input" type="date" value={form.birthday} onChange={(e) => set("birthday", e.target.value)} />
           </Field>
-          <Field label="Địa chỉ" className="sm:col-span-2">
+          <Field label="Address" className="sm:col-span-2">
             <input className="input" value={form.address} onChange={(e) => set("address", e.target.value)} />
           </Field>
-          <Field label="Thành phố">
+          <Field label="City">
             <input className="input" value={form.city} onChange={(e) => set("city", e.target.value)} />
           </Field>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Bang">
+            <Field label="State">
               <input className="input uppercase" maxLength={2} value={form.state} onChange={(e) => set("state", e.target.value.toUpperCase())} />
             </Field>
             <Field label="Zip">
@@ -128,7 +128,7 @@ export default function CustomerFormModal({
           </div>
         </div>
 
-        <Field label="Tình trạng">
+        <Field label="Status">
           <div className="grid grid-cols-3 gap-2">
             {Object.entries(STATUS_META).map(([k, m]) => (
               <button
@@ -147,7 +147,7 @@ export default function CustomerFormModal({
           </div>
         </Field>
 
-        <Field label="Ghi chú">
+        <Field label="Notes">
           <textarea rows={3} className="input resize-none" value={form.notes} onChange={(e) => set("notes", e.target.value)} />
         </Field>
       </form>

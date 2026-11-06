@@ -23,7 +23,7 @@ import {
   CalendarClock,
 } from "lucide-react";
 import type { QuoteCustomerData, ProductCatalogItem } from "@/lib/quotesData";
-import { Avatar, EmptyState, SpotlightCard, cn } from "@/components/ui";
+import { Avatar, EmptyState, SpotlightCard, cn, prettyCategory } from "@/components/ui";
 
 interface LineItem {
   productId: string;
@@ -36,14 +36,6 @@ interface LineItem {
 }
 
 const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-const prettyCat = (c: string) =>
-  c
-    .replace(/\s+/g, " ")
-    .replace(/\b(\w) (?=\w)/g, "$1")
-    .trim()
-    .toLowerCase()
-    .replace(/(^|\s)\S/g, (s) => s.toUpperCase());
-
 const EMPTY_NEW_CUSTOMER = {
   businessName: "",
   contactPerson: "",
@@ -98,13 +90,11 @@ function CreateQuoteContent() {
 
   const customer = customers.find((c) => c.id === customerId);
 
+  // Categories in catalog order (products arrive sorted like the Word price list)
   const categories = useMemo(() => {
-    const counts: Record<string, number> = {};
-    products.forEach((p) => (counts[p.category] = (counts[p.category] || 0) + 1));
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 6)
-      .map(([k]) => k);
+    const seen: string[] = [];
+    products.forEach((p) => !seen.includes(p.category) && seen.push(p.category));
+    return seen;
   }, [products]);
 
   const filteredProducts = useMemo(() => {
@@ -140,9 +130,9 @@ function CreateQuoteContent() {
 
   const save = async (status: "DRAFT" | "SENT") => {
     setError("");
-    if (mode === "existing" && !customerId) return setError("Hãy chọn khách hàng trước");
-    if (mode === "new" && !newReady) return setError("Nhập tên tiệm, người liên hệ và số điện thoại của khách mới");
-    if (items.length === 0) return setError("Hãy thêm ít nhất 1 sản phẩm");
+    if (mode === "existing" && !customerId) return setError("Choose a customer first");
+    if (mode === "new" && !newReady) return setError("Enter the new customer's shop name, contact person and phone");
+    if (items.length === 0) return setError("Add at least one product");
     setSaving(status);
     try {
       const res = await fetch("/api/quotes", {
@@ -166,9 +156,9 @@ function CreateQuoteContent() {
       });
       const data = await res.json();
       if (data.success && data.quote) router.push(`/quotes/${data.quote.id}`);
-      else setError(data.error || "Không lưu được, thử lại nhé");
+      else setError(data.error || "Could not save, please try again");
     } catch {
-      setError("Lỗi kết nối, thử lại nhé");
+      setError("Connection error, please try again");
     } finally {
       setSaving(null);
     }
@@ -179,11 +169,11 @@ function CreateQuoteContent() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-up">
         <div className="flex items-center gap-3">
-          <Link href="/quotes" className="icon-btn bg-white border border-ink-100 shadow-sm" title="Quay lại">
+          <Link href="/quotes" className="icon-btn bg-white border border-ink-100 shadow-sm" title="Back">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-ink-900">Tạo báo giá</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-ink-900">New quote</h1>
             <p className="text-xs font-mono text-ink-400">{quoteNumber}</p>
           </div>
         </div>
@@ -191,9 +181,9 @@ function CreateQuoteContent() {
         {/* Stepper */}
         <ol className="flex items-center gap-2 text-xs font-semibold">
           {[
-            { n: 1, label: "Chọn khách", icon: Store },
-            { n: 2, label: "Thêm sản phẩm", icon: ShoppingBasket },
-            { n: 3, label: "Lưu & gửi", icon: Send },
+            { n: 1, label: "Customer", icon: Store },
+            { n: 2, label: "Products", icon: ShoppingBasket },
+            { n: 3, label: "Save & send", icon: Send },
           ].map((s, i) => {
             const done = step > s.n;
             const on = step === s.n;
@@ -231,12 +221,12 @@ function CreateQuoteContent() {
           {/* 1. Customer */}
           <SpotlightCard className="p-5 !overflow-visible z-20">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <StepTitle n={1} title="Khách hàng" done={customerReady} />
+              <StepTitle n={1} title="Customer" done={customerReady} />
               <div className="inline-flex rounded-2xl bg-ink-50 p-1 text-sm font-semibold">
                 {(
                   [
-                    { k: "existing", label: "Khách có sẵn", icon: Store },
-                    { k: "new", label: "Khách mới", icon: UserPlus },
+                    { k: "existing", label: "Existing", icon: Store },
+                    { k: "new", label: "New customer", icon: UserPlus },
                   ] as const
                 ).map((m) => {
                   const Icon = m.icon;
@@ -264,15 +254,15 @@ function CreateQuoteContent() {
             {mode === "new" ? (
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-up">
                 <div className="sm:col-span-2">
-                  <label className="label">Tên tiệm *</label>
-                  <input className="input" value={newCustomer.businessName} onChange={(e) => setNew("businessName", e.target.value)} placeholder="VD: Glamour Nail Supply" />
+                  <label className="label">Shop name *</label>
+                  <input className="input" value={newCustomer.businessName} onChange={(e) => setNew("businessName", e.target.value)} placeholder="e.g. Glamour Nail Supply" />
                 </div>
                 <div>
-                  <label className="label">Người liên hệ *</label>
-                  <input className="input" value={newCustomer.contactPerson} onChange={(e) => setNew("contactPerson", e.target.value)} placeholder="Chủ tiệm / quản lý" />
+                  <label className="label">Contact person *</label>
+                  <input className="input" value={newCustomer.contactPerson} onChange={(e) => setNew("contactPerson", e.target.value)} placeholder="Owner / manager" />
                 </div>
                 <div>
-                  <label className="label">Số điện thoại *</label>
+                  <label className="label">Phone *</label>
                   <input className="input font-mono" value={newCustomer.phone} onChange={(e) => setNew("phone", e.target.value)} placeholder="1 713-330-6165" />
                 </div>
                 <div className="sm:col-span-2">
@@ -280,16 +270,16 @@ function CreateQuoteContent() {
                   <input className="input" type="email" value={newCustomer.email} onChange={(e) => setNew("email", e.target.value)} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="label">Địa chỉ</label>
-                  <input className="input" value={newCustomer.address} onChange={(e) => setNew("address", e.target.value)} placeholder="Số nhà, tên đường" />
+                  <label className="label">Address</label>
+                  <input className="input" value={newCustomer.address} onChange={(e) => setNew("address", e.target.value)} placeholder="Street address" />
                 </div>
                 <div>
-                  <label className="label">Thành phố</label>
+                  <label className="label">City</label>
                   <input className="input" value={newCustomer.city} onChange={(e) => setNew("city", e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="label">Bang</label>
+                    <label className="label">State</label>
                     <input className="input uppercase" maxLength={2} value={newCustomer.state} onChange={(e) => setNew("state", e.target.value.toUpperCase())} />
                   </div>
                   <div>
@@ -297,7 +287,7 @@ function CreateQuoteContent() {
                     <input className="input" value={newCustomer.zipCode} onChange={(e) => setNew("zipCode", e.target.value)} />
                   </div>
                 </div>
-                <p className="sm:col-span-2 text-xs text-ink-400">Khách mới sẽ được lưu vào danh sách Khách hàng khi tạo báo giá.</p>
+                <p className="sm:col-span-2 text-xs text-ink-400">The new customer is saved to Customers when the quote is created.</p>
               </div>
             ) : (
             <div className="relative mt-4">
@@ -321,7 +311,7 @@ function CreateQuoteContent() {
                     <div className="w-10 h-10 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center">
                       <Store className="w-5 h-5" />
                     </div>
-                    <span className="flex-1 text-ink-400">{loading ? "Đang tải..." : "Bấm để chọn khách"}</span>
+                    <span className="flex-1 text-ink-400">{loading ? "Loading..." : "Tap to choose a customer"}</span>
                   </>
                 )}
                 <ChevronDown className={cn("w-4 h-4 text-ink-400 transition-transform", pickerOpen && "rotate-180")} />
@@ -331,7 +321,7 @@ function CreateQuoteContent() {
                 <div className="absolute left-0 right-0 mt-2 rounded-3xl bg-white border border-ink-100 shadow-2xl p-2 animate-pop-in">
                   <div className="relative p-1">
                     <Search className="w-4 h-4 text-ink-400 absolute left-5 top-1/2 -translate-y-1/2" />
-                    <input autoFocus value={customerQuery} onChange={(e) => setCustomerQuery(e.target.value)} placeholder="Tìm tên tiệm, SĐT..." className="input pl-11" />
+                    <input autoFocus value={customerQuery} onChange={(e) => setCustomerQuery(e.target.value)} placeholder="Search shop or phone..." className="input pl-11" />
                   </div>
                   <div className="max-h-72 overflow-y-auto mt-1">
                     {filteredCustomers.map((c) => (
@@ -357,7 +347,7 @@ function CreateQuoteContent() {
                     ))}
                     {filteredCustomers.length === 0 && (
                       <div className="py-6 text-center">
-                        <p className="text-sm text-ink-400">Không tìm thấy</p>
+                        <p className="text-sm text-ink-400">No match</p>
                         <button
                           type="button"
                           onClick={() => {
@@ -367,7 +357,7 @@ function CreateQuoteContent() {
                           }}
                           className="btn-ghost mt-3"
                         >
-                          <UserPlus className="w-4 h-4" /> Nhập khách mới
+                          <UserPlus className="w-4 h-4" /> Enter new customer
                         </button>
                       </div>
                     )}
@@ -381,17 +371,17 @@ function CreateQuoteContent() {
           {/* 2. Items */}
           <SpotlightCard className="p-5">
             <div className="flex items-center justify-between">
-              <StepTitle n={2} title="Sản phẩm trong báo giá" done={items.length > 0} />
+              <StepTitle n={2} title="Products in this quote" done={items.length > 0} />
               {items.length > 0 && (
                 <span className="text-xs font-semibold text-ink-500">
-                  {items.length} loại · {pieces.toLocaleString("en-US")} cái
+                  {items.length} items · {pieces.toLocaleString("en-US")} pcs
                 </span>
               )}
             </div>
 
             {items.length === 0 ? (
               <div className="mt-4 rounded-3xl border-2 border-dashed border-ink-200">
-                <EmptyState icon={PackageOpen} title="Chưa có sản phẩm" hint="Chọn sản phẩm ở danh mục bên cạnh (hoặc bên dưới trên điện thoại)." />
+                <EmptyState icon={PackageOpen} title="No products yet" hint="Pick products from the catalog (beside this, or below on a phone)." />
               </div>
             ) : (
               <div className="mt-4 space-y-2">
@@ -407,7 +397,7 @@ function CreateQuoteContent() {
                         <p className="text-[11px] font-mono text-ink-400 mt-0.5">{it.sku}</p>
                       </div>
                       <p className="text-sm font-bold text-ink-900 tabular-nums shrink-0">{money(line)}</p>
-                      <button type="button" onClick={() => remove(i)} className="icon-btn hover:!text-rose-600 hover:!bg-rose-50" title="Bỏ khỏi báo giá">
+                      <button type="button" onClick={() => remove(i)} className="icon-btn hover:!text-rose-600 hover:!bg-rose-50" title="Remove from quote">
                         <Trash2 className="w-4 h-4" />
                       </button>
                      </div>
@@ -424,14 +414,14 @@ function CreateQuoteContent() {
                             value={it.quantity}
                             onChange={(e) => update(i, { quantity: Math.max(1, parseInt(e.target.value) || 1) })}
                             className="w-12 text-center text-sm font-semibold outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
-                            title="Số lượng"
+                            title="Quantity"
                           />
                           <button type="button" onClick={() => update(i, { quantity: it.quantity + 1 })} className="w-8 h-9 flex items-center justify-center text-ink-500 hover:text-brand-600">
                             <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
                         {/* price */}
-                        <label className="flex items-center rounded-xl border border-ink-200 bg-white px-2 h-9" title="Giá mỗi cái">
+                        <label className="flex items-center rounded-xl border border-ink-200 bg-white px-2 h-9" title="Price each">
                           <span className="text-xs text-ink-400">$</span>
                           <input
                             type="number"
@@ -451,14 +441,14 @@ function CreateQuoteContent() {
 
           {/* Details */}
           <SpotlightCard className="p-5">
-            <h3 className="font-bold text-ink-900">Thông tin thêm</h3>
+            <h3 className="font-bold text-ink-900">Details</h3>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="label">Hiệu lực đến</label>
+                <label className="label">Valid until</label>
                 <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} className="input" />
               </div>
               <div>
-                <label className="label">Người lập</label>
+                <label className="label">Prepared by</label>
                 <input value={salesRep} onChange={(e) => setSalesRep(e.target.value)} className="input" />
               </div>
             </div>
@@ -472,24 +462,24 @@ function CreateQuoteContent() {
             <div className="relative overflow-hidden rounded-3xl bg-ink-950 text-white p-5">
               <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-brand-500/40 blur-3xl" />
               <div className="relative">
-                <StepTitle n={3} title="Tổng báo giá" done={false} dark />
+                <StepTitle n={3} title="Quote total" done={false} dark />
                 <p className="mt-3 text-sm text-ink-300">
-                  {items.length} loại sản phẩm · {pieces.toLocaleString("en-US")} cái
+                  {items.length} items · {pieces.toLocaleString("en-US")} pcs
                 </p>
                 <div className="mt-4 pt-4 border-t border-white/10 flex items-end justify-between">
-                  <span className="text-sm text-ink-300">Tổng cộng</span>
+                  <span className="text-sm text-ink-300">Total</span>
                   <span className="text-3xl font-bold tabular-nums">{money(total)}</span>
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-2">
                   <button type="button" disabled={!!saving} onClick={() => save("DRAFT")} className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20">
-                    {saving === "DRAFT" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Lưu nháp
+                    {saving === "DRAFT" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save draft
                   </button>
                   <button type="button" disabled={!!saving} onClick={() => save("SENT")} className="btn-primary">
-                    {saving === "SENT" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />} Tạo PDF
+                    {saving === "SENT" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />} Create PDF
                   </button>
                 </div>
                 <p className="mt-3 flex items-center gap-1.5 text-[11px] text-ink-400">
-                  <CalendarClock className="w-3.5 h-3.5" /> Báo giá có hiệu lực 14 ngày, có thể đổi ở trên.
+                  <CalendarClock className="w-3.5 h-3.5" /> Quotes are valid for 14 days; you can change this above.
                 </p>
               </div>
             </div>
@@ -497,17 +487,17 @@ function CreateQuoteContent() {
             {/* Catalog */}
             <SpotlightCard className="p-5">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-ink-900">Danh mục sản phẩm</h3>
-                <span className="text-xs text-ink-400">{filteredProducts.length} sản phẩm</span>
+                <h3 className="font-bold text-ink-900">Product catalog</h3>
+                <span className="text-xs text-ink-400">{filteredProducts.length} products</span>
               </div>
               <div className="relative mt-3">
                 <Search className="w-4 h-4 text-ink-400 absolute left-4 top-1/2 -translate-y-1/2" />
-                <input value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Tìm tên hoặc mã sản phẩm..." className="input pl-11" />
+                <input value={productQuery} onChange={(e) => setProductQuery(e.target.value)} placeholder="Search name or code..." className="input pl-11" />
               </div>
               <div className="mt-3 flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
                 {["ALL", ...categories].map((c) => (
                   <button key={c} onClick={() => setCategory(c)} className={cn("chip !py-1", category === c ? "chip-on" : "chip-off")}>
-                    {c === "ALL" ? "Tất cả" : prettyCat(c)}
+                    {c === "ALL" ? "All" : prettyCategory(c)}
                   </button>
                 ))}
               </div>
@@ -526,7 +516,7 @@ function CreateQuoteContent() {
                     >
                       <div className="relative aspect-square rounded-xl overflow-hidden bg-ink-50">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.imageUrl} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        <img src={p.imageUrl} alt="" loading="lazy" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
                         <span
                           className={cn(
                             "absolute right-1.5 bottom-1.5 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-lg transition-all",
@@ -568,7 +558,7 @@ function StepTitle({ n, title, done, dark }: { n: number; title: string; done: b
 
 export default function CreateQuotePage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-ink-400">Đang mở...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-ink-400">Loading...</div>}>
       <CreateQuoteContent />
     </Suspense>
   );

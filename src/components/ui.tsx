@@ -363,9 +363,9 @@ export function Avatar({ name, size = "md" }: { name: string; size?: "sm" | "md"
 export type PayStatus = "PAID" | "PARTIAL" | "UNPAID";
 
 export const PAY_META: Record<PayStatus, { label: string; cls: string; dot: string; icon: LucideIcon; color: string }> = {
-  PAID: { label: "Đã trả", cls: "bg-emerald-50 text-emerald-700 ring-emerald-200", dot: "bg-emerald-500", icon: CheckCircle2, color: "#10b981" },
-  PARTIAL: { label: "Trả một phần", cls: "bg-amber-50 text-amber-700 ring-amber-200", dot: "bg-amber-500", icon: CircleDashed, color: "#f59e0b" },
-  UNPAID: { label: "Chưa trả", cls: "bg-rose-50 text-rose-700 ring-rose-200", dot: "bg-rose-500", icon: XCircle, color: "#f43f5e" },
+  PAID: { label: "Paid", cls: "bg-emerald-50 text-emerald-700 ring-emerald-200", dot: "bg-emerald-500", icon: CheckCircle2, color: "#10b981" },
+  PARTIAL: { label: "Partly paid", cls: "bg-amber-50 text-amber-700 ring-amber-200", dot: "bg-amber-500", icon: CircleDashed, color: "#f59e0b" },
+  UNPAID: { label: "Unpaid", cls: "bg-rose-50 text-rose-700 ring-rose-200", dot: "bg-rose-500", icon: XCircle, color: "#f43f5e" },
 };
 
 export function normalizePay(s?: string | null): PayStatus {
@@ -390,11 +390,11 @@ export function PayBadge({ status, pulse }: { status: PayStatus; pulse?: boolean
 /** Per-customer payment summary badge */
 export function CustomerPayBadge({ c }: { c: { payStatus: string; unpaidOrders: number } }) {
   if (c.payStatus === "NONE")
-    return <span className="inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-ink-100 text-ink-500">Chưa có đơn</span>;
+    return <span className="inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-ink-100 text-ink-500">No orders</span>;
   if (c.payStatus === "PAID")
     return (
       <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
-        <CheckCircle2 className="w-3.5 h-3.5" /> Đã trả hết
+        <CheckCircle2 className="w-3.5 h-3.5" /> All paid
       </span>
     );
   return (
@@ -403,7 +403,7 @@ export function CustomerPayBadge({ c }: { c: { payStatus: string; unpaidOrders: 
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-60" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-rose-500" />
       </span>
-      Chưa trả {c.unpaidOrders} đơn
+      {c.unpaidOrders} unpaid
     </span>
   );
 }
@@ -413,10 +413,10 @@ export function CustomerPayBadge({ c }: { c: { payStatus: string; unpaidOrders: 
 /* ------------------------------------------------------------------ */
 export type QuoteStatus = "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED";
 export const QUOTE_META: Record<QuoteStatus, { label: string; cls: string; icon: LucideIcon; hint: string }> = {
-  DRAFT: { label: "Nháp", cls: "bg-ink-100 text-ink-600 ring-ink-200", icon: FileEdit, hint: "Chưa gửi cho khách" },
-  SENT: { label: "Đã gửi", cls: "bg-brand-50 text-brand-700 ring-brand-200", icon: Send, hint: "Đang chờ khách trả lời" },
-  ACCEPTED: { label: "Khách đồng ý", cls: "bg-emerald-50 text-emerald-700 ring-emerald-200", icon: ThumbsUp, hint: "Khách đã chốt đơn" },
-  REJECTED: { label: "Khách từ chối", cls: "bg-rose-50 text-rose-700 ring-rose-200", icon: ThumbsDown, hint: "Khách không lấy / để sau" },
+  DRAFT: { label: "Draft", cls: "bg-ink-100 text-ink-600 ring-ink-200", icon: FileEdit, hint: "Not sent yet" },
+  SENT: { label: "Sent", cls: "bg-brand-50 text-brand-700 ring-brand-200", icon: Send, hint: "Waiting for the customer" },
+  ACCEPTED: { label: "Accepted", cls: "bg-emerald-50 text-emerald-700 ring-emerald-200", icon: ThumbsUp, hint: "Customer said yes" },
+  REJECTED: { label: "Declined", cls: "bg-rose-50 text-rose-700 ring-rose-200", icon: ThumbsDown, hint: "Customer said no / later" },
 };
 export function QuoteBadge({ status }: { status: QuoteStatus }) {
   const m = QUOTE_META[status] || QUOTE_META.DRAFT;
@@ -434,8 +434,8 @@ export function QuoteBadge({ status }: { status: QuoteStatus }) {
 /* ------------------------------------------------------------------ */
 export const TIER_META: Record<string, { label: string; cls: string; emoji: string; color: string }> = {
   VIP: { label: "VIP", cls: "bg-gradient-to-r from-amber-100 to-yellow-50 text-amber-800 ring-amber-200", emoji: "👑", color: "#f59e0b" },
-  WHOLESALE: { label: "Khách sỉ", cls: "bg-brand-50 text-brand-700 ring-brand-200", emoji: "🏢", color: "#039dd5" },
-  STANDARD: { label: "Khách thường", cls: "bg-ink-100 text-ink-600 ring-ink-200", emoji: "🛍️", color: "#858ea0" },
+  WHOLESALE: { label: "Wholesale", cls: "bg-brand-50 text-brand-700 ring-brand-200", emoji: "🏢", color: "#039dd5" },
+  STANDARD: { label: "Standard", cls: "bg-ink-100 text-ink-600 ring-ink-200", emoji: "🛍️", color: "#858ea0" },
 };
 export function TierBadge({ tier }: { tier: string }) {
   const m = TIER_META[tier] || TIER_META.STANDARD;
@@ -488,7 +488,7 @@ export function Modal({
             )}
             <h3 className="text-base font-bold text-ink-900">{title}</h3>
           </div>
-          <button onClick={onClose} className="icon-btn" aria-label="Đóng">
+          <button onClick={onClose} className="icon-btn" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -549,6 +549,12 @@ export function Skeleton({ className }: { className?: string }) {
   return <div className={cn("animate-pulse rounded-2xl bg-ink-100", className)} />;
 }
 
+/** Show ALL-CAPS Word headings in a friendlier case; keep mixed-case names as written. */
+export function prettyCategory(c: string) {
+  if (c !== c.toUpperCase()) return c;
+  return c.toLowerCase().replace(/(^|[\s(&-])([a-z0-9])/g, (_, a, b) => a + b.toUpperCase());
+}
+
 /* ------------------------------------------------------------------ */
 /* Date helpers                                                        */
 /* ------------------------------------------------------------------ */
@@ -556,17 +562,17 @@ export function formatDate(d?: string | Date | null) {
   if (!d) return "—";
   const date = new Date(d);
   if (isNaN(date.getTime())) return "—";
-  return date.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 export function timeAgo(d?: string | Date | null) {
-  if (!d) return "Chưa có";
+  if (!d) return "Never";
   const date = new Date(d);
-  if (isNaN(date.getTime())) return "Chưa có";
+  if (isNaN(date.getTime())) return "Never";
   const days = Math.floor((Date.now() - date.getTime()) / 86400000);
-  if (days <= 0) return "Hôm nay";
-  if (days === 1) return "Hôm qua";
-  if (days < 30) return `${days} ngày trước`;
-  if (days < 365) return `${Math.floor(days / 30)} tháng trước`;
-  return `${Math.floor(days / 365)} năm trước`;
+  if (days <= 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 30) return `${days} days ago`;
+  if (days < 365) return `${Math.floor(days / 30)} mo ago`;
+  return `${Math.floor(days / 365)} yr ago`;
 }

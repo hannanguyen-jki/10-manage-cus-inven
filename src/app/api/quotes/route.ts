@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     if (!customerId && newCustomer) {
       if (!newCustomer.businessName?.trim() || !newCustomer.contactPerson?.trim() || !newCustomer.phone?.trim()) {
         return NextResponse.json(
-          { success: false, error: "Cần nhập tên tiệm, người liên hệ và số điện thoại" },
+          { success: false, error: "Shop name, contact person and phone are required" },
           { status: 400 }
         );
       }

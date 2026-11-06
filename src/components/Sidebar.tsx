@@ -3,14 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Users, Wallet, FileText, Plus, Phone } from "lucide-react";
+import { LayoutGrid, Users, Wallet, FileText, Package } from "lucide-react";
 import { cn } from "@/components/ui";
 
 export const navItems = [
-  { title: "Tổng quan", short: "Tổng quan", href: "/dashboard", icon: LayoutGrid },
-  { title: "Khách hàng", short: "Khách", href: "/customers", icon: Users },
-  { title: "Thanh toán", short: "Thanh toán", href: "/payments", icon: Wallet },
-  { title: "Báo giá", short: "Báo giá", href: "/quotes", icon: FileText },
+  { title: "Overview", short: "Overview", href: "/dashboard", icon: LayoutGrid },
+  { title: "Customers", short: "Customers", href: "/customers", icon: Users },
+  { title: "Payments", short: "Payments", href: "/payments", icon: Wallet },
+  { title: "Quotes", short: "Quotes", href: "/quotes", icon: FileText },
+  { title: "Products", short: "Products", href: "/products", icon: Package },
 ];
 
 function isActive(pathname: string | null, href: string) {
@@ -34,19 +35,11 @@ export default function Sidebar() {
             priority
             className="h-12 w-auto transition-transform duration-500 group-hover:scale-[1.03]"
           />
-          <p className="mt-3 text-xs font-medium text-ink-400">Quản lý khách hàng</p>
+          <p className="mt-3 text-xs font-medium text-ink-400">Customer management</p>
         </Link>
 
-        {/* Quick action */}
-        <div className="px-4">
-          <Link href="/quotes/create" className="btn-primary w-full py-3">
-            <Plus className="w-4 h-4" />
-            Tạo báo giá mới
-          </Link>
-        </div>
-
         {/* Nav */}
-        <nav className="flex-1 px-3 py-6 space-y-1">
+        <nav className="flex-1 px-3 pb-6 space-y-1">
           {navItems.map((item) => {
             const active = isActive(pathname, item.href);
             const Icon = item.icon;
@@ -76,21 +69,6 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Hotline */}
-        <div className="m-4 rounded-2xl bg-gradient-to-br from-ink-900 to-ink-800 p-4 text-white relative overflow-hidden">
-          <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-brand-500/40 blur-2xl" />
-          <div className="relative flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
-              <Phone className="w-4 h-4 text-brand-300" />
-            </div>
-            <div>
-              <p className="text-[11px] text-ink-300">Hotline Houston</p>
-              <a href="tel:+17133306165" className="text-sm font-semibold tracking-wide hover:text-brand-300">
-                +1 (713) 330-6165
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
     </aside>
   );
@@ -110,7 +88,7 @@ export function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[11px] font-semibold transition-all",
+                "flex flex-col items-center gap-0.5 rounded-2xl px-1.5 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-semibold transition-all",
                 active ? "text-brand-600" : "text-ink-400"
               )}
             >

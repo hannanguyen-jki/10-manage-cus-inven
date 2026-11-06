@@ -57,6 +57,7 @@ model Product {
   currentStock   Int             @default(0)
   minStockAlert  Int             @default(10)
   location       String?         @default("Houston Hub")
+  sortOrder      Int             @default(0) // display order (Word catalog order)
 
   stockMovements StockMovement[]
   orderItems     OrderItem[]

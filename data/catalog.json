@@ -1,0 +1,3720 @@
+{
+ "categories": [
+  "ACCESSORIES",
+  "MAGNET",
+  "Z Brushes & J&K",
+  "ZZ Brushes",
+  "Lightning Brand",
+  "PROFESSIONAL QUALITY - ULTRA SHARP",
+  "PROPER DESIGN - SHARP BLADE",
+  "FIRM & COMFORTABLE GRIP",
+  "PRECISION & PROFESSIONAL MAKING",
+  "BUILDER GEL",
+  "LIQUID BUILDER GEL",
+  "POLYGEL",
+  "METALLIC PAINTING GEL",
+  "3D CARVING PINCH GEL (NON-STICK)",
+  "M0LDING DESIGN",
+  "PAT PAINTING GEL",
+  "CAT EYE GEL",
+  "POKE GEL",
+  "GLUE",
+  "Spider Gel",
+  "WHITE PEARL CHROME POWDER",
+  "SOLID GEL PAINT",
+  "OMBRE POWDER",
+  "BLOOMING GEL",
+  "Water Drop Topcoat",
+  "CUSHION GARDIENT OMBER GEL"
+ ],
+ "products": [
+  {
+   "sku": "ACC-001",
+   "name": "Nail Art Palette Heart Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-001.webp",
+   "sortOrder": 1
+  },
+  {
+   "sku": "ACC-002",
+   "name": "Nail Art Palette Square Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-002.webp",
+   "sortOrder": 2
+  },
+  {
+   "sku": "ACC-003",
+   "name": "Nail Art Palette Heart Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-003.webp",
+   "sortOrder": 3
+  },
+  {
+   "sku": "ACC-004",
+   "name": "Nail Art Palette Square Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-004.webp",
+   "sortOrder": 4
+  },
+  {
+   "sku": "ACC-005",
+   "name": "Small Art Nail Palette Butterfly",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-005.webp",
+   "sortOrder": 5
+  },
+  {
+   "sku": "ACC-006",
+   "name": "Small Art Nail Palette Flower",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-006.webp",
+   "sortOrder": 6
+  },
+  {
+   "sku": "ACC-007",
+   "name": "Small Art Nail Palette Half Moon",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-007.webp",
+   "sortOrder": 7
+  },
+  {
+   "sku": "ACC-008",
+   "name": "Nail Art White Glitter Flower Palette",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-008.webp",
+   "sortOrder": 8
+  },
+  {
+   "sku": "ACC-009",
+   "name": "Foot File Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/ACC-009.webp",
+   "sortOrder": 9
+  },
+  {
+   "sku": "ACC-010",
+   "name": "Foot File Black",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/ACC-010.webp",
+   "sortOrder": 10
+  },
+  {
+   "sku": "ACC-011",
+   "name": "Big Blade",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/ACC-011.webp",
+   "sortOrder": 11
+  },
+  {
+   "sku": "ACC-012",
+   "name": "Small Blade",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/ACC-012.webp",
+   "sortOrder": 12
+  },
+  {
+   "sku": "ACC-013",
+   "name": "Big/Small Blade",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/ACC-013.webp",
+   "sortOrder": 13
+  },
+  {
+   "sku": "ACC-014",
+   "name": "Nail Brush Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.85,
+   "imageUrl": "/catalog/ACC-014.webp",
+   "sortOrder": 14
+  },
+  {
+   "sku": "ACC-015",
+   "name": "Nail Brush Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.85,
+   "imageUrl": "/catalog/ACC-015.webp",
+   "sortOrder": 15
+  },
+  {
+   "sku": "ACC-016",
+   "name": "Spider gel tool $",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-016.webp",
+   "sortOrder": 16
+  },
+  {
+   "sku": "ACC-017",
+   "name": "Dotting Tool Set 5 Set Pieces",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-017.webp",
+   "sortOrder": 17
+  },
+  {
+   "sku": "ACC-018",
+   "name": "Dotting Circle Tool",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-018.webp",
+   "sortOrder": 18
+  },
+  {
+   "sku": "ACC-019",
+   "name": "Diamond Pick Up Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/ACC-019.webp",
+   "sortOrder": 19
+  },
+  {
+   "sku": "ACC-020",
+   "name": "Diamond Pick Up Red",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/ACC-020.webp",
+   "sortOrder": 20
+  },
+  {
+   "sku": "ACC-021",
+   "name": "Diamond Picker With Dotting Black Out of stock",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/ACC-021.webp",
+   "sortOrder": 21
+  },
+  {
+   "sku": "ACC-022",
+   "name": "Diamond Picker With Dotting Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/ACC-022.webp",
+   "sortOrder": 22
+  },
+  {
+   "sku": "ACC-023",
+   "name": "Silicon Pen Single White",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-023.webp",
+   "sortOrder": 23
+  },
+  {
+   "sku": "ACC-024",
+   "name": "Silicon Pen Set - 3D Design",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.25,
+   "imageUrl": "/catalog/ACC-024.webp",
+   "sortOrder": 24
+  },
+  {
+   "sku": "ACC-025",
+   "name": "Nail Chrome Silicon – Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/ACC-025.webp",
+   "sortOrder": 25
+  },
+  {
+   "sku": "ACC-026",
+   "name": "Nail Chrome Silicon – Black",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/ACC-026.webp",
+   "sortOrder": 26
+  },
+  {
+   "sku": "ACC-027",
+   "name": "Sand band mini - Long – Pink Medium",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/ACC-027.webp",
+   "sortOrder": 27
+  },
+  {
+   "sku": "ACC-028",
+   "name": "Sand band mini - Long – Pink Fine",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/ACC-028.webp",
+   "sortOrder": 28
+  },
+  {
+   "sku": "ACC-029",
+   "name": "Sand Band (Size Fine, Medium, Coarse) Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/ACC-029.webp",
+   "sortOrder": 29
+  },
+  {
+   "sku": "ACC-030",
+   "name": "Sand Band (Size Fine, Medium, Coarse) Zebra",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/ACC-030.webp",
+   "sortOrder": 30
+  },
+  {
+   "sku": "ACC-031",
+   "name": "Sand band Zebra – Big Medium $",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-031.webp",
+   "sortOrder": 31
+  },
+  {
+   "sku": "ACC-032",
+   "name": "Sand band Zebra – Big Fine $",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-032.webp",
+   "sortOrder": 32
+  },
+  {
+   "sku": "ACC-033",
+   "name": "Petal Flower Dotting Pen $",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-033.webp",
+   "sortOrder": 33
+  },
+  {
+   "sku": "ACC-034",
+   "name": "Pick up sponge Silver",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-034.webp",
+   "sortOrder": 34
+  },
+  {
+   "sku": "ACC-035",
+   "name": "Pick up sponge Gold",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-035.webp",
+   "sortOrder": 35
+  },
+  {
+   "sku": "ACC-036",
+   "name": "Almond- shape French Cut",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-036.webp",
+   "sortOrder": 36
+  },
+  {
+   "sku": "ACC-037",
+   "name": "Oval- shape French Cut",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-037.webp",
+   "sortOrder": 37
+  },
+  {
+   "sku": "ACC-038",
+   "name": "Square- shape French Cut",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-038.webp",
+   "sortOrder": 38
+  },
+  {
+   "sku": "ACC-039",
+   "name": "V - shape Deep French Cut",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-039.webp",
+   "sortOrder": 39
+  },
+  {
+   "sku": "ACC-040",
+   "name": "V - shape French Cut",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-040.webp",
+   "sortOrder": 40
+  },
+  {
+   "sku": "ACC-041",
+   "name": "Oval- shape Small French Cut",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-041.webp",
+   "sortOrder": 41
+  },
+  {
+   "sku": "ACC-042",
+   "name": "Cuticle oil",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-042.webp",
+   "sortOrder": 42
+  },
+  {
+   "sku": "ACC-043",
+   "name": "Bead 3d3D Nail Art Gel Bead Maker2mm",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-043.webp",
+   "sortOrder": 43
+  },
+  {
+   "sku": "ACC-044",
+   "name": "Bead 3d3D Nail Art Gel Bead Maker 3mm",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-044.webp",
+   "sortOrder": 44
+  },
+  {
+   "sku": "ACC-045",
+   "name": "Bead 3d3D Nail Art Gel Bead Maker 4mm",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-045.webp",
+   "sortOrder": 45
+  },
+  {
+   "sku": "ACC-046",
+   "name": "Bead 3d3D Nail Art Gel Bead Maker",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-046.webp",
+   "sortOrder": 46
+  },
+  {
+   "sku": "ACC-047",
+   "name": "Liquid Container Big",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 7.5,
+   "imageUrl": "/catalog/ACC-047.webp",
+   "sortOrder": 47
+  },
+  {
+   "sku": "ACC-048",
+   "name": "Liquid Container Small Lotus",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/ACC-048.webp",
+   "sortOrder": 48
+  },
+  {
+   "sku": "ACC-049",
+   "name": "Liquid Container Heart Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 7.5,
+   "imageUrl": "/catalog/ACC-049.webp",
+   "sortOrder": 49
+  },
+  {
+   "sku": "ACC-050",
+   "name": "Big Liquid Container Heart Clear",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 7.5,
+   "imageUrl": "/catalog/ACC-050.webp",
+   "sortOrder": 50
+  },
+  {
+   "sku": "ACC-051",
+   "name": "Liquid Container Small",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-051.webp",
+   "sortOrder": 51
+  },
+  {
+   "sku": "ACC-052",
+   "name": "Nail drill QT0558-07",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-052.webp",
+   "sortOrder": 52
+  },
+  {
+   "sku": "ACC-053",
+   "name": "Nail drill 3/32 ‘Small Flame (F)",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/ACC-053.webp",
+   "sortOrder": 53
+  },
+  {
+   "sku": "ACC-054",
+   "name": "Nail drill small",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-054.webp",
+   "sortOrder": 54
+  },
+  {
+   "sku": "ACC-055",
+   "name": "Nail drill QT0558-02",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-055.webp",
+   "sortOrder": 55
+  },
+  {
+   "sku": "ACC-056",
+   "name": "Nail drill QT0558-03",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-056.webp",
+   "sortOrder": 56
+  },
+  {
+   "sku": "ACC-057",
+   "name": "Nail drill QT0558-04",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-057.webp",
+   "sortOrder": 57
+  },
+  {
+   "sku": "ACC-058",
+   "name": "Nail drill QT0558-05",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-058.webp",
+   "sortOrder": 58
+  },
+  {
+   "sku": "ACC-059",
+   "name": "Nail drill QT0558-06",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-059.webp",
+   "sortOrder": 59
+  },
+  {
+   "sku": "ACC-060",
+   "name": "Nail drill A",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-060.webp",
+   "sortOrder": 60
+  },
+  {
+   "sku": "ACC-061",
+   "name": "Nail Drill Bit - New Version",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/ACC-061.webp",
+   "sortOrder": 61
+  },
+  {
+   "sku": "ACC-062",
+   "name": "Nail Drill mini – Long",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-062.webp",
+   "sortOrder": 62
+  },
+  {
+   "sku": "ACC-063",
+   "name": "Gel Clean Nail Drill Bit",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/ACC-063.webp",
+   "sortOrder": 63
+  },
+  {
+   "sku": "ACC-064",
+   "name": "Disposable Mat - Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-064.webp",
+   "sortOrder": 64
+  },
+  {
+   "sku": "ACC-065",
+   "name": "Disposable Mat - Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-065.webp",
+   "sortOrder": 65
+  },
+  {
+   "sku": "ACC-066",
+   "name": "Flash light Pink Silicone",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/ACC-066.webp",
+   "sortOrder": 66
+  },
+  {
+   "sku": "ACC-067",
+   "name": "Flash light Blue Silicone",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/ACC-067.webp",
+   "sortOrder": 67
+  },
+  {
+   "sku": "ACC-068",
+   "name": "Nail Stamps Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-068.webp",
+   "sortOrder": 68
+  },
+  {
+   "sku": "ACC-069",
+   "name": "Nail Stamps Purple",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-069.webp",
+   "sortOrder": 69
+  },
+  {
+   "sku": "ACC-070",
+   "name": "Nail Stamps Clear",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-070.webp",
+   "sortOrder": 70
+  },
+  {
+   "sku": "ACC-071",
+   "name": "Nail Tips Almond shape - nature - in box",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-071.webp",
+   "sortOrder": 71
+  },
+  {
+   "sku": "ACC-072",
+   "name": "Nail Tips Square shape - nature - in box",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-072.webp",
+   "sortOrder": 72
+  },
+  {
+   "sku": "ACC-073",
+   "name": "Nail Tips Coffin shape - nature - in box",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/ACC-073.webp",
+   "sortOrder": 73
+  },
+  {
+   "sku": "ACC-074",
+   "name": "Nail Tips Square shape - clear - in box",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 7.5,
+   "imageUrl": "/catalog/ACC-074.webp",
+   "sortOrder": 74
+  },
+  {
+   "sku": "ACC-075",
+   "name": "Nail Tips Almond shape - clear - in box",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/ACC-075.webp",
+   "sortOrder": 75
+  },
+  {
+   "sku": "ACC-076",
+   "name": "Nail Tips Coffin shape - nature - in bag",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/ACC-076.webp",
+   "sortOrder": 76
+  },
+  {
+   "sku": "ACC-077",
+   "name": "Nail Tips Coffin shape - clear - in bag",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/ACC-077.webp",
+   "sortOrder": 77
+  },
+  {
+   "sku": "ACC-078",
+   "name": "Nail Tips Almond shape - nature - in bag",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/ACC-078.webp",
+   "sortOrder": 78
+  },
+  {
+   "sku": "ACC-079",
+   "name": "Dual Form Tip Nails – Extension for Gel Builder",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/ACC-079.webp",
+   "sortOrder": 79
+  },
+  {
+   "sku": "ACC-080",
+   "name": "Toe Forms",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.95,
+   "imageUrl": "/catalog/ACC-080.webp",
+   "sortOrder": 80
+  },
+  {
+   "sku": "ACC-081",
+   "name": "Air Brush Premium Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 45.0,
+   "imageUrl": "/catalog/ACC-081.webp",
+   "sortOrder": 81
+  },
+  {
+   "sku": "ACC-082",
+   "name": "Air Brush Premium Blue",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 45.0,
+   "imageUrl": "/catalog/ACC-082.webp",
+   "sortOrder": 82
+  },
+  {
+   "sku": "ACC-083",
+   "name": "Air Brush Red",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 25.0,
+   "imageUrl": "/catalog/ACC-083.webp",
+   "sortOrder": 83
+  },
+  {
+   "sku": "ACC-084",
+   "name": "Air Brush Black",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 25.0,
+   "imageUrl": "/catalog/ACC-084.webp",
+   "sortOrder": 84
+  },
+  {
+   "sku": "ACC-085",
+   "name": "Silver Nail Stand",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-085.webp",
+   "sortOrder": 85
+  },
+  {
+   "sku": "ACC-086",
+   "name": "Gold Nail Stand",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-086.webp",
+   "sortOrder": 86
+  },
+  {
+   "sku": "ACC-087",
+   "name": "Pink Nail Stand",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/ACC-087.webp",
+   "sortOrder": 87
+  },
+  {
+   "sku": "ACC-088",
+   "name": "Portable Lamb Stand Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/ACC-088.webp",
+   "sortOrder": 88
+  },
+  {
+   "sku": "ACC-089",
+   "name": "Portable Lamb Stand White",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/ACC-089.webp",
+   "sortOrder": 89
+  },
+  {
+   "sku": "ACC-090",
+   "name": "UV Lamp With Portable Stand White",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 12.0,
+   "imageUrl": "/catalog/ACC-090.webp",
+   "sortOrder": 90
+  },
+  {
+   "sku": "ACC-091",
+   "name": "UV Lamp With Portable Stand Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 12.0,
+   "imageUrl": "/catalog/ACC-091.webp",
+   "sortOrder": 91
+  },
+  {
+   "sku": "ACC-092",
+   "name": "Screen Display LED Pink",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 10.0,
+   "imageUrl": "/catalog/ACC-092.webp",
+   "sortOrder": 92
+  },
+  {
+   "sku": "ACC-093",
+   "name": "Screen Display LED White",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 10.0,
+   "imageUrl": "/catalog/ACC-093.webp",
+   "sortOrder": 93
+  },
+  {
+   "sku": "ACC-094",
+   "name": "Nail Dust Silver",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/ACC-094.webp",
+   "sortOrder": 94
+  },
+  {
+   "sku": "ACC-095",
+   "name": "Nail Dust Gold",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/ACC-095.webp",
+   "sortOrder": 95
+  },
+  {
+   "sku": "ACC-096",
+   "name": "\\",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/ACC-096.webp",
+   "sortOrder": 96
+  },
+  {
+   "sku": "ACC-097",
+   "name": "Clearning Dust Brushes",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/ACC-097.webp",
+   "sortOrder": 97
+  },
+  {
+   "sku": "ACC-098",
+   "name": "Silicone Pens",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/ACC-098.webp",
+   "sortOrder": 98
+  },
+  {
+   "sku": "ACC-099",
+   "name": "KB-011 X-Acto Knife For Nail Art",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/ACC-099.webp",
+   "sortOrder": 99
+  },
+  {
+   "sku": "ACC-100",
+   "name": "White Sponge 1.0cm",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 3.5,
+   "imageUrl": null,
+   "sortOrder": 100
+  },
+  {
+   "sku": "ACC-101",
+   "name": "Hair Fiber Applicator",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/ACC-101.webp",
+   "sortOrder": 101
+  },
+  {
+   "sku": "ACC-102",
+   "name": "Diamond Removal Nippers",
+   "category": "ACCESSORIES",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/ACC-102.webp",
+   "sortOrder": 102
+  },
+  {
+   "sku": "MAG-001",
+   "name": "Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/MAG-001.webp",
+   "sortOrder": 103
+  },
+  {
+   "sku": "MAG-002",
+   "name": "Magnet Fancy Eye Cat 9 Pcs",
+   "category": "MAGNET",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/MAG-002.webp",
+   "sortOrder": 104
+  },
+  {
+   "sku": "MAG-003",
+   "name": "Magnet Cat Eyes New Version",
+   "category": "MAGNET",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/MAG-003.webp",
+   "sortOrder": 105
+  },
+  {
+   "sku": "MAG-004",
+   "name": "Magnet 5in1",
+   "category": "MAGNET",
+   "wholesalePrice": 4.25,
+   "imageUrl": "/catalog/MAG-004.webp",
+   "sortOrder": 106
+  },
+  {
+   "sku": "MAG-005",
+   "name": "Magnet Silver Metal Cat Eye",
+   "category": "MAGNET",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/MAG-005.webp",
+   "sortOrder": 107
+  },
+  {
+   "sku": "MAG-006",
+   "name": "Magnet Cigar Handle Cat Eye",
+   "category": "MAGNET",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/MAG-006.webp",
+   "sortOrder": 108
+  },
+  {
+   "sku": "MAG-007",
+   "name": "Pen Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/MAG-007.webp",
+   "sortOrder": 109
+  },
+  {
+   "sku": "MAG-008",
+   "name": "Magnet Square - Big",
+   "category": "MAGNET",
+   "wholesalePrice": 2.75,
+   "imageUrl": "/catalog/MAG-008.webp",
+   "sortOrder": 110
+  },
+  {
+   "sku": "MAG-009",
+   "name": "Magnet Square - Small",
+   "category": "MAGNET",
+   "wholesalePrice": 2.75,
+   "imageUrl": "/catalog/MAG-009.webp",
+   "sortOrder": 111
+  },
+  {
+   "sku": "MAG-010",
+   "name": "Magnet Ring",
+   "category": "MAGNET",
+   "wholesalePrice": 2.75,
+   "imageUrl": "/catalog/MAG-010.webp",
+   "sortOrder": 112
+  },
+  {
+   "sku": "MAG-011",
+   "name": "Y-shape Cat Magnet Black",
+   "category": "MAGNET",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/MAG-011.webp",
+   "sortOrder": 113
+  },
+  {
+   "sku": "MAG-012",
+   "name": "Y-shape Cat Magnet Gray",
+   "category": "MAGNET",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/MAG-012.webp",
+   "sortOrder": 114
+  },
+  {
+   "sku": "MAG-013",
+   "name": "5D Cat Eye Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 3.0,
+   "imageUrl": "/catalog/MAG-013.webp",
+   "sortOrder": 115
+  },
+  {
+   "sku": "MAG-014",
+   "name": "Scissors Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 2.75,
+   "imageUrl": "/catalog/MAG-014.webp",
+   "sortOrder": 116
+  },
+  {
+   "sku": "MAG-015",
+   "name": "4in1 Nail Art Cat Eye Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/MAG-015.webp",
+   "sortOrder": 117
+  },
+  {
+   "sku": "MAG-016",
+   "name": "New Generation Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MAG-016.webp",
+   "sortOrder": 118
+  },
+  {
+   "sku": "MAG-017",
+   "name": "Magnet Round - New Generation #1",
+   "category": "MAGNET",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/MAG-017.webp",
+   "sortOrder": 119
+  },
+  {
+   "sku": "MAG-018",
+   "name": "Magnet Round - New Generation #2",
+   "category": "MAGNET",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/MAG-018.webp",
+   "sortOrder": 120
+  },
+  {
+   "sku": "MAG-019",
+   "name": "Magnet Round - New Generation #3",
+   "category": "MAGNET",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/MAG-019.webp",
+   "sortOrder": 121
+  },
+  {
+   "sku": "MAG-020",
+   "name": "Magnet Round – New Generation #4",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-020.webp",
+   "sortOrder": 122
+  },
+  {
+   "sku": "MAG-021",
+   "name": "Magnet Round New Generation – Handle Pink",
+   "category": "MAGNET",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/MAG-021.webp",
+   "sortOrder": 123
+  },
+  {
+   "sku": "MAG-022",
+   "name": "Magnet Round New Generation – Handle Purple",
+   "category": "MAGNET",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/MAG-022.webp",
+   "sortOrder": 124
+  },
+  {
+   "sku": "MAG-023",
+   "name": "8in1 Starfish Magnet $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-023.webp",
+   "sortOrder": 125
+  },
+  {
+   "sku": "MAG-024",
+   "name": "Magnet 4in1 High Strength Green $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-024.webp",
+   "sortOrder": 126
+  },
+  {
+   "sku": "MAG-025",
+   "name": "Magnet 4in1 high strength – Purple $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-025.webp",
+   "sortOrder": 127
+  },
+  {
+   "sku": "MAG-026",
+   "name": "Magnet #1 - Pink",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-026.webp",
+   "sortOrder": 128
+  },
+  {
+   "sku": "MAG-027",
+   "name": "Magnet #2 - Turquoise",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-027.webp",
+   "sortOrder": 129
+  },
+  {
+   "sku": "MAG-028",
+   "name": "Magnet #3 - Blue",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-028.webp",
+   "sortOrder": 130
+  },
+  {
+   "sku": "MAG-029",
+   "name": "3in1 Cat Eyes Magnet Green $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-029.webp",
+   "sortOrder": 131
+  },
+  {
+   "sku": "MAG-030",
+   "name": "3in1 Cat Eyes Magnet Pink $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-030.webp",
+   "sortOrder": 132
+  },
+  {
+   "sku": "MAG-031",
+   "name": "Double Head Magnet Green",
+   "category": "MAGNET",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MAG-031.webp",
+   "sortOrder": 133
+  },
+  {
+   "sku": "MAG-032",
+   "name": "Double Head Magnet Pink",
+   "category": "MAGNET",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MAG-032.webp",
+   "sortOrder": 134
+  },
+  {
+   "sku": "MAG-033",
+   "name": "Finger Magnet Short $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-033.webp",
+   "sortOrder": 135
+  },
+  {
+   "sku": "MAG-034",
+   "name": "Finger Magnet Long $",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-034.webp",
+   "sortOrder": 136
+  },
+  {
+   "sku": "MAG-035",
+   "name": "Magnet in bag (version 1)",
+   "category": "MAGNET",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/MAG-035.webp",
+   "sortOrder": 137
+  },
+  {
+   "sku": "MAG-036",
+   "name": "Gradient magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-036.webp",
+   "sortOrder": 138
+  },
+  {
+   "sku": "MAG-037",
+   "name": "Kitty Cat Eye Magnet-Pink",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-037.webp",
+   "sortOrder": 139
+  },
+  {
+   "sku": "MAG-038",
+   "name": "Rotating magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-038.webp",
+   "sortOrder": 140
+  },
+  {
+   "sku": "MAG-039",
+   "name": "Hallow Cat eye Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/MAG-039.webp",
+   "sortOrder": 141
+  },
+  {
+   "sku": "MAG-040",
+   "name": "Magnet stick cat eye",
+   "category": "MAGNET",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/MAG-040.webp",
+   "sortOrder": 142
+  },
+  {
+   "sku": "MAG-041",
+   "name": "Magnet stick cat eye",
+   "category": "MAGNET",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/MAG-041.webp",
+   "sortOrder": 143
+  },
+  {
+   "sku": "MAG-042",
+   "name": "Magnet stick cat eye",
+   "category": "MAGNET",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/MAG-042.webp",
+   "sortOrder": 144
+  },
+  {
+   "sku": "MAG-043",
+   "name": "Three-Hearted Cat’s Eye Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-043.webp",
+   "sortOrder": 145
+  },
+  {
+   "sku": "MAG-044",
+   "name": "Two-in-one Rotating Peephole Magnet",
+   "category": "MAGNET",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/MAG-044.webp",
+   "sortOrder": 146
+  },
+  {
+   "sku": "ZBJ-001",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 147
+  },
+  {
+   "sku": "ZBJ-002",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 148
+  },
+  {
+   "sku": "ZBJ-003",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 24.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 149
+  },
+  {
+   "sku": "ZBJ-004",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 150
+  },
+  {
+   "sku": "ZBJ-005",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 29.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 151
+  },
+  {
+   "sku": "ZBJ-006",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 33.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 152
+  },
+  {
+   "sku": "ZBJ-007",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 20",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 36.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 153
+  },
+  {
+   "sku": "ZBJ-008",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 22",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 39.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 154
+  },
+  {
+   "sku": "ZBJ-009",
+   "name": "Z Brushes - Kolinsky – Acrylic Gold Handle – Size 24",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 43.5,
+   "imageUrl": "/catalog/ZBJ-001.webp",
+   "sortOrder": 155
+  },
+  {
+   "sku": "ZBJ-010",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 156
+  },
+  {
+   "sku": "ZBJ-011",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 19.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 157
+  },
+  {
+   "sku": "ZBJ-012",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 24.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 158
+  },
+  {
+   "sku": "ZBJ-013",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 159
+  },
+  {
+   "sku": "ZBJ-014",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 29.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 160
+  },
+  {
+   "sku": "ZBJ-015",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 33.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 161
+  },
+  {
+   "sku": "ZBJ-016",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 20",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 36.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 162
+  },
+  {
+   "sku": "ZBJ-017",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 22",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 39.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 163
+  },
+  {
+   "sku": "ZBJ-018",
+   "name": "Z Brushes - Kolinsky – Acrylic Wood Handle – Size 24",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 43.0,
+   "imageUrl": "/catalog/ZBJ-010.webp",
+   "sortOrder": 164
+  },
+  {
+   "sku": "ZBJ-019",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 165
+  },
+  {
+   "sku": "ZBJ-020",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 166
+  },
+  {
+   "sku": "ZBJ-021",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 24.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 167
+  },
+  {
+   "sku": "ZBJ-022",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 168
+  },
+  {
+   "sku": "ZBJ-023",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 29.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 169
+  },
+  {
+   "sku": "ZBJ-024",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 33.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 170
+  },
+  {
+   "sku": "ZBJ-025",
+   "name": "Z Brushes - Kolinsky – Crystal Handle – Size 20",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 36.5,
+   "imageUrl": "/catalog/ZBJ-019.webp",
+   "sortOrder": 171
+  },
+  {
+   "sku": "ZBJ-026",
+   "name": "Z Brushes – Kolinsky - Pink Liquid Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.5,
+   "imageUrl": "/catalog/ZBJ-026.webp",
+   "sortOrder": 172
+  },
+  {
+   "sku": "ZBJ-027",
+   "name": "Z Brushes – Kolinsky - Pink Liquid Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZBJ-026.webp",
+   "sortOrder": 173
+  },
+  {
+   "sku": "ZBJ-028",
+   "name": "Z Brushes – Kolinsky - Pink Liquid Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 24.5,
+   "imageUrl": "/catalog/ZBJ-026.webp",
+   "sortOrder": 174
+  },
+  {
+   "sku": "ZBJ-029",
+   "name": "Z Brushes – Kolinsky - Pink Liquid Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.5,
+   "imageUrl": "/catalog/ZBJ-026.webp",
+   "sortOrder": 175
+  },
+  {
+   "sku": "ZBJ-030",
+   "name": "Z Brushes – Kolinsky - Pink Liquid Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 29.5,
+   "imageUrl": "/catalog/ZBJ-026.webp",
+   "sortOrder": 176
+  },
+  {
+   "sku": "ZBJ-031",
+   "name": "Z Brushes – Kolinsky - Pink Liquid Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 33.5,
+   "imageUrl": "/catalog/ZBJ-026.webp",
+   "sortOrder": 177
+  },
+  {
+   "sku": "ZBJ-032",
+   "name": "Z Brushes – Kolinsky - Blue Metal Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.5,
+   "imageUrl": "/catalog/ZBJ-032.webp",
+   "sortOrder": 178
+  },
+  {
+   "sku": "ZBJ-033",
+   "name": "Z Brushes – Kolinsky - Blue Metal Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZBJ-032.webp",
+   "sortOrder": 179
+  },
+  {
+   "sku": "ZBJ-034",
+   "name": "Z Brushes – Kolinsky - Blue Metal Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 24.5,
+   "imageUrl": "/catalog/ZBJ-032.webp",
+   "sortOrder": 180
+  },
+  {
+   "sku": "ZBJ-035",
+   "name": "Z Brushes – Kolinsky - Blue Metal Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.5,
+   "imageUrl": "/catalog/ZBJ-032.webp",
+   "sortOrder": 181
+  },
+  {
+   "sku": "ZBJ-036",
+   "name": "Z Brushes – Kolinsky - Blue Metal Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 29.5,
+   "imageUrl": "/catalog/ZBJ-032.webp",
+   "sortOrder": 182
+  },
+  {
+   "sku": "ZBJ-037",
+   "name": "Z Brushes – Kolinsky - Blue Metal Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 33.5,
+   "imageUrl": "/catalog/ZBJ-032.webp",
+   "sortOrder": 183
+  },
+  {
+   "sku": "ZBJ-038",
+   "name": "Brushes – Kolinsky J&K Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 15.95,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 184
+  },
+  {
+   "sku": "ZBJ-039",
+   "name": "Brushes – Kolinsky J&K Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.7,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 185
+  },
+  {
+   "sku": "ZBJ-040",
+   "name": "Brushes – Kolinsky J&K Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 21.5,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 186
+  },
+  {
+   "sku": "ZBJ-041",
+   "name": "Brushes – Kolinsky J&K Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 23.5,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 187
+  },
+  {
+   "sku": "ZBJ-042",
+   "name": "Brushes – Kolinsky J&K Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.0,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 188
+  },
+  {
+   "sku": "ZBJ-043",
+   "name": "Brushes – Kolinsky J&K Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 31.0,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 189
+  },
+  {
+   "sku": "ZBJ-044",
+   "name": "Brushes – Kolinsky J&K Handle – Size 20",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 34.0,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 190
+  },
+  {
+   "sku": "ZBJ-045",
+   "name": "Brushes – Kolinsky J&K Handle – Size 22",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 36.0,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 191
+  },
+  {
+   "sku": "ZBJ-046",
+   "name": "Brushes – Kolinsky J&K Handle – Size 24",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 40.0,
+   "imageUrl": "/catalog/ZBJ-038.webp",
+   "sortOrder": 192
+  },
+  {
+   "sku": "ZBJ-047",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 08",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 18.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 193
+  },
+  {
+   "sku": "ZBJ-048",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 10",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 194
+  },
+  {
+   "sku": "ZBJ-049",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 12",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 24.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 195
+  },
+  {
+   "sku": "ZBJ-050",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 14",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 27.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 196
+  },
+  {
+   "sku": "ZBJ-051",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 16",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 29.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 197
+  },
+  {
+   "sku": "ZBJ-052",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 18",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 33.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 198
+  },
+  {
+   "sku": "ZBJ-053",
+   "name": "Z Brushes - Kolinsky – Acrylic Pink Handle – Size 20",
+   "category": "Z Brushes & J&K",
+   "wholesalePrice": 36.5,
+   "imageUrl": "/catalog/ZBJ-047.webp",
+   "sortOrder": 199
+  },
+  {
+   "sku": "ZB-001",
+   "name": "ZZ Brushes –Kolinsky Wood Handle – Size 08",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 9.0,
+   "imageUrl": "/catalog/ZB-001.webp",
+   "sortOrder": 200
+  },
+  {
+   "sku": "ZB-002",
+   "name": "ZZ Brushes –Kolinsky Wood Handle – Size 10",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 11.0,
+   "imageUrl": "/catalog/ZB-001.webp",
+   "sortOrder": 201
+  },
+  {
+   "sku": "ZB-003",
+   "name": "ZZ Brushes –Kolinsky Wood Handle – Size 12",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 12.0,
+   "imageUrl": "/catalog/ZB-001.webp",
+   "sortOrder": 202
+  },
+  {
+   "sku": "ZB-004",
+   "name": "ZZ Brushes –Kolinsky Wood Handle – Size 14",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 16.5,
+   "imageUrl": "/catalog/ZB-001.webp",
+   "sortOrder": 203
+  },
+  {
+   "sku": "ZB-005",
+   "name": "ZZ Brushes –Kolinsky Wood Handle – Size 16",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 18.5,
+   "imageUrl": "/catalog/ZB-001.webp",
+   "sortOrder": 204
+  },
+  {
+   "sku": "ZB-006",
+   "name": "ZZ Brushes –Kolinsky Wood Handle – Size 18",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 20.5,
+   "imageUrl": "/catalog/ZB-001.webp",
+   "sortOrder": 205
+  },
+  {
+   "sku": "ZB-007",
+   "name": "ZZ Brushes – Kolinsky - Fancy White Handle – Size 08",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 9.5,
+   "imageUrl": "/catalog/ZB-007.webp",
+   "sortOrder": 206
+  },
+  {
+   "sku": "ZB-008",
+   "name": "ZZ Brushes – Kolinsky - Fancy White Handle – Size 10",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 11.5,
+   "imageUrl": "/catalog/ZB-007.webp",
+   "sortOrder": 207
+  },
+  {
+   "sku": "ZB-009",
+   "name": "ZZ Brushes – Kolinsky - Fancy White Handle – Size 12",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 12.5,
+   "imageUrl": "/catalog/ZB-007.webp",
+   "sortOrder": 208
+  },
+  {
+   "sku": "ZB-010",
+   "name": "ZZ Brushes – Kolinsky - Fancy White Handle – Size 14",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 17.0,
+   "imageUrl": "/catalog/ZB-007.webp",
+   "sortOrder": 209
+  },
+  {
+   "sku": "ZB-011",
+   "name": "ZZ Brushes – Kolinsky - Fancy White Handle – Size 16",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 19.0,
+   "imageUrl": "/catalog/ZB-007.webp",
+   "sortOrder": 210
+  },
+  {
+   "sku": "ZB-012",
+   "name": "ZZ Brushes – Kolinsky - Fancy White Handle – Size 18",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 21.0,
+   "imageUrl": "/catalog/ZB-007.webp",
+   "sortOrder": 211
+  },
+  {
+   "sku": "ZB-013",
+   "name": "ZZ Brushes – Konlisky - Pink Handle – Size 08",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 11.0,
+   "imageUrl": "/catalog/ZB-013.webp",
+   "sortOrder": 212
+  },
+  {
+   "sku": "ZB-014",
+   "name": "ZZ Brushes – Konlisky - Pink Handle – Size 10",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 13.0,
+   "imageUrl": "/catalog/ZB-013.webp",
+   "sortOrder": 213
+  },
+  {
+   "sku": "ZB-015",
+   "name": "ZZ Brushes – Konlisky - Pink Handle – Size 12",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 15.0,
+   "imageUrl": "/catalog/ZB-013.webp",
+   "sortOrder": 214
+  },
+  {
+   "sku": "ZB-016",
+   "name": "ZZ Brushes – Konlisky - Pink Handle – Size 14",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 17.5,
+   "imageUrl": "/catalog/ZB-013.webp",
+   "sortOrder": 215
+  },
+  {
+   "sku": "ZB-017",
+   "name": "ZZ Brushes – Konlisky - Pink Handle – Size 16",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZB-013.webp",
+   "sortOrder": 216
+  },
+  {
+   "sku": "ZB-018",
+   "name": "ZZ Brushes – Purple Handle – Size 08",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 11.0,
+   "imageUrl": "/catalog/ZB-018.webp",
+   "sortOrder": 217
+  },
+  {
+   "sku": "ZB-019",
+   "name": "ZZ Brushes – Purple Handle – Size 10",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 13.0,
+   "imageUrl": "/catalog/ZB-018.webp",
+   "sortOrder": 218
+  },
+  {
+   "sku": "ZB-020",
+   "name": "ZZ Brushes – Purple Handle – Size 12",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 15.0,
+   "imageUrl": "/catalog/ZB-018.webp",
+   "sortOrder": 219
+  },
+  {
+   "sku": "ZB-021",
+   "name": "ZZ Brushes – Purple Handle – Size 14",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 17.5,
+   "imageUrl": "/catalog/ZB-018.webp",
+   "sortOrder": 220
+  },
+  {
+   "sku": "ZB-022",
+   "name": "ZZ Brushes – Purple Handle – Size 16",
+   "category": "ZZ Brushes",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/ZB-018.webp",
+   "sortOrder": 221
+  },
+  {
+   "sku": "LB-001",
+   "name": "Lightning Brand - ⚡️Kolinsky Wood Handle Brushes – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 25.0,
+   "imageUrl": "/catalog/LB-001.webp",
+   "sortOrder": 222
+  },
+  {
+   "sku": "LB-002",
+   "name": "Lightning Brand - ⚡️Kolinsky Wood Handle Brushes – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 28.5,
+   "imageUrl": "/catalog/LB-001.webp",
+   "sortOrder": 223
+  },
+  {
+   "sku": "LB-003",
+   "name": "Lightning Brand - ⚡️Kolinsky Wood Handle Brushes – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 30.0,
+   "imageUrl": "/catalog/LB-001.webp",
+   "sortOrder": 224
+  },
+  {
+   "sku": "LB-004",
+   "name": "Lightning Brand - ⚡️Kolinsky Wood Handle Brushes – Size 18",
+   "category": "Lightning Brand",
+   "wholesalePrice": 35.0,
+   "imageUrl": "/catalog/LB-001.webp",
+   "sortOrder": 225
+  },
+  {
+   "sku": "LB-005",
+   "name": "Lightning Brand - ⚡️⚡️ Kolinsky Brushes Purple Handle – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 11.0,
+   "imageUrl": "/catalog/LB-005.webp",
+   "sortOrder": 226
+  },
+  {
+   "sku": "LB-006",
+   "name": "Lightning Brand - ⚡️⚡️ Kolinsky Brushes Purple Handle – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 13.0,
+   "imageUrl": "/catalog/LB-005.webp",
+   "sortOrder": 227
+  },
+  {
+   "sku": "LB-007",
+   "name": "Lightning Brand - ⚡️⚡️ Kolinsky Brushes Purple Handle – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 15.0,
+   "imageUrl": "/catalog/LB-005.webp",
+   "sortOrder": 228
+  },
+  {
+   "sku": "LB-008",
+   "name": "Lightning Brand - ⚡️⚡️ Kolinsky Brushes Purple Handle – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 17.5,
+   "imageUrl": "/catalog/LB-005.webp",
+   "sortOrder": 229
+  },
+  {
+   "sku": "LB-009",
+   "name": "Lightning Brand - ⚡️⚡️ Kolinsky Brushes Purple Handle – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 19.5,
+   "imageUrl": "/catalog/LB-005.webp",
+   "sortOrder": 230
+  },
+  {
+   "sku": "LB-010",
+   "name": "X-Class French – Size 06",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/LB-010.webp",
+   "sortOrder": 231
+  },
+  {
+   "sku": "LB-011",
+   "name": "X-Class French – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/LB-010.webp",
+   "sortOrder": 232
+  },
+  {
+   "sku": "LB-012",
+   "name": "X-Class French – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/LB-010.webp",
+   "sortOrder": 233
+  },
+  {
+   "sku": "LB-013",
+   "name": "X-Class French – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/LB-010.webp",
+   "sortOrder": 234
+  },
+  {
+   "sku": "LB-014",
+   "name": "X-Class French – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/LB-010.webp",
+   "sortOrder": 235
+  },
+  {
+   "sku": "LB-015",
+   "name": "X-Class French – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/LB-010.webp",
+   "sortOrder": 236
+  },
+  {
+   "sku": "LB-016",
+   "name": "Z Brushes - French – Crystal Handle – Size 06",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-016.webp",
+   "sortOrder": 237
+  },
+  {
+   "sku": "LB-017",
+   "name": "Z Brushes - French – Crystal Handle – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-016.webp",
+   "sortOrder": 238
+  },
+  {
+   "sku": "LB-018",
+   "name": "Z Brushes - French – Crystal Handle – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-016.webp",
+   "sortOrder": 239
+  },
+  {
+   "sku": "LB-019",
+   "name": "Z Brushes - French – Crystal Handle – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-016.webp",
+   "sortOrder": 240
+  },
+  {
+   "sku": "LB-020",
+   "name": "Z Brushes - French – Crystal Handle – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-016.webp",
+   "sortOrder": 241
+  },
+  {
+   "sku": "LB-021",
+   "name": "Z Brushes - French – Crystal Handle – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-016.webp",
+   "sortOrder": 242
+  },
+  {
+   "sku": "LB-022",
+   "name": "Z Brushes - French – Wood Handle – Size 06",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-022.webp",
+   "sortOrder": 243
+  },
+  {
+   "sku": "LB-023",
+   "name": "Z Brushes - French – Wood Handle – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-022.webp",
+   "sortOrder": 244
+  },
+  {
+   "sku": "LB-024",
+   "name": "Z Brushes - French – Wood Handle – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-022.webp",
+   "sortOrder": 245
+  },
+  {
+   "sku": "LB-025",
+   "name": "Z Brushes - French – Wood Handle – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-022.webp",
+   "sortOrder": 246
+  },
+  {
+   "sku": "LB-026",
+   "name": "Z Brushes - French – Wood Handle – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-022.webp",
+   "sortOrder": 247
+  },
+  {
+   "sku": "LB-027",
+   "name": "Z Brushes - French – Wood Handle – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-022.webp",
+   "sortOrder": 248
+  },
+  {
+   "sku": "LB-028",
+   "name": "Z Brushes - French – Metal Heart Handle – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 7.0,
+   "imageUrl": "/catalog/LB-028.webp",
+   "sortOrder": 249
+  },
+  {
+   "sku": "LB-029",
+   "name": "Z Brushes - French – Metal Heart Handle – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 7.0,
+   "imageUrl": "/catalog/LB-028.webp",
+   "sortOrder": 250
+  },
+  {
+   "sku": "LB-030",
+   "name": "Z Brushes - French – Metal Heart Handle – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 7.0,
+   "imageUrl": "/catalog/LB-028.webp",
+   "sortOrder": 251
+  },
+  {
+   "sku": "LB-031",
+   "name": "Z Brushes - French – Metal Heart Handle – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 7.0,
+   "imageUrl": "/catalog/LB-028.webp",
+   "sortOrder": 252
+  },
+  {
+   "sku": "LB-032",
+   "name": "Z Brushes - French – Metal Heart Handle – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 7.0,
+   "imageUrl": "/catalog/LB-028.webp",
+   "sortOrder": 253
+  },
+  {
+   "sku": "LB-033",
+   "name": "Z Brushes - French – Pink Handle – Size 06",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-033.webp",
+   "sortOrder": 254
+  },
+  {
+   "sku": "LB-034",
+   "name": "Z Brushes - French – Pink Handle – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-033.webp",
+   "sortOrder": 255
+  },
+  {
+   "sku": "LB-035",
+   "name": "Z Brushes - French – Pink Handle – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-033.webp",
+   "sortOrder": 256
+  },
+  {
+   "sku": "LB-036",
+   "name": "Z Brushes - French – Pink Handle – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-033.webp",
+   "sortOrder": 257
+  },
+  {
+   "sku": "LB-037",
+   "name": "Z Brushes - French – Pink Handle – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-033.webp",
+   "sortOrder": 258
+  },
+  {
+   "sku": "LB-038",
+   "name": "Z Brushes - French – Pink Handle – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-033.webp",
+   "sortOrder": 259
+  },
+  {
+   "sku": "LB-039",
+   "name": "Z Brushes - French – Dotting Wood – Size 06",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-039.webp",
+   "sortOrder": 260
+  },
+  {
+   "sku": "LB-040",
+   "name": "Z Brushes - French – Dotting Wood – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-039.webp",
+   "sortOrder": 261
+  },
+  {
+   "sku": "LB-041",
+   "name": "Z Brushes - French – Dotting Wood – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-039.webp",
+   "sortOrder": 262
+  },
+  {
+   "sku": "LB-042",
+   "name": "Z Brushes - French – Dotting Wood – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-039.webp",
+   "sortOrder": 263
+  },
+  {
+   "sku": "LB-043",
+   "name": "Z Brushes - French – Dotting Wood – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-039.webp",
+   "sortOrder": 264
+  },
+  {
+   "sku": "LB-044",
+   "name": "Z Brushes - French – Dotting Wood – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-039.webp",
+   "sortOrder": 265
+  },
+  {
+   "sku": "LB-045",
+   "name": "Z Brushes - French – Gold Handle – Size 06",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-045.webp",
+   "sortOrder": 266
+  },
+  {
+   "sku": "LB-046",
+   "name": "Z Brushes - French – Gold Handle – Size 08",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-045.webp",
+   "sortOrder": 267
+  },
+  {
+   "sku": "LB-047",
+   "name": "Z Brushes - French – Gold Handle – Size 10",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-045.webp",
+   "sortOrder": 268
+  },
+  {
+   "sku": "LB-048",
+   "name": "Z Brushes - French – Gold Handle – Size 12",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-045.webp",
+   "sortOrder": 269
+  },
+  {
+   "sku": "LB-049",
+   "name": "Z Brushes - French – Gold Handle – Size 14",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-045.webp",
+   "sortOrder": 270
+  },
+  {
+   "sku": "LB-050",
+   "name": "Z Brushes - French – Gold Handle – Size 16",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-045.webp",
+   "sortOrder": 271
+  },
+  {
+   "sku": "LB-051",
+   "name": "Nail Art Brushes Ombre – Flat Nail Art",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-051.webp",
+   "sortOrder": 272
+  },
+  {
+   "sku": "LB-052",
+   "name": "Nail Art Brushes Oval – 3D Nail Art",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-052.webp",
+   "sortOrder": 273
+  },
+  {
+   "sku": "LB-053",
+   "name": "Nail Art Brushes 5mm – 10mm Nail Art",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-053.webp",
+   "sortOrder": 274
+  },
+  {
+   "sku": "LB-054",
+   "name": "Nail Art Brushes 15mm – 20mm Nail Art",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-054.webp",
+   "sortOrder": 275
+  },
+  {
+   "sku": "LB-055",
+   "name": "Nail Art Brushes 20mm – 25mm Nail Art",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-055.webp",
+   "sortOrder": 276
+  },
+  {
+   "sku": "LB-056",
+   "name": "Nail Art Brushes 6 pcs for a pack",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/LB-056.webp",
+   "sortOrder": 277
+  },
+  {
+   "sku": "LB-057",
+   "name": "Brown Wooden Handle Linear Brush Size 6mm",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-057.webp",
+   "sortOrder": 278
+  },
+  {
+   "sku": "LB-058",
+   "name": "Brown Wooden Handle Linear Brush Size 9mm",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-058.webp",
+   "sortOrder": 279
+  },
+  {
+   "sku": "LB-059",
+   "name": "Brown Wooden Handle Linear Brush Size 12mm",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-059.webp",
+   "sortOrder": 280
+  },
+  {
+   "sku": "LB-060",
+   "name": "Gradient Blue Handle Liner Brushes Set 3pcs (12-15-20mm)",
+   "category": "Lightning Brand",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/LB-060.webp",
+   "sortOrder": 281
+  },
+  {
+   "sku": "LB-061",
+   "name": "Nail Art Brushes Flat/Slant",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-061.webp",
+   "sortOrder": 282
+  },
+  {
+   "sku": "LB-062",
+   "name": "Nail Art Brushes Poly Gel Black",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-062.webp",
+   "sortOrder": 283
+  },
+  {
+   "sku": "LB-063",
+   "name": "Nail Art Brushes Poly Gel Pink",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-063.webp",
+   "sortOrder": 284
+  },
+  {
+   "sku": "LB-064",
+   "name": "Gel Brushes With Linear",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/LB-064.webp",
+   "sortOrder": 285
+  },
+  {
+   "sku": "LB-065",
+   "name": "Nail Art Brushes Oval/Flat",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-065.webp",
+   "sortOrder": 286
+  },
+  {
+   "sku": "LB-066",
+   "name": "Nail Art Brushes Nail Art Liner Kit Set",
+   "category": "Lightning Brand",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/LB-066.webp",
+   "sortOrder": 287
+  },
+  {
+   "sku": "LB-067",
+   "name": "Triangle Nail Art Brushes",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-067.webp",
+   "sortOrder": 288
+  },
+  {
+   "sku": "LB-068",
+   "name": "Linear French Brushes",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-068.webp",
+   "sortOrder": 289
+  },
+  {
+   "sku": "LB-069",
+   "name": "French Linear Set X-Class Linear Brush set 4pcs",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-069.webp",
+   "sortOrder": 290
+  },
+  {
+   "sku": "LB-070",
+   "name": "Nail Art Brushes 6 pcs for a pack",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/LB-070.webp",
+   "sortOrder": 291
+  },
+  {
+   "sku": "LB-071",
+   "name": "Nail Art Brushes Nail Art Linear Kit Set",
+   "category": "Lightning Brand",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/LB-071.webp",
+   "sortOrder": 292
+  },
+  {
+   "sku": "LB-072",
+   "name": "Nail Art Brushes 3D set - size 2,4,6",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/LB-072.webp",
+   "sortOrder": 293
+  },
+  {
+   "sku": "LB-073",
+   "name": "Nail Art Brushes Half Moon set",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/LB-073.webp",
+   "sortOrder": 294
+  },
+  {
+   "sku": "LB-074",
+   "name": "Nail Art Brushes Ombre",
+   "category": "Lightning Brand",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/LB-074.webp",
+   "sortOrder": 295
+  },
+  {
+   "sku": "LB-075",
+   "name": "Nail Art Brushes Daisy Flower",
+   "category": "Lightning Brand",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/LB-075.webp",
+   "sortOrder": 296
+  },
+  {
+   "sku": "LB-076",
+   "name": "Nail Art Brushes White Wooden Handle Double-Head Silicone",
+   "category": "Lightning Brand",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LB-076.webp",
+   "sortOrder": 297
+  },
+  {
+   "sku": "LB-077",
+   "name": "Gel Builder Brush #6/8mm",
+   "category": "Lightning Brand",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/LB-077.webp",
+   "sortOrder": 298
+  },
+  {
+   "sku": "LB-078",
+   "name": "Nail Art Brushes Professional Duo Brush- set 2 pcs Oval - Flat",
+   "category": "Lightning Brand",
+   "wholesalePrice": 10.0,
+   "imageUrl": "/catalog/LB-078.webp",
+   "sortOrder": 299
+  },
+  {
+   "sku": "PQU-001",
+   "name": "JKIC001 CUTICLE NIPPERS Special Steel – JAW 14 &16",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 3.85,
+   "imageUrl": "/catalog/PQU-001.webp",
+   "sortOrder": 300
+  },
+  {
+   "sku": "PQU-002",
+   "name": "JKIC002 CUTICLE NIPPERS Special Steel – JAW 12, 14, 16",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 3.85,
+   "imageUrl": "/catalog/PQU-002.webp",
+   "sortOrder": 301
+  },
+  {
+   "sku": "PQU-003",
+   "name": "JKIC003 CUTICLE NIPPERS Special Steel – JAW 12, 14 &16",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 3.85,
+   "imageUrl": "/catalog/PQU-003.webp",
+   "sortOrder": 302
+  },
+  {
+   "sku": "PQU-004",
+   "name": "JKIC004 CUTICLE NIPPERS Special Steel – JAW 12, 14 & 16",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 4.25,
+   "imageUrl": "/catalog/PQU-004.webp",
+   "sortOrder": 303
+  },
+  {
+   "sku": "PQU-005",
+   "name": "JKIC005 CUTICLE NIPPERS Special Steel – JAW 12, 14 &16",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 4.25,
+   "imageUrl": "/catalog/PQU-005.webp",
+   "sortOrder": 304
+  },
+  {
+   "sku": "PQU-006",
+   "name": "JKI001 ACRYLIC NIPPERS Special Steel",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 4.25,
+   "imageUrl": "/catalog/PQU-006.webp",
+   "sortOrder": 305
+  },
+  {
+   "sku": "PQU-007",
+   "name": "JKI002 TOE NAIL CUTTER Stainless Steel",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PQU-007.webp",
+   "sortOrder": 306
+  },
+  {
+   "sku": "PQU-008",
+   "name": "JKI003 CUTTER CUTICLE NIPPERS",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PQU-008.webp",
+   "sortOrder": 307
+  },
+  {
+   "sku": "PQU-009",
+   "name": "JKI005 INGROWN NIPPERS - VERSION 1 Stainless Steel",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/PQU-009.webp",
+   "sortOrder": 308
+  },
+  {
+   "sku": "PQU-010",
+   "name": "JKI007 INGROWN NIPPERS - VERSION 2 Stainless Steel",
+   "category": "PROFESSIONAL QUALITY - ULTRA SHARP",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/PQU-010.webp",
+   "sortOrder": 309
+  },
+  {
+   "sku": "PDS-001",
+   "name": "JKIC007 DS CUTICLE NIPPERS Stainless Steel – JAW 14 & 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.75,
+   "imageUrl": "/catalog/PDS-001.webp",
+   "sortOrder": 310
+  },
+  {
+   "sku": "PDS-002",
+   "name": "JKIC007 CUTICLE NIPPERS Stainless Steel – JAW 12, 14 &16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PDS-002.webp",
+   "sortOrder": 311
+  },
+  {
+   "sku": "PDS-003",
+   "name": "JKIC008 DS CUTICLE NIPPERS Stainless Steel – JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PDS-003.webp",
+   "sortOrder": 312
+  },
+  {
+   "sku": "PDS-004",
+   "name": "JKIC008 CUTICLE NIPPERS Stainless Steel – JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.75,
+   "imageUrl": "/catalog/PDS-004.webp",
+   "sortOrder": 313
+  },
+  {
+   "sku": "PDS-005",
+   "name": "JKIC009 CUTICLE NIPPERS Stainless Steel– JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PDS-005.webp",
+   "sortOrder": 314
+  },
+  {
+   "sku": "PDS-006",
+   "name": "JKIC010 CUTICLE NIPPERS Stainless Steel – JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PDS-006.webp",
+   "sortOrder": 315
+  },
+  {
+   "sku": "PDS-007",
+   "name": "JKIC010 DS CUTICLE NIPPERS Stainless Steel – JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.75,
+   "imageUrl": "/catalog/PDS-007.webp",
+   "sortOrder": 316
+  },
+  {
+   "sku": "PDS-008",
+   "name": "JKIC012 CUTICLE NIPPERS Stainless Steel – JAW 14 & 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 5.75,
+   "imageUrl": "/catalog/PDS-008.webp",
+   "sortOrder": 317
+  },
+  {
+   "sku": "PDS-009",
+   "name": "JKIC014 CUTICLE NIPPERS Stainless Steel – JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 8.5,
+   "imageUrl": "/catalog/PDS-009.webp",
+   "sortOrder": 318
+  },
+  {
+   "sku": "PDS-010",
+   "name": "JKIC015 CUTICLE NIPPERS Stainless Steel – JAW 12, 14, 16",
+   "category": "PROPER DESIGN - SHARP BLADE",
+   "wholesalePrice": 8.5,
+   "imageUrl": "/catalog/PDS-010.webp",
+   "sortOrder": 319
+  },
+  {
+   "sku": "FCG-001",
+   "name": "JKIC021 NAIL CLIPPER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/FCG-001.webp",
+   "sortOrder": 320
+  },
+  {
+   "sku": "FCG-002",
+   "name": "JKIC022 NAIL CLIPPER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 2.25,
+   "imageUrl": "/catalog/FCG-002.webp",
+   "sortOrder": 321
+  },
+  {
+   "sku": "FCG-003",
+   "name": "JKI023 Wide Jaw Clipper - Curved Premium Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/FCG-003.webp",
+   "sortOrder": 322
+  },
+  {
+   "sku": "FCG-004",
+   "name": "JKIC024 Wide Jaw Clipper - Straight Premium Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/FCG-004.webp",
+   "sortOrder": 323
+  },
+  {
+   "sku": "FCG-005",
+   "name": "JKIC025",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 0.85,
+   "imageUrl": "/catalog/FCG-005.webp",
+   "sortOrder": 324
+  },
+  {
+   "sku": "FCG-006",
+   "name": "JKIC026",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 0.85,
+   "imageUrl": "/catalog/FCG-006.webp",
+   "sortOrder": 325
+  },
+  {
+   "sku": "FCG-007",
+   "name": "JKIC8520 Curved",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/FCG-007.webp",
+   "sortOrder": 326
+  },
+  {
+   "sku": "FCG-008",
+   "name": "JKIC8521 Slanted",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/FCG-008.webp",
+   "sortOrder": 327
+  },
+  {
+   "sku": "FCG-009",
+   "name": "JKIP005 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.65,
+   "imageUrl": "/catalog/FCG-009.webp",
+   "sortOrder": 328
+  },
+  {
+   "sku": "FCG-010",
+   "name": "JKIP006 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 2.0,
+   "imageUrl": "/catalog/FCG-010.webp",
+   "sortOrder": 329
+  },
+  {
+   "sku": "FCG-011",
+   "name": "JKIP007 Ingrown Pusher - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.2,
+   "imageUrl": "/catalog/FCG-011.webp",
+   "sortOrder": 330
+  },
+  {
+   "sku": "FCG-012",
+   "name": "JKIP008 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.95,
+   "imageUrl": "/catalog/FCG-012.webp",
+   "sortOrder": 331
+  },
+  {
+   "sku": "FCG-013",
+   "name": "JKIP009 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.95,
+   "imageUrl": "/catalog/FCG-013.webp",
+   "sortOrder": 332
+  },
+  {
+   "sku": "FCG-014",
+   "name": "JKIP010 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.95,
+   "imageUrl": "/catalog/FCG-014.webp",
+   "sortOrder": 333
+  },
+  {
+   "sku": "FCG-015",
+   "name": "JKIP012 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.95,
+   "imageUrl": "/catalog/FCG-015.webp",
+   "sortOrder": 334
+  },
+  {
+   "sku": "FCG-016",
+   "name": "JKIP014 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 2.5,
+   "imageUrl": "/catalog/FCG-016.webp",
+   "sortOrder": 335
+  },
+  {
+   "sku": "FCG-017",
+   "name": "JKIP015 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.95,
+   "imageUrl": "/catalog/FCG-017.webp",
+   "sortOrder": 336
+  },
+  {
+   "sku": "FCG-018",
+   "name": "JKIP016 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.95,
+   "imageUrl": "/catalog/FCG-018.webp",
+   "sortOrder": 337
+  },
+  {
+   "sku": "FCG-019",
+   "name": "JKIP017 PUSHER - Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 5.0,
+   "imageUrl": "/catalog/FCG-019.webp",
+   "sortOrder": 338
+  },
+  {
+   "sku": "FCG-020",
+   "name": "Gel removal pushers New version",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 1.75,
+   "imageUrl": "/catalog/FCG-020.webp",
+   "sortOrder": 339
+  },
+  {
+   "sku": "FCG-021",
+   "name": "JKIT001 NAIL TIP CUTTER Stainless Steel Color",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.45,
+   "imageUrl": "/catalog/FCG-021.webp",
+   "sortOrder": 340
+  },
+  {
+   "sku": "FCG-022",
+   "name": "JKIT003 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.45,
+   "imageUrl": "/catalog/FCG-022.webp",
+   "sortOrder": 341
+  },
+  {
+   "sku": "FCG-023",
+   "name": "JKIT007 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.45,
+   "imageUrl": "/catalog/FCG-023.webp",
+   "sortOrder": 342
+  },
+  {
+   "sku": "FCG-024",
+   "name": "JKIT008 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/FCG-024.webp",
+   "sortOrder": 343
+  },
+  {
+   "sku": "FCG-025",
+   "name": "JKIT009 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/FCG-025.webp",
+   "sortOrder": 344
+  },
+  {
+   "sku": "FCG-026",
+   "name": "JKIT010 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/FCG-026.webp",
+   "sortOrder": 345
+  },
+  {
+   "sku": "FCG-027",
+   "name": "JKIT011 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/FCG-027.webp",
+   "sortOrder": 346
+  },
+  {
+   "sku": "FCG-028",
+   "name": "JKIT004 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/FCG-028.webp",
+   "sortOrder": 347
+  },
+  {
+   "sku": "FCG-029",
+   "name": "Premium JKIT005 NAIL TIP CUTTER Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 6.0,
+   "imageUrl": "/catalog/FCG-029.webp",
+   "sortOrder": 348
+  },
+  {
+   "sku": "FCG-030",
+   "name": "KBS-001 KB Gold Manicure Scissor Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/FCG-030.webp",
+   "sortOrder": 349
+  },
+  {
+   "sku": "FCG-031",
+   "name": "KBS-002 $ Nose Scissor",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/FCG-031.webp",
+   "sortOrder": 350
+  },
+  {
+   "sku": "FCG-032",
+   "name": "KBS-003 KB Manicure Scissor",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/FCG-032.webp",
+   "sortOrder": 351
+  },
+  {
+   "sku": "FCG-033",
+   "name": "KBS-004 Curved Scissor Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/FCG-033.webp",
+   "sortOrder": 352
+  },
+  {
+   "sku": "FCG-034",
+   "name": "KBS-005 Extra Long Scissor Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/FCG-034.webp",
+   "sortOrder": 353
+  },
+  {
+   "sku": "FCG-035",
+   "name": "KBS-006 Deluxe Cuticle Scissor",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/FCG-035.webp",
+   "sortOrder": 354
+  },
+  {
+   "sku": "FCG-036",
+   "name": "KBS-007 Stainless Steel Scissor",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/FCG-036.webp",
+   "sortOrder": 355
+  },
+  {
+   "sku": "FCG-037",
+   "name": "KBS-008",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/FCG-037.webp",
+   "sortOrder": 356
+  },
+  {
+   "sku": "FCG-038",
+   "name": "KBE-001 Slant Tweezer Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/FCG-038.webp",
+   "sortOrder": 357
+  },
+  {
+   "sku": "FCG-039",
+   "name": "KBE-002 Slant Tip Tweezer Stainless Steel",
+   "category": "FIRM & COMFORTABLE GRIP",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/FCG-039.webp",
+   "sortOrder": 358
+  },
+  {
+   "sku": "PPM-001",
+   "name": "KB-001 EYELASH TWEEZERS Gold Edge-A Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/PPM-001.webp",
+   "sortOrder": 359
+  },
+  {
+   "sku": "PPM-002",
+   "name": "KB-002 EYELASH TWEEZERS Gold Edge-B Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/PPM-002.webp",
+   "sortOrder": 360
+  },
+  {
+   "sku": "PPM-003",
+   "name": "KB-003 VOLUME TWEEZERS Volume Gold-A Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/PPM-003.webp",
+   "sortOrder": 361
+  },
+  {
+   "sku": "PPM-004",
+   "name": "KB-004 VOLUME TWEEZER Volume Gold-B Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/PPM-004.webp",
+   "sortOrder": 362
+  },
+  {
+   "sku": "PPM-005",
+   "name": "KB-005 VOLUME TWEEZER Volume Gold-C Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 6.5,
+   "imageUrl": "/catalog/PPM-005.webp",
+   "sortOrder": 363
+  },
+  {
+   "sku": "PPM-006",
+   "name": "KB-006 EYELASHES TWEEZER Full Polish Curve-A Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPM-006.webp",
+   "sortOrder": 364
+  },
+  {
+   "sku": "PPM-007",
+   "name": "KB-007 EYELASHES TWEEZER Full Polish Straight-A Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPM-007.webp",
+   "sortOrder": 365
+  },
+  {
+   "sku": "PPM-008",
+   "name": "KB-008 EYELASHES TWEEZER Sand & Points Polish Curve-A Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPM-008.webp",
+   "sortOrder": 366
+  },
+  {
+   "sku": "PPM-009",
+   "name": "KB-009 EYELASHES TWEEZER Sand & Points Polish Straight-A Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPM-009.webp",
+   "sortOrder": 367
+  },
+  {
+   "sku": "PPM-010",
+   "name": "KB-015 $ EYELASHES TWEEZER Stainless Steel",
+   "category": "PRECISION & PROFESSIONAL MAKING",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/PPM-010.webp",
+   "sortOrder": 368
+  },
+  {
+   "sku": "BG-001",
+   "name": "Builder Gel 01 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-001.webp",
+   "sortOrder": 369
+  },
+  {
+   "sku": "BG-002",
+   "name": "Builder Gel 02 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-002.webp",
+   "sortOrder": 370
+  },
+  {
+   "sku": "BG-003",
+   "name": "Builder Gel 03 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-003.webp",
+   "sortOrder": 371
+  },
+  {
+   "sku": "BG-004",
+   "name": "Builder Gel 04 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-004.webp",
+   "sortOrder": 372
+  },
+  {
+   "sku": "BG-005",
+   "name": "Builder Gel 05 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-005.webp",
+   "sortOrder": 373
+  },
+  {
+   "sku": "BG-006",
+   "name": "Builder Gel 06 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-006.webp",
+   "sortOrder": 374
+  },
+  {
+   "sku": "BG-007",
+   "name": "Builder Gel - Color 1 - 6",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-007.webp",
+   "sortOrder": 375
+  },
+  {
+   "sku": "BG-008",
+   "name": "Builder Gel 07 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-008.webp",
+   "sortOrder": 376
+  },
+  {
+   "sku": "BG-009",
+   "name": "Builder Gel 08 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-009.webp",
+   "sortOrder": 377
+  },
+  {
+   "sku": "BG-010",
+   "name": "Builder Gel 09 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-010.webp",
+   "sortOrder": 378
+  },
+  {
+   "sku": "BG-011",
+   "name": "Builder Gel 10 - 1 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/BG-011.webp",
+   "sortOrder": 379
+  },
+  {
+   "sku": "BG-012",
+   "name": "Builder Gel 01 - 2 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/BG-012.webp",
+   "sortOrder": 380
+  },
+  {
+   "sku": "BG-013",
+   "name": "Builder Gel 02 - 2 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/BG-013.webp",
+   "sortOrder": 381
+  },
+  {
+   "sku": "BG-014",
+   "name": "Builder Gel 03 - 2 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/BG-014.webp",
+   "sortOrder": 382
+  },
+  {
+   "sku": "BG-015",
+   "name": "Builder Gel 04 - 2 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/BG-015.webp",
+   "sortOrder": 383
+  },
+  {
+   "sku": "BG-016",
+   "name": "Builder Gel 05 - 2 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/BG-016.webp",
+   "sortOrder": 384
+  },
+  {
+   "sku": "BG-017",
+   "name": "Builder Gel 06 - 2 oz",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/BG-017.webp",
+   "sortOrder": 385
+  },
+  {
+   "sku": "BG-018",
+   "name": "Builder gel 1 oz (New Version) #11",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-018.webp",
+   "sortOrder": 386
+  },
+  {
+   "sku": "BG-019",
+   "name": "Builder gel 1 oz (New Version) #12",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-019.webp",
+   "sortOrder": 387
+  },
+  {
+   "sku": "BG-020",
+   "name": "Builder gel 1 oz (New Version) #13",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-020.webp",
+   "sortOrder": 388
+  },
+  {
+   "sku": "BG-021",
+   "name": "Builder gel 1 oz (New Version) #14",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-021.webp",
+   "sortOrder": 389
+  },
+  {
+   "sku": "BG-022",
+   "name": "Builder gel 1 oz (New Version) #15",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-022.webp",
+   "sortOrder": 390
+  },
+  {
+   "sku": "BG-023",
+   "name": "Builder gel 1 oz (New Version) #16",
+   "category": "BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/BG-023.webp",
+   "sortOrder": 391
+  },
+  {
+   "sku": "LBG-001",
+   "name": "Liquid Builder Gel 01",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LBG-001.webp",
+   "sortOrder": 392
+  },
+  {
+   "sku": "LBG-002",
+   "name": "Liquid Builder Gel 02",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LBG-002.webp",
+   "sortOrder": 393
+  },
+  {
+   "sku": "LBG-003",
+   "name": "Liquid Builder Gel 03",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LBG-003.webp",
+   "sortOrder": 394
+  },
+  {
+   "sku": "LBG-004",
+   "name": "Liquid Builder Gel 04",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LBG-004.webp",
+   "sortOrder": 395
+  },
+  {
+   "sku": "LBG-005",
+   "name": "Liquid Builder Gel 05",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LBG-005.webp",
+   "sortOrder": 396
+  },
+  {
+   "sku": "LBG-006",
+   "name": "Liquid Builder Gel 06",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/LBG-006.webp",
+   "sortOrder": 397
+  },
+  {
+   "sku": "LBG-007",
+   "name": "Liquid Builder Gel Color 1 - 6",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/LBG-007.webp",
+   "sortOrder": 398
+  },
+  {
+   "sku": "LBG-008",
+   "name": "Liquid Peel Off Latex Tape",
+   "category": "LIQUID BUILDER GEL",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/LBG-008.webp",
+   "sortOrder": 399
+  },
+  {
+   "sku": "POL-001",
+   "name": "Polygel Clear",
+   "category": "POLYGEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/POL-001.webp",
+   "sortOrder": 400
+  },
+  {
+   "sku": "POL-002",
+   "name": "Polygel White",
+   "category": "POLYGEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/POL-002.webp",
+   "sortOrder": 401
+  },
+  {
+   "sku": "POL-003",
+   "name": "Polygel Nude Pink",
+   "category": "POLYGEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/POL-003.webp",
+   "sortOrder": 402
+  },
+  {
+   "sku": "MPG-001",
+   "name": "Metallic Painting Gel Gold",
+   "category": "METALLIC PAINTING GEL",
+   "wholesalePrice": 4.75,
+   "imageUrl": "/catalog/MPG-001.webp",
+   "sortOrder": 403
+  },
+  {
+   "sku": "MPG-002",
+   "name": "Metallic Painting Gel Silver",
+   "category": "METALLIC PAINTING GEL",
+   "wholesalePrice": 4.75,
+   "imageUrl": "/catalog/MPG-002.webp",
+   "sortOrder": 404
+  },
+  {
+   "sku": "MPG-003",
+   "name": "Metallic Painting Gel Rose Gold",
+   "category": "METALLIC PAINTING GEL",
+   "wholesalePrice": 4.75,
+   "imageUrl": "/catalog/MPG-003.webp",
+   "sortOrder": 405
+  },
+  {
+   "sku": "MPG-004",
+   "name": "Metallic Painting Gel Gold - Thicker Rose Gold",
+   "category": "METALLIC PAINTING GEL",
+   "wholesalePrice": 4.75,
+   "imageUrl": "/catalog/MPG-004.webp",
+   "sortOrder": 406
+  },
+  {
+   "sku": "3CP-001",
+   "name": "3D Carving Pinch Gel (non-stick) Clear Size 0.17 oz Size 1 oz",
+   "category": "3D CARVING PINCH GEL (NON-STICK)",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/3CP-001.webp",
+   "sortOrder": 407
+  },
+  {
+   "sku": "3CP-002",
+   "name": "3D Carving Pinch Gel (non-stick) Seashell Size 0.17 oz Size 1 oz",
+   "category": "3D CARVING PINCH GEL (NON-STICK)",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/3CP-002.webp",
+   "sortOrder": 408
+  },
+  {
+   "sku": "3CP-003",
+   "name": "3D Carving Pinch Gel (non-stick) White Size 0.17 oz Size 1 oz",
+   "category": "3D CARVING PINCH GEL (NON-STICK)",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/3CP-003.webp",
+   "sortOrder": 409
+  },
+  {
+   "sku": "MD-001",
+   "name": "Molding Design Code 02",
+   "category": "M0LDING DESIGN",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MD-001.webp",
+   "sortOrder": 410
+  },
+  {
+   "sku": "MD-002",
+   "name": "Molding Design Code 03",
+   "category": "M0LDING DESIGN",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MD-002.webp",
+   "sortOrder": 411
+  },
+  {
+   "sku": "MD-003",
+   "name": "Molding Design Code 04",
+   "category": "M0LDING DESIGN",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MD-003.webp",
+   "sortOrder": 412
+  },
+  {
+   "sku": "MD-004",
+   "name": "Molding Design - 05 Code 05",
+   "category": "M0LDING DESIGN",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MD-004.webp",
+   "sortOrder": 413
+  },
+  {
+   "sku": "MD-005",
+   "name": "Molding Design MCL-CGSP-03",
+   "category": "M0LDING DESIGN",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/MD-005.webp",
+   "sortOrder": 414
+  },
+  {
+   "sku": "PPG-001",
+   "name": "Pat Painting Gel Series 01",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 12.0,
+   "imageUrl": "/catalog/PPG-001.webp",
+   "sortOrder": 415
+  },
+  {
+   "sku": "PPG-002",
+   "name": "Pat Painting Gel Series 01",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 12.0,
+   "imageUrl": "/catalog/PPG-002.webp",
+   "sortOrder": 416
+  },
+  {
+   "sku": "PPG-003",
+   "name": "Pat Painting Gel Series 03",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 8.5,
+   "imageUrl": "/catalog/PPG-003.webp",
+   "sortOrder": 417
+  },
+  {
+   "sku": "PPG-004",
+   "name": "Pat Painting Gel Series 04",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 8.5,
+   "imageUrl": "/catalog/PPG-004.webp",
+   "sortOrder": 418
+  },
+  {
+   "sku": "PPG-005",
+   "name": "Pat Painting Gel Series 05",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPG-005.webp",
+   "sortOrder": 419
+  },
+  {
+   "sku": "PPG-006",
+   "name": "Pat Painting Gel Series 06",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPG-006.webp",
+   "sortOrder": 420
+  },
+  {
+   "sku": "PPG-007",
+   "name": "Pat Painting Gel Series 07",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPG-007.webp",
+   "sortOrder": 421
+  },
+  {
+   "sku": "PPG-008",
+   "name": "Pat Painting Gel Series 08",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPG-008.webp",
+   "sortOrder": 422
+  },
+  {
+   "sku": "PPG-009",
+   "name": "Pat Painting Gel Series 09",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPG-009.webp",
+   "sortOrder": 423
+  },
+  {
+   "sku": "PPG-010",
+   "name": "Pat Painting Gel Series 10",
+   "category": "PAT PAINTING GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/PPG-010.webp",
+   "sortOrder": 424
+  },
+  {
+   "sku": "CEG-001",
+   "name": "Cat Eye Gel Code 01",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-001.webp",
+   "sortOrder": 425
+  },
+  {
+   "sku": "CEG-002",
+   "name": "Cat Eye Gel Code 02",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-002.webp",
+   "sortOrder": 426
+  },
+  {
+   "sku": "CEG-003",
+   "name": "Cat Eye Gel Code 03",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-003.webp",
+   "sortOrder": 427
+  },
+  {
+   "sku": "CEG-004",
+   "name": "Cat Eye Gel Code 04",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-004.webp",
+   "sortOrder": 428
+  },
+  {
+   "sku": "CEG-005",
+   "name": "Cat Eye Gel Code 05",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-005.webp",
+   "sortOrder": 429
+  },
+  {
+   "sku": "CEG-006",
+   "name": "Cat Eye Gel Code 06",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-006.webp",
+   "sortOrder": 430
+  },
+  {
+   "sku": "CEG-007",
+   "name": "Cat Eye Gel Code 07",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-007.webp",
+   "sortOrder": 431
+  },
+  {
+   "sku": "CEG-008",
+   "name": "Cat Eye Gel Code 08",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-008.webp",
+   "sortOrder": 432
+  },
+  {
+   "sku": "CEG-009",
+   "name": "Cat Eye Gel Code 09",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-009.webp",
+   "sortOrder": 433
+  },
+  {
+   "sku": "CEG-010",
+   "name": "Cat eye polish gel colour chart",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/CEG-010.webp",
+   "sortOrder": 434
+  },
+  {
+   "sku": "CEG-011",
+   "name": "Cat eye gel 9 colors",
+   "category": "CAT EYE GEL",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/CEG-011.webp",
+   "sortOrder": 435
+  },
+  {
+   "sku": "PG-001",
+   "name": "Poke Gel 01 White",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-001.webp",
+   "sortOrder": 436
+  },
+  {
+   "sku": "PG-002",
+   "name": "Professional for Poke Gel",
+   "category": "POKE GEL",
+   "wholesalePrice": 3.75,
+   "imageUrl": "/catalog/PG-002.webp",
+   "sortOrder": 437
+  },
+  {
+   "sku": "PG-003",
+   "name": "Poke Gel 01 White",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-003.webp",
+   "sortOrder": 438
+  },
+  {
+   "sku": "PG-004",
+   "name": "Poke Gel 02 Black",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-004.webp",
+   "sortOrder": 439
+  },
+  {
+   "sku": "PG-005",
+   "name": "Poke Gel 03 Organe",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-005.webp",
+   "sortOrder": 440
+  },
+  {
+   "sku": "PG-006",
+   "name": "Poke Gel 04 Green",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-006.webp",
+   "sortOrder": 441
+  },
+  {
+   "sku": "PG-007",
+   "name": "Poke Gel 05 Blue",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-007.webp",
+   "sortOrder": 442
+  },
+  {
+   "sku": "PG-008",
+   "name": "Poke Gel 06 Yellow",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-008.webp",
+   "sortOrder": 443
+  },
+  {
+   "sku": "PG-009",
+   "name": "Poke Gel 07 Carrming",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-009.webp",
+   "sortOrder": 444
+  },
+  {
+   "sku": "PG-010",
+   "name": "Poke Gel 08 Red",
+   "category": "POKE GEL",
+   "wholesalePrice": 5.5,
+   "imageUrl": "/catalog/PG-010.webp",
+   "sortOrder": 445
+  },
+  {
+   "sku": "GLU-001",
+   "name": "Rhinestone Glue",
+   "category": "GLUE",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/GLU-001.webp",
+   "sortOrder": 446
+  },
+  {
+   "sku": "GLU-002",
+   "name": "Rhinestone Glue 4 in 1",
+   "category": "GLUE",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/GLU-002.webp",
+   "sortOrder": 447
+  },
+  {
+   "sku": "GLU-003",
+   "name": "5D Sculpting Glue",
+   "category": "GLUE",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/GLU-003.webp",
+   "sortOrder": 448
+  },
+  {
+   "sku": "SG-001",
+   "name": "Spider Gel 01 Black",
+   "category": "Spider Gel",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/SG-001.webp",
+   "sortOrder": 449
+  },
+  {
+   "sku": "SG-002",
+   "name": "Spider Gel 02 White",
+   "category": "Spider Gel",
+   "wholesalePrice": 4.5,
+   "imageUrl": "/catalog/SG-002.webp",
+   "sortOrder": 450
+  },
+  {
+   "sku": "WPC-001",
+   "name": "White Pearl Chrome Powder",
+   "category": "WHITE PEARL CHROME POWDER",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/WPC-001.webp",
+   "sortOrder": 451
+  },
+  {
+   "sku": "SGP-001",
+   "name": "Solid Gel Paint White",
+   "category": "SOLID GEL PAINT",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/SGP-001.webp",
+   "sortOrder": 452
+  },
+  {
+   "sku": "SGP-002",
+   "name": "Solid Gel Paint Black",
+   "category": "SOLID GEL PAINT",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/SGP-002.webp",
+   "sortOrder": 453
+  },
+  {
+   "sku": "OP-001",
+   "name": "Ombre Powder 01",
+   "category": "OMBRE POWDER",
+   "wholesalePrice": 4.0,
+   "imageUrl": "/catalog/OP-001.webp",
+   "sortOrder": 454
+  },
+  {
+   "sku": "OP-002",
+   "name": "Ombre Powder 02",
+   "category": "OMBRE POWDER",
+   "wholesalePrice": 8.0,
+   "imageUrl": "/catalog/OP-002.webp",
+   "sortOrder": 455
+  },
+  {
+   "sku": "BG2-001",
+   "name": "D Blooming Gel",
+   "category": "BLOOMING GEL",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/BG2-001.webp",
+   "sortOrder": 456
+  },
+  {
+   "sku": "BG2-002",
+   "name": "Magic Remover Gel",
+   "category": "BLOOMING GEL",
+   "wholesalePrice": 3.5,
+   "imageUrl": "/catalog/BG2-002.webp",
+   "sortOrder": 457
+  },
+  {
+   "sku": "WDT-001",
+   "name": "Water Drop Topcoat 1 $",
+   "category": "Water Drop Topcoat",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/WDT-001.webp",
+   "sortOrder": 458
+  },
+  {
+   "sku": "WDT-002",
+   "name": "Water Drop Topcoat 2 $",
+   "category": "Water Drop Topcoat",
+   "wholesalePrice": 0.0,
+   "imageUrl": "/catalog/WDT-002.webp",
+   "sortOrder": 459
+  },
+  {
+   "sku": "CGO-001",
+   "name": "Cushion Gardient Omber Gel #1 Black",
+   "category": "CUSHION GARDIENT OMBER GEL",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/CGO-001.webp",
+   "sortOrder": 460
+  },
+  {
+   "sku": "CGO-002",
+   "name": "Cushion Gardient Omber Gel #1 White",
+   "category": "CUSHION GARDIENT OMBER GEL",
+   "wholesalePrice": 3.25,
+   "imageUrl": "/catalog/CGO-002.webp",
+   "sortOrder": 461
+  }
+ ]
+}

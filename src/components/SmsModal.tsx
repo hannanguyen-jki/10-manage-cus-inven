@@ -9,30 +9,30 @@ export type SmsTemplate = "FOLLOW_UP" | "AR_REMINDER" | "PROMOTION" | "BIRTHDAY"
 const TEMPLATES: { id: SmsTemplate; label: string; icon: any; build: (name: string, shop: string) => string }[] = [
   {
     id: "FOLLOW_UP",
-    label: "Hỏi thăm",
+    label: "Check in",
     icon: HandHeart,
     build: (n, s) =>
-      `JKIOCEAN thăm hỏi ${n}: Anh/chị dùng đợt hàng vừa rồi ở ${s} thế nào ạ? Khi cần thêm cọ, kềm hay phụ liệu cứ nhắn em nhé!`,
+      `Hi ${n}, this is JKIOCEAN. How is the last order working out at ${s}? Text us anytime you need more brushes, tools or supplies!`,
   },
   {
     id: "AR_REMINDER",
-    label: "Nhắc thanh toán",
+    label: "Payment reminder",
     icon: BellRing,
     build: (n, s) =>
-      `JKIOCEAN xin chào ${n}: Tiệm ${s} còn đơn hàng chưa thanh toán. Nhờ anh/chị hỗ trợ thanh toán qua Zelle/Check giúp bên em nhé. Cảm ơn anh/chị!`,
+      `Hi ${n}, this is JKIOCEAN. ${s} has an order that is still unpaid. Could you please send payment by Zelle or check when you can? Thank you!`,
   },
   {
     id: "PROMOTION",
-    label: "Hàng mới",
+    label: "New arrivals",
     icon: Gift,
     build: (n, s) =>
-      `JKIOCEAN: Xin chào ${n}, hàng mới vừa về kho Houston. Bên em gửi ưu đãi riêng cho ${s}, anh/chị nhắn lại để em gửi báo giá nhé!`,
+      `Hi ${n}, new products just arrived at our Houston warehouse. We have a special offer for ${s}. Reply and we will send you a quote!`,
   },
   {
     id: "BIRTHDAY",
-    label: "Sinh nhật",
+    label: "Birthday",
     icon: Cake,
-    build: (n, s) => `JKIOCEAN chúc ${n} sinh nhật vui vẻ, nhiều sức khỏe và tiệm ${s} ngày càng đông khách! 🎉`,
+    build: (n, s) => `Happy birthday ${n}! Wishing you great health and a busy year ahead at ${s}. – JKIOCEAN 🎉`,
   },
 ];
 
@@ -76,10 +76,10 @@ export default function SmsModal({
         body: JSON.stringify({ customerId: customer.id, toPhone: customer.phone, content, type }),
       });
       const data = await res.json();
-      onSent?.(!!data.success, data.success ? "Đã gửi tin nhắn" : data.error || "Không gửi được tin nhắn");
+      onSent?.(!!data.success, data.success ? "Message sent" : data.error || "Could not send message");
       if (data.success) onClose();
     } catch {
-      onSent?.(false, "Lỗi kết nối, thử lại sau");
+      onSent?.(false, "Connection error, please try again");
     } finally {
       setSending(false);
     }
@@ -89,16 +89,16 @@ export default function SmsModal({
     <Modal
       open={open}
       onClose={onClose}
-      title="Gửi tin nhắn"
+      title="Send a text"
       icon={MessageSquare}
       footer={
         <>
           <button onClick={onClose} className="btn-ghost">
-            Hủy
+            Cancel
           </button>
           <button onClick={send} disabled={sending || !content.trim()} className="btn-primary">
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            Gửi
+            Send
           </button>
         </>
       }
@@ -114,7 +114,7 @@ export default function SmsModal({
           </div>
 
           <div>
-            <p className="label">Chọn mẫu</p>
+            <p className="label">Template</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {TEMPLATES.map((t) => {
                 const Icon = t.icon;
@@ -138,9 +138,9 @@ export default function SmsModal({
           </div>
 
           <div>
-            <p className="label">Nội dung</p>
+            <p className="label">Message</p>
             <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} className="input resize-none" />
-            <p className="mt-1 text-right text-[11px] text-ink-400">{content.length} ký tự</p>
+            <p className="mt-1 text-right text-[11px] text-ink-400">{content.length} characters</p>
           </div>
         </div>
       )}

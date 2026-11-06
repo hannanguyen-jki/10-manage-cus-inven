@@ -3,8 +3,8 @@ import "./globals.css";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "JKI OCEAN – Quản lý khách hàng",
-  description: "Theo dõi khách hàng, tình trạng thanh toán và tạo báo giá",
+  title: "JKI OCEAN – Customer Management",
+  description: "Track customers, payments and quotes",
   icons: { icon: "/favicon.png", apple: "/logo.png" },
 };
 
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

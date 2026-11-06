@@ -71,7 +71,7 @@ export default function PaymentsPage() {
       const data = await res.json();
       setOrders(data.orders || []);
     } catch {
-      toast.show("Không tải được dữ liệu", "error");
+      toast.show("Could not load data", "error");
     } finally {
       setLoading(false);
     }
@@ -98,12 +98,12 @@ export default function PaymentsPage() {
       );
       if (results.every((r) => r.success)) {
         setOrders((prev) => prev.map((o) => (ids.includes(o.id) ? { ...o, status } : o)));
-        toast.show(status === "PAID" ? "Đã ghi nhận: khách đã trả" : "Đã cập nhật trạng thái");
+        toast.show(status === "PAID" ? "Marked as paid" : "Status updated");
       } else {
-        toast.show("Có đơn không cập nhật được", "error");
+        toast.show("Some orders could not be updated", "error");
       }
     } catch {
-      toast.show("Lỗi kết nối, thử lại sau", "error");
+      toast.show("Connection error, please try again", "error");
     } finally {
       setBusy(null);
     }
@@ -152,7 +152,7 @@ export default function PaymentsPage() {
   return (
     <div className="space-y-6">
       {toast.node}
-      <PageHeader icon={Wallet} title="Thanh toán" subtitle="Xem khách nào đã trả, khách nào chưa" />
+      <PageHeader icon={Wallet} title="Payments" subtitle="See who has paid and who has not" />
 
       {/* Infographic summary */}
       {loading ? (
@@ -163,7 +163,7 @@ export default function PaymentsPage() {
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <ProgressRing value={stats.PAID} total={stats.total} size={140} stroke={14} color="#10b981">
                 <span className="text-3xl font-bold text-ink-900">{stats.total ? Math.round((stats.PAID / stats.total) * 100) : 0}%</span>
-                <span className="text-xs text-ink-400">đơn đã trả</span>
+                <span className="text-xs text-ink-400">orders paid</span>
               </ProgressRing>
 
               <div className="flex-1 space-y-5">
@@ -178,7 +178,7 @@ export default function PaymentsPage() {
                           <span className="truncate">{m.label}</span>
                         </div>
                         <p className="mt-1 text-2xl font-bold text-ink-900 tabular-nums">{stats[s]}</p>
-                        <p className="text-[11px] text-ink-400">đơn hàng</p>
+                        <p className="text-[11px] text-ink-400">orders</p>
                       </div>
                     );
                   })}
@@ -197,9 +197,9 @@ export default function PaymentsPage() {
         <div className="inline-flex rounded-2xl bg-white border border-ink-100 p-1 shadow-sm self-start">
           {(
             [
-              { k: "OWING", label: "Chưa trả", n: stats.owingCustomers, dot: "bg-rose-500" },
-              { k: "PAID", label: "Đã trả hết", n: stats.paidCustomers, dot: "bg-emerald-500" },
-              { k: "ALL", label: "Tất cả", n: groups.length, dot: "bg-ink-300" },
+              { k: "OWING", label: "Unpaid", n: stats.owingCustomers, dot: "bg-rose-500" },
+              { k: "PAID", label: "Fully paid", n: stats.paidCustomers, dot: "bg-emerald-500" },
+              { k: "ALL", label: "All", n: groups.length, dot: "bg-ink-300" },
             ] as const
           ).map((t) => (
             <button
@@ -218,7 +218,7 @@ export default function PaymentsPage() {
         </div>
         <div className="relative sm:w-80">
           <Search className="w-4 h-4 text-ink-400 absolute left-4 top-1/2 -translate-y-1/2" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm khách hoặc mã đơn..." className="input pl-11 pr-10" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search customer or order #..." className="input pl-11 pr-10" />
           {search && (
             <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400">
               <X className="w-4 h-4" />
@@ -228,7 +228,7 @@ export default function PaymentsPage() {
       </div>
 
       <p className="flex items-center gap-2 text-xs text-ink-400 px-1">
-        <Info className="w-3.5 h-3.5" /> Bấm <b className="text-ink-600">“Đã trả”</b> khi khách thanh toán xong một đơn.
+        <Info className="w-3.5 h-3.5" /> Tap <b className="text-ink-600">“Paid”</b> when a customer has paid for an order.
       </p>
 
       {/* Groups */}
@@ -241,9 +241,9 @@ export default function PaymentsPage() {
       ) : visible.length === 0 ? (
         <div className="card">
           {tab === "OWING" && !search ? (
-            <EmptyState icon={PartyPopper} title="Tất cả đơn đã được thanh toán" hint="Không còn đơn nào chưa trả." />
+            <EmptyState icon={PartyPopper} title="Every order is paid" hint="Nothing left to collect." />
           ) : (
-            <EmptyState icon={Receipt} title="Không có kết quả" hint="Thử đổi từ khóa hoặc chọn tab khác." />
+            <EmptyState icon={Receipt} title="No results" hint="Try another search or tab." />
           )}
         </div>
       ) : (
@@ -268,10 +268,10 @@ export default function PaymentsPage() {
                       </p>
                     </div>
                     <div className="flex items-center gap-0.5">
-                      <a href={`tel:${g.customer.phone}`} className="icon-btn" title="Gọi điện">
+                      <a href={`tel:${g.customer.phone}`} className="icon-btn" title="Call">
                         <Phone className="w-4 h-4" />
                       </a>
-                      <button onClick={() => setSmsCustomer(g.customer)} className="icon-btn" title="Nhắn tin nhắc">
+                      <button onClick={() => setSmsCustomer(g.customer)} className="icon-btn" title="Send reminder">
                         <MessageSquare className="w-4 h-4" />
                       </button>
                     </div>
@@ -280,10 +280,10 @@ export default function PaymentsPage() {
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     {owing ? (
                       <span className="text-xs font-semibold text-rose-600">
-                        {g.unpaid.length}/{g.orders.length} đơn chưa trả · từ {timeAgo(g.oldest)}
+                        {g.unpaid.length}/{g.orders.length} unpaid · since {timeAgo(g.oldest)}
                       </span>
                     ) : (
-                      <span className="text-xs font-semibold text-emerald-600">Đã trả hết {g.orders.length} đơn</span>
+                      <span className="text-xs font-semibold text-emerald-600">All {g.orders.length} orders paid</span>
                     )}
                   </div>
 
@@ -309,7 +309,7 @@ export default function PaymentsPage() {
                               {o.itemCount > 0 && (
                                 <span className="inline-flex items-center gap-1">
                                   <Package className="w-3 h-3" />
-                                  {o.itemCount} món
+                                  {o.itemCount} {o.itemCount === 1 ? "item" : "items"}
                                 </span>
                               )}
                             </p>
@@ -320,7 +320,7 @@ export default function PaymentsPage() {
                               onClick={() => setStatus([o.id], "UNPAID", o.id)}
                               disabled={busy === o.id}
                               className="icon-btn"
-                              title="Hoàn tác: chuyển về chưa trả"
+                              title="Undo: mark as unpaid"
                             >
                               {busy === o.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Undo2 className="w-4 h-4" />}
                             </button>
@@ -331,7 +331,7 @@ export default function PaymentsPage() {
                               className="btn-success !px-3 !py-1.5 !text-xs !rounded-xl"
                             >
                               {busy === o.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                              Đã trả
+                              Paid
                             </button>
                           )}
                         </div>
@@ -340,7 +340,7 @@ export default function PaymentsPage() {
 
                   {g.orders.length - g.unpaid.length > (owing ? 1 : 3) && (
                     <Link href={`/customers/${g.customer.id}`} className="mt-2 block text-center text-xs font-semibold text-ink-400 hover:text-brand-600">
-                      + {g.orders.length - g.unpaid.length - (owing ? 1 : 3)} đơn đã trả khác
+                      + {g.orders.length - g.unpaid.length - (owing ? 1 : 3)} more paid orders
                     </Link>
                   )}
 
@@ -351,7 +351,7 @@ export default function PaymentsPage() {
                       className="btn-ghost w-full mt-3 !text-emerald-700 hover:!border-emerald-300"
                     >
                       {busy === g.customer.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCheck className="w-4 h-4" />}
-                      Đánh dấu trả hết {g.unpaid.length} đơn
+                      Mark all {g.unpaid.length} as paid
                     </button>
                   )}
                 </SpotlightCard>

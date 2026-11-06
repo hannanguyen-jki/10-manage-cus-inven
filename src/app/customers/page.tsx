@@ -63,7 +63,7 @@ export default function CustomersPage() {
       const data = await res.json();
       setCustomers(data.customers || []);
     } catch {
-      toast.show("Không tải được danh sách khách", "error");
+      toast.show("Could not load customers", "error");
     } finally {
       setLoading(false);
     }
@@ -97,7 +97,7 @@ export default function CustomersPage() {
   }, [customers, search, pay, state]);
 
   const exportCsv = () => {
-    const head = ["Tên tiệm", "Người liên hệ", "SĐT", "Email", "Thành phố", "Bang", "Thanh toán", "Đơn chưa trả"];
+    const head = ["Shop", "Contact", "Phone", "Email", "City", "State", "Payment", "Unpaid orders"];
     const rows = filtered.map((c) => [
       c.businessName,
       c.contactPerson,
@@ -105,14 +105,14 @@ export default function CustomersPage() {
       c.email || "",
       c.city || "",
       c.state || "",
-      c.payStatus === "PAID" ? "Đã trả hết" : c.payStatus === "OWING" ? "Chưa trả hết" : "Chưa có đơn",
+      c.payStatus === "PAID" ? "Fully paid" : c.payStatus === "OWING" ? "Not fully paid" : "No orders",
       c.unpaidOrders,
     ]);
     const csv = [head, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `khach-hang_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `customers_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -125,15 +125,15 @@ export default function CustomersPage() {
 
       <PageHeader
         icon={Users}
-        title="Khách hàng"
-        subtitle="Danh sách tiệm, liên hệ và tình trạng trả tiền"
+        title="Customers"
+        subtitle="Shops, contacts and payment status"
         actions={
           <>
-            <button onClick={exportCsv} className="btn-ghost" title="Tải file Excel (CSV)">
-              <Download className="w-4 h-4" /> Xuất file
+            <button onClick={exportCsv} className="btn-ghost" title="Download Excel (CSV)">
+              <Download className="w-4 h-4" /> Export
             </button>
             <button onClick={() => setAddOpen(true)} className="btn-primary">
-              <Plus className="w-4 h-4" /> Thêm khách
+              <Plus className="w-4 h-4" /> Add customer
             </button>
           </>
         }
@@ -146,7 +146,7 @@ export default function CustomersPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm tên tiệm, người liên hệ, số điện thoại..."
+            placeholder="Search shop, contact or phone..."
             className="input pl-11 pr-10"
           />
           {search && (
@@ -158,9 +158,9 @@ export default function CustomersPage() {
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
           {(
             [
-              { k: "ALL", label: "Tất cả", n: counts.all, dot: "bg-ink-300" },
-              { k: "PAID", label: "Đã trả hết", n: counts.paid, dot: "bg-emerald-500" },
-              { k: "OWING", label: "Chưa trả hết", n: counts.owing, dot: "bg-rose-500" },
+              { k: "ALL", label: "All", n: counts.all, dot: "bg-ink-300" },
+              { k: "PAID", label: "Fully paid", n: counts.paid, dot: "bg-emerald-500" },
+              { k: "OWING", label: "Not fully paid", n: counts.owing, dot: "bg-rose-500" },
             ] as const
           ).map((t) => (
             <button key={t.k} onClick={() => setPay(t.k)} className={cn("chip", pay === t.k ? "chip-on" : "chip-off")}>
@@ -170,7 +170,7 @@ export default function CustomersPage() {
             </button>
           ))}
           <select value={state} onChange={(e) => setState(e.target.value)} className="chip chip-off pr-7 cursor-pointer outline-none">
-            <option value="ALL">📍 Mọi bang</option>
+            <option value="ALL">📍 All states</option>
             {states.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -191,8 +191,8 @@ export default function CustomersPage() {
         <div className="card">
           <EmptyState
             icon={SearchX}
-            title="Không tìm thấy khách nào"
-            hint="Thử đổi từ khóa hoặc bỏ bớt bộ lọc."
+            title="No customers found"
+            hint="Try another search or clear the filters."
             action={
               hasFilter ? (
                 <button
@@ -203,7 +203,7 @@ export default function CustomersPage() {
                     setState("ALL");
                   }}
                 >
-                  Xóa bộ lọc
+                  Clear filters
                 </button>
               ) : undefined
             }
@@ -212,7 +212,7 @@ export default function CustomersPage() {
       ) : (
         <>
           <p className="text-sm text-ink-500 px-1">
-            Đang hiện <b className="text-ink-800">{filtered.length}</b> / {customers.length} khách
+            Showing <b className="text-ink-800">{filtered.length}</b> of {customers.length} customers
           </p>
 
           {/* Desktop table */}
@@ -220,11 +220,11 @@ export default function CustomersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-xs font-semibold text-ink-400 border-b border-ink-100">
-                  <th className="py-3.5 pl-6 pr-3">Tiệm</th>
-                  <th className="py-3.5 px-3">Liên hệ</th>
-                  <th className="py-3.5 px-3">Thanh toán</th>
-                  <th className="py-3.5 px-3 hidden 2xl:table-cell whitespace-nowrap">Mua gần nhất</th>
-                  <th className="py-3.5 pr-6 pl-3 text-right">Thao tác</th>
+                  <th className="py-3.5 pl-6 pr-3">Shop</th>
+                  <th className="py-3.5 px-3">Contact</th>
+                  <th className="py-3.5 px-3">Payment</th>
+                  <th className="py-3.5 px-3 hidden 2xl:table-cell whitespace-nowrap">Last order</th>
+                  <th className="py-3.5 pr-6 pl-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-ink-50">
@@ -310,17 +310,17 @@ export default function CustomersPage() {
 function RowActions({ c, onSms, compact }: { c: Customer; onSms: (t: SmsTemplate) => void; compact?: boolean }) {
   return (
     <div className="flex items-center justify-end gap-0.5">
-      <a href={`tel:${c.phone}`} className="icon-btn" title="Gọi điện">
+      <a href={`tel:${c.phone}`} className="icon-btn" title="Call">
         <Phone className="w-4 h-4" />
       </a>
-      <button onClick={() => onSms(c.payStatus === "OWING" ? "AR_REMINDER" : "FOLLOW_UP")} className="icon-btn" title="Nhắn tin">
+      <button onClick={() => onSms(c.payStatus === "OWING" ? "AR_REMINDER" : "FOLLOW_UP")} className="icon-btn" title="Text">
         <MessageSquare className="w-4 h-4" />
       </button>
-      <Link href={`/quotes/create?customerId=${c.id}`} className="icon-btn" title="Tạo báo giá">
+      <Link href={`/quotes/create?customerId=${c.id}`} className="icon-btn" title="Create quote">
         <FileText className="w-4 h-4" />
       </Link>
       {!compact && (
-        <Link href={`/customers/${c.id}`} className="icon-btn" title="Xem chi tiết">
+        <Link href={`/customers/${c.id}`} className="icon-btn" title="View details">
           <ChevronRight className="w-4 h-4" />
         </Link>
       )}

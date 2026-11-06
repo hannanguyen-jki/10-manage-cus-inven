@@ -37,7 +37,7 @@ export async function GET() {
     for (const c of customers) {
       tiers[(c.tier as keyof typeof tiers) || "STANDARD"] = (tiers[c.tier as keyof typeof tiers] || 0) + 1;
       statuses[(c.status as keyof typeof statuses) || "ACTIVE"] = (statuses[c.status as keyof typeof statuses] || 0) + 1;
-      const st = (c.state || "Khác").toUpperCase();
+      const st = (c.state || "Other").toUpperCase();
       states[st] = (states[st] || 0) + 1;
 
       const sum = summarizeOrders(c.orders || []);
@@ -112,6 +112,6 @@ export async function GET() {
     });
   } catch (error: any) {
     console.error("[Dashboard API Error]:", error);
-    return NextResponse.json({ success: false, error: "Không tải được dữ liệu tổng quan" }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Could not load overview" }, { status: 500 });
   }
 }

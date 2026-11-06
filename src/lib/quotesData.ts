@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import rawCustomers from "../../data/customers_extracted.json";
-import rawProducts from "../../data/products_extracted.json";
+import rawCatalog from "../../data/catalog.json";
 
 export interface QuoteItemData {
   id?: string;
@@ -73,18 +73,18 @@ export const SAMPLE_CUSTOMERS: QuoteCustomerData[] = (rawCustomers as any[]).map
   tier: c.tier || "STANDARD",
 }));
 
-// 345 Authentic Products imported from Mix 06.10. 2026.docx
-export const SAMPLE_PRODUCTS: ProductCatalogItem[] = (rawProducts as any[]).map((p, idx) => ({
-  id: `prod-${(idx + 1).toString().padStart(3, "0")}`,
+// Product catalog extracted from the Word price list (data/catalog.json); used when no database
+export const SAMPLE_PRODUCTS: ProductCatalogItem[] = (rawCatalog as any).products.map((p: any) => ({
+  id: `prod-${p.sku}`,
   sku: p.sku,
   name: p.name,
   category: p.category || "General",
-  description: p.description || "",
-  imageUrl: p.imageUrl || "/uploads/products/prod_001.png",
+  description: "",
+  imageUrl: p.imageUrl || "",
   wholesalePrice: Number(p.wholesalePrice || 0),
-  retailPrice: Number(p.retailPrice || 0),
-  currentStock: Number(p.currentStock || 0),
-  location: p.location || "Houston Hub",
+  retailPrice: 0,
+  currentStock: 0,
+  location: "",
 }));
 
 // In-Memory store for quotes created by users (no test quotes)

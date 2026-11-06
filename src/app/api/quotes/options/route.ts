@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { SAMPLE_CUSTOMERS, SAMPLE_PRODUCTS } from "@/lib/quotesData";
+import { listProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
@@ -30,25 +31,22 @@ export async function GET() {
       // Prisma not ready
     }
 
-    // Attempt to query real DB products
+    // Products in catalog order (database, or the Word catalog when offline)
     try {
-      products = await prisma.product.findMany({
-        select: {
-          id: true,
-          sku: true,
-          name: true,
-          category: true,
-          description: true,
-          imageUrl: true,
-          wholesalePrice: true,
-          retailPrice: true,
-          currentStock: true,
-          location: true,
-        },
-        orderBy: { name: "asc" },
-      });
+      products = (await listProducts()).map((p) => ({
+        id: p.id,
+        sku: p.sku,
+        name: p.name,
+        category: p.category,
+        description: "",
+        imageUrl: p.imageUrl || "",
+        wholesalePrice: p.wholesalePrice,
+        retailPrice: 0,
+        currentStock: 0,
+        location: "",
+      }));
     } catch {
-      // Prisma not ready
+      // fall back below
     }
 
     if (!customers || customers.length === 0) {

@@ -15,10 +15,10 @@ const cleanName = (name?: string) =>
   (name || "").replace(/\s*\([Ss][ếe]p\)/gi, "").replace(/\s*[Ss]ếp/gi, "").trim();
 
 function greeting(hour: number) {
-  if (hour < 11) return "Chào buổi sáng";
-  if (hour < 14) return "Chào buổi trưa";
-  if (hour < 18) return "Chào buổi chiều";
-  return "Chào buổi tối";
+  if (hour < 11) return "Good morning";
+  if (hour < 14) return "Good afternoon";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
 }
 
 export default function Navbar() {
@@ -65,19 +65,19 @@ export default function Navbar() {
         {/* Greeting (desktop) */}
         <div className="hidden lg:block">
           <p className="text-sm text-ink-400">{greeting(houstonHour)} 👋</p>
-          <p className="text-lg font-bold text-ink-900">{firstName || "bạn"}</p>
+          <p className="text-lg font-bold text-ink-900">{firstName || "there"}</p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Clocks */}
           <div className="hidden sm:flex items-center gap-1 rounded-2xl bg-white/80 backdrop-blur border border-ink-100 p-1 shadow-sm">
-            <div className="flex items-center gap-1.5 rounded-xl px-3 py-1.5" title="Giờ Houston (Mỹ)">
+            <div className="flex items-center gap-1.5 rounded-xl px-3 py-1.5" title="Houston time">
               <span className="text-[11px] font-semibold text-ink-400">Houston</span>
               <span className="text-sm font-semibold tabular-nums text-ink-800">{fmt("America/Chicago")}</span>
             </div>
             <div className="w-px h-5 bg-ink-100" />
-            <div className="flex items-center gap-1.5 rounded-xl px-3 py-1.5" title="Giờ Việt Nam">
-              <span className="text-[11px] font-semibold text-ink-400">Việt Nam</span>
+            <div className="flex items-center gap-1.5 rounded-xl px-3 py-1.5" title="Vietnam time">
+              <span className="text-[11px] font-semibold text-ink-400">Vietnam</span>
               <span className="text-sm font-semibold tabular-nums text-ink-800">{fmt("Asia/Ho_Chi_Minh")}</span>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function Navbar() {
                 <p className="text-sm font-semibold text-ink-800">{user.fullName}</p>
                 <p className="text-[11px] text-ink-400">{user.department || user.role}</p>
               </div>
-              <button onClick={handleLogout} title="Đăng xuất" aria-label="Đăng xuất" className="icon-btn hover:!text-rose-600 hover:!bg-rose-50">
+              <button onClick={handleLogout} title="Sign out" aria-label="Sign out" className="icon-btn hover:!text-rose-600 hover:!bg-rose-50">
                 <LogOut className="w-4 h-4" />
               </button>
             </div>

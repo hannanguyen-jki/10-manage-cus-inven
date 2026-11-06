@@ -55,7 +55,7 @@ export default function QuotesListPage() {
       const data = await res.json();
       if (data.success) setQuotes(data.quotes || []);
     } catch {
-      toast.show("Không tải được báo giá", "error");
+      toast.show("Could not load quotes", "error");
     } finally {
       setLoading(false);
     }
@@ -101,12 +101,12 @@ export default function QuotesListPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.show("Đã gửi báo giá qua tin nhắn");
+        toast.show("Quote sent by text");
         setSmsQuote(null);
         load();
-      } else toast.show(data.error || "Không gửi được", "error");
+      } else toast.show(data.error || "Could not send", "error");
     } catch {
-      toast.show("Lỗi kết nối", "error");
+      toast.show("Connection error", "error");
     } finally {
       setSending(false);
     }
@@ -122,12 +122,12 @@ export default function QuotesListPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.show("Đã cập nhật trạng thái");
+        toast.show("Status updated");
         setStatusQuote(null);
         load();
-      } else toast.show("Không cập nhật được", "error");
+      } else toast.show("Could not update", "error");
     } catch {
-      toast.show("Lỗi kết nối", "error");
+      toast.show("Connection error", "error");
     } finally {
       setUpdating(false);
     }
@@ -140,11 +140,11 @@ export default function QuotesListPage() {
       {toast.node}
       <PageHeader
         icon={FileText}
-        title="Báo giá"
-        subtitle="Tạo, gửi và theo dõi báo giá cho khách"
+        title="Quotes"
+        subtitle="Create, send and track quotes"
         actions={
           <Link href="/quotes/create" className="btn-primary">
-            <Plus className="w-4 h-4" /> Tạo báo giá
+            <Plus className="w-4 h-4" /> Create quote
           </Link>
         }
       />
@@ -152,13 +152,13 @@ export default function QuotesListPage() {
       {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <FadeIn>
-          <StatCard label="Tổng báo giá" value={counts.ALL} icon={FileText} tone="brand" onClick={() => setFilter("ALL")} active={filter === "ALL"} />
+          <StatCard label="All quotes" value={counts.ALL} icon={FileText} tone="brand" onClick={() => setFilter("ALL")} active={filter === "ALL"} />
         </FadeIn>
         <FadeIn delay={60}>
-          <StatCard label="Chờ khách trả lời" value={counts.SENT} icon={Hourglass} tone="amber" onClick={() => setFilter("SENT")} active={filter === "SENT"} />
+          <StatCard label="Waiting for reply" value={counts.SENT} icon={Hourglass} tone="amber" onClick={() => setFilter("SENT")} active={filter === "SENT"} />
         </FadeIn>
         <FadeIn delay={120}>
-          <StatCard label="Khách đồng ý" value={counts.ACCEPTED} icon={Trophy} tone="green" onClick={() => setFilter("ACCEPTED")} active={filter === "ACCEPTED"} />
+          <StatCard label="Accepted" value={counts.ACCEPTED} icon={Trophy} tone="green" onClick={() => setFilter("ACCEPTED")} active={filter === "ACCEPTED"} />
         </FadeIn>
         <FadeIn delay={180}>
           <SpotlightCard className="p-5 h-full flex items-center gap-4">
@@ -166,8 +166,8 @@ export default function QuotesListPage() {
               <span className="text-lg font-bold text-ink-900">{winRate}%</span>
             </ProgressRing>
             <div>
-              <p className="text-sm font-medium text-ink-500">Tỉ lệ chốt</p>
-              <p className="text-xs text-ink-400 mt-1">trong số báo giá đã có kết quả</p>
+              <p className="text-sm font-medium text-ink-500">Win rate</p>
+              <p className="text-xs text-ink-400 mt-1">of quotes with an answer</p>
             </div>
           </SpotlightCard>
         </FadeIn>
@@ -178,14 +178,14 @@ export default function QuotesListPage() {
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
           {(["ALL", "DRAFT", "SENT", "ACCEPTED", "REJECTED"] as const).map((k) => (
             <button key={k} onClick={() => setFilter(k)} className={cn("chip", filter === k ? "chip-on" : "chip-off")}>
-              {k === "ALL" ? "Tất cả" : QUOTE_META[k].label}
+              {k === "ALL" ? "All" : QUOTE_META[k].label}
               <span className={cn("rounded-full px-1.5", filter === k ? "bg-white/20" : "bg-ink-100")}>{counts[k]}</span>
             </button>
           ))}
         </div>
         <div className="relative flex-1 lg:max-w-sm lg:ml-auto">
           <Search className="w-4 h-4 text-ink-400 absolute left-4 top-1/2 -translate-y-1/2" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm mã báo giá, tên tiệm..." className="input pl-11" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search quote # or shop..." className="input pl-11" />
         </div>
       </div>
 
@@ -200,11 +200,11 @@ export default function QuotesListPage() {
         <div className="card">
           <EmptyState
             icon={FilePlus2}
-            title={quotes.length === 0 ? "Chưa có báo giá nào" : "Không có báo giá phù hợp"}
-            hint={quotes.length === 0 ? "Tạo báo giá đầu tiên, có ảnh sản phẩm và xuất PDF." : "Thử đổi bộ lọc hoặc từ khóa."}
+            title={quotes.length === 0 ? "No quotes yet" : "No matching quotes"}
+            hint={quotes.length === 0 ? "Create your first quote with product photos and a PDF." : "Try another filter or search."}
             action={
               <Link href="/quotes/create" className="btn-primary">
-                <Plus className="w-4 h-4" /> Tạo báo giá
+                <Plus className="w-4 h-4" /> Create quote
               </Link>
             }
           />
@@ -232,15 +232,15 @@ export default function QuotesListPage() {
                   <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-xl bg-ink-50 px-3 py-2">
                       <p className="text-ink-400 flex items-center gap-1">
-                        <Package className="w-3 h-3" /> Sản phẩm
+                        <Package className="w-3 h-3" /> Products
                       </p>
                       <p className="font-semibold text-ink-800 mt-0.5">
-                        {q.items.length} loại · {pcs.toLocaleString("en-US")} cái
+                        {q.items.length} items · {pcs.toLocaleString("en-US")} pcs
                       </p>
                     </div>
                     <div className={cn("rounded-xl px-3 py-2", expired ? "bg-rose-50" : "bg-ink-50")}>
                       <p className={cn("flex items-center gap-1", expired ? "text-rose-500" : "text-ink-400")}>
-                        <CalendarClock className="w-3 h-3" /> {expired ? "Đã hết hạn" : "Hiệu lực đến"}
+                        <CalendarClock className="w-3 h-3" /> {expired ? "Expired" : "Valid until"}
                       </p>
                       <p className={cn("font-semibold mt-0.5", expired ? "text-rose-700" : "text-ink-800")}>{formatDate(q.validUntil)}</p>
                     </div>
@@ -248,17 +248,17 @@ export default function QuotesListPage() {
 
                   <div className="flex-1" />
                   <div className="mt-4 pt-3 flex items-center gap-1 border-t border-ink-100">
-                    <a href={`/api/quotes/${q.id}/pdf`} target="_blank" rel="noopener noreferrer" className="icon-btn" title="Tải PDF">
+                    <a href={`/api/quotes/${q.id}/pdf`} target="_blank" rel="noopener noreferrer" className="icon-btn" title="Download PDF">
                       <Download className="w-4 h-4" />
                     </a>
-                    <button onClick={() => openSms(q)} className="icon-btn" title="Gửi qua tin nhắn">
+                    <button onClick={() => openSms(q)} className="icon-btn" title="Send by text">
                       <MessageSquare className="w-4 h-4" />
                     </button>
-                    <button onClick={() => setStatusQuote(q)} className="icon-btn" title="Đổi trạng thái">
+                    <button onClick={() => setStatusQuote(q)} className="icon-btn" title="Change status">
                       <Check className="w-4 h-4" />
                     </button>
                     <Link href={`/quotes/${q.id}`} className="ml-auto inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700 group/open">
-                      Mở <ChevronRight className="w-4 h-4 transition-transform group-hover/open:translate-x-0.5" />
+                      Open <ChevronRight className="w-4 h-4 transition-transform group-hover/open:translate-x-0.5" />
                     </Link>
                   </div>
                 </SpotlightCard>
@@ -272,15 +272,15 @@ export default function QuotesListPage() {
       <Modal
         open={!!smsQuote}
         onClose={() => setSmsQuote(null)}
-        title="Gửi báo giá qua tin nhắn"
+        title="Send quote by text"
         icon={MessageSquare}
         footer={
           <>
             <button onClick={() => setSmsQuote(null)} className="btn-ghost">
-              Hủy
+              Cancel
             </button>
             <button onClick={sendSms} disabled={sending || !smsText.trim()} className="btn-primary">
-              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Gửi
+              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Send
             </button>
           </>
         }
@@ -292,7 +292,7 @@ export default function QuotesListPage() {
               <span className="text-sm font-mono font-semibold text-brand-700">{smsQuote.customer.phone}</span>
             </div>
             <div>
-              <p className="label">Nội dung</p>
+              <p className="label">Message</p>
               <textarea rows={5} value={smsText} onChange={(e) => setSmsText(e.target.value)} className="input resize-none" />
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function QuotesListPage() {
       </Modal>
 
       {/* Status modal */}
-      <Modal open={!!statusQuote} onClose={() => setStatusQuote(null)} title="Đổi trạng thái" icon={Check} size="sm">
+      <Modal open={!!statusQuote} onClose={() => setStatusQuote(null)} title="Change status" icon={Check} size="sm">
         {statusQuote && (
           <div className="space-y-2">
             {(Object.keys(QUOTE_META) as QuoteStatus[]).map((s) => {

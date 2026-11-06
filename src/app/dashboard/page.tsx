@@ -54,7 +54,7 @@ export default function DashboardPage() {
   }
 
   if (!data) {
-    return <EmptyState icon={AlertCircle} title="Không tải được dữ liệu" hint="Thử tải lại trang sau ít phút." />;
+    return <EmptyState icon={AlertCircle} title="Could not load data" hint="Please reload the page in a minute." />;
   }
 
   const t = data.totals;
@@ -72,21 +72,21 @@ export default function DashboardPage() {
             <div className="max-w-xl">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 backdrop-blur px-3 py-1 text-xs font-medium text-brand-200">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span className="shiny-text text-brand-100">Tổng quan hôm nay</span>
+                <span className="shiny-text text-brand-100">Today at a glance</span>
               </span>
               <h1 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-                <span className="gradient-text">{paidPct}%</span> khách đã thanh toán đủ
+                <span className="gradient-text">{paidPct}%</span> of customers are fully paid
               </h1>
-              <p className="mt-2 text-ink-300">Theo dõi thanh toán và gửi báo giá chỉ với một chạm.</p>
+              <p className="mt-2 text-ink-300">Track payments and send quotes in one tap.</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 <Link href="/quotes/create" className="btn-primary">
-                  <Plus className="w-4 h-4" /> Tạo báo giá
+                  <Plus className="w-4 h-4" /> Create quote
                 </Link>
                 <Link href="/payments" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
-                  <Wallet className="w-4 h-4" /> Xem thanh toán
+                  <Wallet className="w-4 h-4" /> View payments
                 </Link>
                 <Link href="/customers?add=1" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
-                  <Users className="w-4 h-4" /> Thêm khách
+                  <Users className="w-4 h-4" /> Add customer
                 </Link>
               </div>
             </div>
@@ -95,23 +95,23 @@ export default function DashboardPage() {
             <div className="flex items-center gap-6 rounded-3xl bg-white/[0.06] border border-white/10 backdrop-blur-md p-5 self-start lg:self-auto">
               <ProgressRing value={t.customersPaid} total={t.customers - t.customersNoOrder} size={132} stroke={14} color="#34d399" track="rgba(255,255,255,0.12)">
                 <span className="text-3xl font-bold">{paidPct}%</span>
-                <span className="text-[11px] text-ink-300">đã trả hết</span>
+                <span className="text-[11px] text-ink-300">fully paid</span>
               </ProgressRing>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                  <span className="text-ink-300">Đã trả hết</span>
+                  <span className="text-ink-300">Fully paid</span>
                   <b className="ml-auto pl-4">{t.customersPaid}</b>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-                  <span className="text-ink-300">Chưa trả hết</span>
+                  <span className="text-ink-300">Not fully paid</span>
                   <b className="ml-auto pl-4">{t.customersOwing}</b>
                 </div>
                 {t.customersNoOrder > 0 && (
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-ink-400" />
-                    <span className="text-ink-300">Chưa có đơn</span>
+                    <span className="text-ink-300">No orders</span>
                     <b className="ml-auto pl-4">{t.customersNoOrder}</b>
                   </div>
                 )}
@@ -125,17 +125,17 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <FadeIn delay={50}>
           <Link href="/customers">
-            <StatCard label="Tổng khách hàng" value={t.customers} icon={Users} tone="brand" />
+            <StatCard label="Customers" value={t.customers} icon={Users} tone="brand" />
           </Link>
         </FadeIn>
         <FadeIn delay={100}>
           <Link href="/payments?tab=PAID">
-            <StatCard label="Đã trả hết" value={t.customersPaid} icon={CheckCircle2} tone="green" />
+            <StatCard label="Fully paid" value={t.customersPaid} icon={CheckCircle2} tone="green" />
           </Link>
         </FadeIn>
         <FadeIn delay={150}>
           <Link href="/quotes">
-            <StatCard label="Báo giá" value={t.quotes} icon={FileText} tone="violet" />
+            <StatCard label="Quotes" value={t.quotes} icon={FileText} tone="violet" />
           </Link>
         </FadeIn>
       </div>
@@ -144,7 +144,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <FadeIn delay={150}>
           <SpotlightCard className="p-6 h-full">
-            <SectionTitle icon={FileText} tone="bg-violet-50 text-violet-600" title="Báo giá" link="/quotes" linkText="Mở" />
+            <SectionTitle icon={FileText} tone="bg-violet-50 text-violet-600" title="Quotes" link="/quotes" linkText="Open" />
             <div className="mt-5 space-y-3">
               {(["DRAFT", "SENT", "ACCEPTED", "REJECTED"] as const).map((s, i) => {
                 const m = QUOTE_META[s];
@@ -174,13 +174,13 @@ export default function DashboardPage() {
               })}
             </div>
             <Link href="/quotes/create" className="btn-ghost w-full mt-6">
-              <Plus className="w-4 h-4" /> Báo giá mới
+              <Plus className="w-4 h-4" /> New quote
             </Link>
           </SpotlightCard>
         </FadeIn>
         <FadeIn delay={150}>
           <SpotlightCard className="p-6 h-full">
-            <SectionTitle icon={MapPin} tone="bg-brand-50 text-brand-600" title="Khách theo bang" />
+            <SectionTitle icon={MapPin} tone="bg-brand-50 text-brand-600" title="Customers by state" />
             <div className="mt-5 space-y-2.5">
               {data.states.slice(0, 6).map((s: any, i: number) => (
                 <div key={s.state} className="flex items-center gap-3">
@@ -201,7 +201,7 @@ export default function DashboardPage() {
 
         <FadeIn delay={200} className="md:col-span-2 lg:col-span-1">
           <SpotlightCard className="p-6 h-full">
-            <SectionTitle icon={Receipt} tone="bg-emerald-50 text-emerald-600" title="Đơn gần đây" link="/payments" linkText="Tất cả" />
+            <SectionTitle icon={Receipt} tone="bg-emerald-50 text-emerald-600" title="Recent orders" link="/payments" linkText="All" />
             <ol className="mt-5 relative border-l-2 border-dashed border-ink-100 ml-2 space-y-4">
               {data.recentOrders.map((o: any) => (
                 <li key={o.id} className="pl-5 relative">
@@ -224,7 +224,7 @@ export default function DashboardPage() {
       {data.recentQuotes.length > 0 && (
         <FadeIn>
           <SpotlightCard className="p-6">
-            <SectionTitle icon={FileText} tone="bg-violet-50 text-violet-600" title="Báo giá mới nhất" link="/quotes" linkText="Tất cả" />
+            <SectionTitle icon={FileText} tone="bg-violet-50 text-violet-600" title="Latest quotes" link="/quotes" linkText="All" />
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {data.recentQuotes.map((q: any) => (
                 <Link key={q.id} href={`/quotes/${q.id}`} className="rounded-2xl border border-ink-100 p-4 card-hover bg-white">

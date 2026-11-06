@@ -202,10 +202,10 @@ export default function QuoteDetailPage() {
       <div className="card max-w-lg mx-auto mt-10">
         <EmptyState
           icon={AlertCircle}
-          title="Không tìm thấy báo giá"
+          title="Quote not found"
           action={
             <Link href="/quotes" className="btn-primary">
-              <ArrowLeft className="w-4 h-4" /> Về danh sách
+              <ArrowLeft className="w-4 h-4" /> Back to list
             </Link>
           }
         />
@@ -229,7 +229,7 @@ export default function QuoteDetailPage() {
       {/* Action bar */}
       <div className="print:hidden flex flex-col lg:flex-row lg:items-center justify-between gap-4 animate-fade-up">
         <div className="flex items-center gap-3">
-          <Link href="/quotes" className="icon-btn bg-white border border-ink-100 shadow-sm" title="Quay lại">
+          <Link href="/quotes" className="icon-btn bg-white border border-ink-100 shadow-sm" title="Back">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
@@ -243,10 +243,10 @@ export default function QuoteDetailPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center rounded-2xl bg-white border border-ink-100 p-1 shadow-sm">
-            <button onClick={handleCopyQuoteText} className="icon-btn" title={copiedToast ? "Đã chép" : "Chép nội dung để dán vào tin nhắn"}>
+            <button onClick={handleCopyQuoteText} className="icon-btn" title={copiedToast ? "Copied" : "Copy as text for a message"}>
               {copiedToast ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
             </button>
-            <button onClick={handleExportCsv} className="icon-btn" title="Xuất file Excel (CSV)">
+            <button onClick={handleExportCsv} className="icon-btn" title="Export Excel (CSV)">
               <FileSpreadsheet className="w-4 h-4" />
             </button>
             <button onClick={handlePrint} className="icon-btn" title="In">
@@ -255,14 +255,14 @@ export default function QuoteDetailPage() {
           </div>
           {quote.status !== "ACCEPTED" && (
             <button disabled={updatingStatus} onClick={() => handleStatusChange("ACCEPTED")} className="btn-ghost !text-emerald-700 hover:!border-emerald-300">
-              <ThumbsUp className="w-4 h-4" /> Khách đồng ý
+              <ThumbsUp className="w-4 h-4" /> Mark accepted
             </button>
           )}
           <button onClick={handleOpenSms} className="btn-dark">
-            <MessageSquare className="w-4 h-4" /> Gửi tin nhắn
+            <MessageSquare className="w-4 h-4" /> Send text
           </button>
           <button disabled={downloadingPdf} onClick={handleDownloadPdf} className="btn-primary">
-            {downloadingPdf ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Tải PDF
+            {downloadingPdf ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Download PDF
           </button>
         </div>
       </div>
@@ -377,9 +377,9 @@ export default function QuoteDetailPage() {
                   <td className="py-3 px-3 text-center">
                     <div className="w-16 h-16 mx-auto rounded-lg border border-slate-200 overflow-hidden bg-white shadow-xs">
                       <img
-                        src={it.imageUrl || "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=300"}
+                        src={it.imageUrl || "/logo.png"}
                         alt={it.productName}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                   </td>
@@ -425,16 +425,16 @@ export default function QuoteDetailPage() {
       <Modal
         open={showSmsModal}
         onClose={() => setShowSmsModal(false)}
-        title="Gửi báo giá qua tin nhắn"
+        title="Send quote by text"
         icon={MessageSquare}
         footer={
           <>
             <button onClick={() => setShowSmsModal(false)} className="btn-ghost">
-              Hủy
+              Cancel
             </button>
             <button disabled={sendingSms || smsSuccess} onClick={handleSendSms} className="btn-primary">
               {sendingSms ? <RefreshCw className="w-4 h-4 animate-spin" /> : smsSuccess ? <Check className="w-4 h-4" /> : <Send className="w-4 h-4" />}
-              {smsSuccess ? "Đã gửi" : "Gửi"}
+              {smsSuccess ? "Sent" : "Send"}
             </button>
           </>
         }
@@ -445,7 +445,7 @@ export default function QuoteDetailPage() {
             <span className="text-sm font-mono font-semibold text-brand-700">{quote.customer.phone}</span>
           </div>
           <div>
-            <p className="label">Nội dung</p>
+            <p className="label">Message</p>
             <textarea rows={5} value={smsContent} onChange={(e) => setSmsContent(e.target.value)} className="input resize-none" />
           </div>
         </div>

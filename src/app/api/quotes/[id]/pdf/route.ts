@@ -3,6 +3,23 @@ import { getQuoteDetail, QuoteData } from "@/lib/quotesData";
 import fs from "fs";
 import path from "path";
 
+// The PDF page is rendered from a string (no origin), so local image paths must be inlined
+const MIME: Record<string, string> = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".gif": "image/gif" };
+function inlineImage(url?: string | null): string {
+  if (!url) return "";
+  if (url.startsWith("data:") || /^https?:\/\//.test(url)) return url;
+  try {
+    const publicDir = path.join(process.cwd(), "public");
+    const file = path.normalize(path.join(publicDir, url));
+    if (!file.startsWith(publicDir)) return "";
+    const mime = MIME[path.extname(file).toLowerCase()];
+    if (!mime || !fs.existsSync(file)) return "";
+    return `data:${mime};base64,${fs.readFileSync(file).toString("base64")}`;
+  } catch {
+    return "";
+  }
+}
+
 // JKI OCEAN logo embedded as a data URI so Puppeteer never needs network access
 function logoDataUri(): string {
   try {
@@ -86,12 +103,7 @@ function renderQuoteHtml(quote: QuoteData): string {
       <td class="text-center text-slate-400 font-semibold" style="width: 40px;">${idx + 1}</td>
       <td style="width: 90px; text-align: center;">
         <div class="product-thumb-wrapper">
-          <img 
-            src="${item.imageUrl || "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=300"}" 
-            alt="${item.productName}" 
-            class="product-thumb"
-            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=300';"
-          />
+          ${inlineImage(item.imageUrl) ? `<img src="${inlineImage(item.imageUrl)}" alt="" class="product-thumb" style="object-fit: contain;" />` : ""}
         </div>
       </td>
       <td>
