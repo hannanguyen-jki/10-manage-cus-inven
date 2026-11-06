@@ -30,6 +30,9 @@ export interface MockCustomer {
   totalSpent?: number;
   totalPaid?: number;
   debtAmount?: number;
+  orderCount?: number;
+  lastOrderDate?: string | null;
+  lastContactDate?: string | null;
   growth25vs24?: number | null;
   growth26vs25?: number | null;
   createdAt: string;
