@@ -50,11 +50,11 @@ async function main() {
   console.log(`>> Removed ${deletedLeads.count} mock/test leads.`);
 
   // Remove test customers not in the authentic list (32 customers from sheet)
-  const authenticPhones = customersToSeed.map((c) => c.phone).filter(Boolean);
-  if (authenticPhones.length > 0) {
+  const authenticIds = customersToSeed.map((c) => c.id).filter(Boolean);
+  if (authenticIds.length > 0) {
     const deletedCust = await prisma.customer.deleteMany({
       where: {
-        phone: { notIn: authenticPhones },
+        id: { notIn: authenticIds },
       },
     });
     console.log(`>> Removed ${deletedCust.count} old mock/test customers (and cascaded dummy orders/quotes/surveys).`);
@@ -116,10 +116,11 @@ async function main() {
 
   for (const c of customersToSeed) {
     const cust = await prisma.customer.upsert({
-      where: { phone: c.phone },
+      where: { id: c.id },
       update: {
         businessName: c.businessName,
         contactPerson: c.contactPerson,
+        phone: c.phone,
         email: c.email,
         address: c.address,
         city: c.city,
@@ -132,6 +133,7 @@ async function main() {
         notes: c.notes,
       },
       create: {
+        id: c.id,
         businessName: c.businessName,
         contactPerson: c.contactPerson,
         phone: c.phone,

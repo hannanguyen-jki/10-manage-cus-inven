@@ -23,7 +23,7 @@ model Customer {
   id              String         @id @default(uuid())
   businessName    String         // Tên Salon / Supply Store
   contactPerson   String         // Tên chủ tiệm / người phụ trách
-  phone           String         @unique // Số điện thoại Mỹ (+1...)
+  phone           String         // Số điện thoại Mỹ (+1...)
   email           String?
   address         String?
   city            String?
