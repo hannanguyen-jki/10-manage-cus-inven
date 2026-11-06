@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       });
     } catch (dbErr: any) {
       console.warn("[SMS API POST] DB save failed, logging in mock store:", dbErr.message);
-      createdLog = addMockSmsLog(customerId || null, toPhone, content, type);
+      createdLog = addMockSmsLog(customerId || null, { toPhone, fromPhone: '+17133306165', content, type: type as any, status: 'SENT' });
     }
 
     return NextResponse.json({

@@ -205,7 +205,7 @@ export function updateMockLead(id: string, updates: Partial<MockLead>): MockLead
 }
 
 export function addMockSmsLog(
-  customerId: string,
+  customerId: string | null,
   log: {
     toPhone: string;
     fromPhone: string;
