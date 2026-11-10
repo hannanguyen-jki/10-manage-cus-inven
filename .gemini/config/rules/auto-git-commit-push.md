@@ -1,7 +1,7 @@
 # Project Rule: Mandatory Auto Git Commit, Push & VPS Deploy
 
 ## 1. Repository & Contributor Policy
-- **Primary Remote**: `https://github.com/hannanguyen-jki/10-manage-cus-inven.git` (Private).
+- **Primary Remote**: `https://github.com/hannanguyen-jki/10-manage-cus-inven.git` (Public).
 - **Single Contributor Enforcement**: All commits MUST use `hannanguyen-jki` (`354901575+hannanguyen-jki@users.noreply.github.com`) as both Author and Committer.
 - **No Co-Author Trailers**: Never include `Co-Authored-By` trailers in commit messages so `hannanguyen-jki` remains the sole contributor on GitHub.
 
