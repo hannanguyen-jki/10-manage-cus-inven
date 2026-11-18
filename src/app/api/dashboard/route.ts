@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getMockCustomers } from "@/lib/mock-crm-data";
 import { summarizeOrders, normalizeOrderStatus } from "@/lib/payments";
 import { getQuotesList } from "@/lib/quotesData";
+import { listProducts } from "@/lib/products";
+import { recencyStatus } from "@/lib/inactivity";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,30 @@ async function loadCustomers(): Promise<any[]> {
   try {
     if (process.env.DATABASE_URL) {
       const rows = await prisma.customer.findMany({
-        include: { orders: { select: { id: true, orderNumber: true, paymentStatus: true, createdAt: true } } },
+        include: {
+          orders: {
+            select: {
+              id: true,
+              orderNumber: true,
+              paymentStatus: true,
+              totalAmount: true,
+              createdAt: true,
+              items: {
+                select: {
+                  id: true,
+                  quantity: true,
+                  unitPrice: true,
+                  product: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+            orderBy: { createdAt: "desc" },
+          },
+        },
       });
       if (rows.length > 0) return rows;
     }
@@ -31,12 +56,14 @@ export async function GET() {
     let customersPaid = 0;
     let customersOwing = 0;
     let customersNoOrder = 0;
+    let productsSold = 0; // total units sold across all orders (same total as the sheet's PIVOT)
     const toRemind: any[] = [];
     const recentOrders: any[] = [];
 
     for (const c of customers) {
       tiers[(c.tier as keyof typeof tiers) || "STANDARD"] = (tiers[c.tier as keyof typeof tiers] || 0) + 1;
-      statuses[(c.status as keyof typeof statuses) || "ACTIVE"] = (statuses[c.status as keyof typeof statuses] || 0) + 1;
+      // green <= 3 months, yellow 3-6 months, red > 6 months or no purchase on record (relative to today)
+      statuses[recencyStatus(c.lastOrderDate || c.orders?.[0]?.createdAt || c.lastSale)]++;
       const st = (c.state || "Other").toUpperCase();
       states[st] = (states[st] || 0) + 1;
 
@@ -46,12 +73,17 @@ export async function GET() {
       else customersNoOrder++;
 
       for (const o of c.orders || []) {
+        for (const it of o.items || []) productsSold += Number(it.quantity) || 0;
         const s = normalizeOrderStatus(o.paymentStatus);
         orderStatus[s]++;
+        const topProduct = o.items?.[0]?.product?.name || o.items?.[0]?.productName || null;
         recentOrders.push({
           id: o.id,
           orderNumber: o.orderNumber,
           createdAt: o.createdAt,
+          totalAmount: Number(o.totalAmount) || 0,
+          itemCount: o.items?.length || 0,
+          topProduct,
           status: s,
           customerId: c.id,
           businessName: c.businessName,
@@ -83,10 +115,24 @@ export async function GET() {
     const quoteStatus = { DRAFT: 0, SENT: 0, ACCEPTED: 0, REJECTED: 0 };
     for (const q of quotes) quoteStatus[q.status as keyof typeof quoteStatus]++;
 
+    let productsCount = 0;
+    try {
+      const prods = await listProducts();
+      productsCount = prods.length;
+    } catch {
+      productsCount = 0;
+    }
+
     return NextResponse.json({
       success: true,
       totals: {
         customers: customers.length,
+        activeCustomers: statuses.ACTIVE,
+        atRiskCustomers: statuses.AT_RISK,
+        inactiveCustomers: statuses.INACTIVE,
+        products: productsCount,
+        orders: recentOrders.length,
+        productsSold,
         customersPaid,
         customersOwing,
         customersNoOrder,

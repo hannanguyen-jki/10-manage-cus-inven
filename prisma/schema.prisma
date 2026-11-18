@@ -34,6 +34,7 @@ model Customer {
   tier            CustomerTier   @default(STANDARD)
   status          CustomerStatus @default(ACTIVE)
   notes           String?
+  lastSale        String?        // "Last sale" từ sheet (M/D/YYYY)
   
   orders          Order[]
   quotes          Quote[]

@@ -6,6 +6,8 @@ import {
   MockCustomer,
 } from "@/lib/mock-crm-data";
 import { summarizeOrders } from "@/lib/payments";
+import { bySupId, nextSupId } from "@/lib/customer-id";
+import { recencyStatus } from "@/lib/inactivity";
 
 export async function GET(req: Request) {
   try {
@@ -24,9 +26,12 @@ export async function GET(req: Request) {
 
       if (search) {
         whereClause.OR = [
+          { id: { contains: search, mode: "insensitive" } },
           { businessName: { contains: search, mode: "insensitive" } },
           { contactPerson: { contains: search, mode: "insensitive" } },
           { phone: { contains: search, mode: "insensitive" } },
+          { city: { contains: search, mode: "insensitive" } },
+          { zipCode: { contains: search, mode: "insensitive" } },
         ];
       }
 
@@ -42,9 +47,7 @@ export async function GET(req: Request) {
         whereClause.assignedSale = assignedSale;
       }
 
-      if (status && status !== "ALL") {
-        whereClause.status = status;
-      }
+      // (status is derived from the last purchase date, so it is filtered after the list is built)
 
       const dbCustomers = await prisma.customer.findMany({
         where: whereClause,
@@ -85,7 +88,7 @@ export async function GET(req: Request) {
         customersData = dbCustomers.map((c) => {
           const totalSpent = c.orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
           const totalPaid = c.orders.reduce((sum, o) => sum + (o.paidAmount || 0), 0);
-          const lastOrderDate = c.orders[0]?.createdAt || null;
+          const lastOrderDate = c.orders[0]?.createdAt || c.lastSale || null;
           const lastContactDate = c.smsLogs[0]?.createdAt || null;
 
           return {
@@ -112,10 +115,7 @@ export async function GET(req: Request) {
         const s = search.toLowerCase();
         filtered = filtered.filter(
           (c) =>
-            c.businessName.toLowerCase().includes(s) ||
-            c.contactPerson.toLowerCase().includes(s) ||
-            c.phone.toLowerCase().includes(s) ||
-            (c.city && c.city.toLowerCase().includes(s))
+            [c.id, c.businessName, c.contactPerson, c.phone, c.city, c.zipCode].some((v) => (v || "").toLowerCase().includes(s))
         );
       }
 
@@ -129,10 +129,6 @@ export async function GET(req: Request) {
 
       if (assignedSale && assignedSale !== "ALL") {
         filtered = filtered.filter((c) => c.assignedSale === assignedSale);
-      }
-
-      if (status && status !== "ALL") {
-        filtered = filtered.filter((c) => c.status === status);
       }
 
       customersData = filtered.map((c) => {
@@ -154,15 +150,23 @@ export async function GET(req: Request) {
       });
     }
 
+    customersData.sort(bySupId);
+
     customersData = customersData.map((c) => {
       const { totalSpent, totalPaid, debtAmount, profit, aov, rev2024, rev2025, rev2026, orders, quotes, smsLogs, churnSurveys, ...rest } = c;
       return {
         ...rest,
+        // bucket from the last purchase date, always relative to today (green <= 3 months, yellow 3-6, red > 6)
+        status: recencyStatus(c.lastOrderDate || c.lastSale),
         ...summarizeOrders(orders || []),
         quoteCount: (quotes || []).length,
         lastContactDate: c.lastContactDate || null,
       };
     });
+
+    if (status && status !== "ALL") {
+      customersData = customersData.filter((c) => c.status === status);
+    }
 
     return NextResponse.json({
       success: true,
@@ -195,53 +199,50 @@ export async function POST(req: Request) {
       assignedSale = "admin",
       tier = "STANDARD",
       status = "ACTIVE",
+      lastSale,
       notes,
     } = body;
 
-    if (!businessName || !contactPerson || !phone) {
+    if (!businessName || !String(businessName).trim()) {
       return NextResponse.json(
-        { success: false, error: "Missing required fields (businessName, contactPerson, phone)" },
+        { success: false, error: "Missing required field (businessName)" },
         { status: 400 }
       );
     }
 
     let createdCustomer: any = null;
 
+    const fields = {
+      businessName: String(businessName).trim(),
+      contactPerson: contactPerson || "",
+      phone: phone || "",
+      email: email || null,
+      address: address || null,
+      city: city || null,
+      state: state || null,
+      zipCode: zipCode || null,
+      birthday: birthday ? new Date(birthday) : null,
+      assignedSale: assignedSale || "admin",
+      tier: tier || "STANDARD",
+      status: status || "ACTIVE",
+      lastSale: lastSale || null,
+      notes: notes || null,
+    };
+
     try {
-      createdCustomer = await prisma.customer.create({
-        data: {
-          businessName,
-          contactPerson,
-          phone,
-          email: email || null,
-          address: address || null,
-          city: city || "Houston",
-          state: state || "TX",
-          zipCode: zipCode || "77036",
-          birthday: birthday ? new Date(birthday) : null,
-          assignedSale: assignedSale || "admin",
-          tier: tier || "STANDARD",
-          status: status || "ACTIVE",
-          notes: notes || null,
-        },
-      });
+      // Next sheet-style ID (SUP0 + highest number + 1); retry if two people create at the same moment.
+      for (let attempt = 0; attempt < 5 && !createdCustomer; attempt++) {
+        const ids = await prisma.customer.findMany({ where: { id: { startsWith: "SUP" } }, select: { id: true } });
+        try {
+          createdCustomer = await prisma.customer.create({ data: { id: nextSupId(ids.map((x) => x.id)), ...fields } });
+        } catch (err: any) {
+          if (err?.code !== "P2002") throw err;
+        }
+      }
+      if (!createdCustomer) throw new Error("Could not allocate customer ID");
     } catch (dbErr) {
       // In-memory fallback
-      createdCustomer = addMockCustomer({
-        businessName,
-        contactPerson,
-        phone,
-        email,
-        address,
-        city: city || "Houston",
-        state: state || "TX",
-        zipCode: zipCode || "77036",
-        birthday,
-        assignedSale,
-        tier,
-        status,
-        notes,
-      });
+      createdCustomer = addMockCustomer({ ...fields, birthday });
     }
 
     return NextResponse.json({

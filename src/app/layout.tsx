@@ -4,7 +4,7 @@ import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: "JKI OCEAN – Customer Management",
-  description: "Track customers, payments and quotes",
+  description: "Track customers, products and quotes",
   icons: { icon: "/favicon.png", apple: "/logo.png" },
 };
 

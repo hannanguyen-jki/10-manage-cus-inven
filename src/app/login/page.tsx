@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogIn, AlertCircle, Loader2, User, Lock, Users, Wallet, FileText } from "lucide-react";
+import { LogIn, AlertCircle, Loader2, User, Lock, Users, Package, FileText } from "lucide-react";
 import { Aurora } from "@/components/ui";
 
 export default function LoginPage() {
@@ -68,7 +68,7 @@ export default function LoginPage() {
           <div className="mt-8 space-y-4">
             {[
               { icon: Users, text: "All customers and contact details" },
-              { icon: Wallet, text: "See at a glance who has paid" },
+              { icon: Package, text: "Product orders and inventory catalog" },
               { icon: FileText, text: "PDF quotes with product photos" },
             ].map(({ icon: Icon, text }, i) => (
               <div key={text} className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: `${200 + i * 120}ms` }}>

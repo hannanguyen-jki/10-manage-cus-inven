@@ -7,6 +7,7 @@ import {
 } from "@/lib/mock-crm-data";
 import { summarizeOrders } from "@/lib/payments";
 import { getQuotesList } from "@/lib/quotesData";
+import { recencyStatus } from "@/lib/inactivity";
 
 export async function GET(
   req: Request,
@@ -39,6 +40,7 @@ export async function GET(
                       sku: true,
                       name: true,
                       category: true,
+                      imageUrl: true,
                       wholesalePrice: true,
                     },
                   },
@@ -84,7 +86,7 @@ export async function GET(
           totalPaid,
           debtAmount,
           orderCount: dbCustomer.orders.length,
-          lastOrderDate: dbCustomer.orders[0]?.createdAt || null,
+          lastOrderDate: dbCustomer.orders[0]?.createdAt || dbCustomer.lastSale || null,
           lastContactDate: dbCustomer.smsLogs[0]?.createdAt || null,
         };
       }
@@ -118,6 +120,9 @@ export async function GET(
         { status: 404 }
       );
     }
+
+    // bucket from the last purchase date, always relative to today (green <= 3 months, yellow 3-6, red > 6)
+    customerData.status = recencyStatus(customerData.lastOrderDate || customerData.lastSale);
 
     // Include quotes created in this app for the customer (not always stored on the customer record)
     try {
@@ -164,6 +169,7 @@ export async function PUT(
       assignedSale,
       tier,
       status,
+      lastSale,
       notes,
     } = body;
 
@@ -185,6 +191,7 @@ export async function PUT(
           assignedSale,
           tier,
           status,
+          lastSale,
           notes,
         },
       });
@@ -203,6 +210,7 @@ export async function PUT(
         assignedSale,
         tier,
         status,
+        lastSale,
         notes,
       });
     }

@@ -9,7 +9,11 @@ done
 echo "PostgreSQL is ready!"
 
 echo "Syncing Prisma database schema for JKI ERP..."
-npx prisma db push --skip-generate
+# Refuse to drop tables that are not in the Prisma schema (jki_data_migrations).
+# --accept-data-loss would remove the one-time customer import guard.
+if ! npx prisma db push --skip-generate; then
+  echo "Prisma db push made no changes. Unmanaged tables were left in place."
+fi
 
 echo "Seeding initial data (Products, Salons, Orders, Leads)..."
 npx tsx prisma/seed.ts || echo "Seed already completed or skipped."

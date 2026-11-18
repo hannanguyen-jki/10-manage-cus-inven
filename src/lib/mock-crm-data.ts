@@ -1,4 +1,5 @@
 import rawCustomers from "../../data/customers_extracted.json";
+import { nextSupId } from "./customer-id";
 
 export interface MockCustomer {
   id: string;
@@ -16,6 +17,7 @@ export interface MockCustomer {
   tier: "STANDARD" | "WHOLESALE" | "VIP";
   status: "ACTIVE" | "AT_RISK" | "INACTIVE";
   notes: string | null;
+  lastSale?: string | null;
   profit?: number;
   aov?: number;
   cycleDays?: number;
@@ -138,19 +140,20 @@ export function getMockCustomerById(id: string): MockCustomer | undefined {
 
 export function addMockCustomer(c: any): MockCustomer {
   const newCust: MockCustomer = {
-    id: `cus-${Date.now()}`,
-    businessName: c.businessName || "New Salon Account",
-    contactPerson: c.contactPerson || "Manager",
-    phone: c.phone || "+10000000000",
+    id: nextSupId(mockCustomersStore.map((x) => x.id)),
+    businessName: c.businessName,
+    contactPerson: c.contactPerson || "",
+    phone: c.phone || "",
     email: c.email || null,
     address: c.address || null,
-    city: c.city || "Houston",
-    state: c.state || "TX",
-    zipCode: c.zipCode || "77036",
+    city: c.city || null,
+    state: c.state || null,
+    zipCode: c.zipCode || null,
     birthday: c.birthday || null,
     assignedSale: c.assignedSale || "admin",
     tier: c.tier || "STANDARD",
     status: c.status || "ACTIVE",
+    lastSale: c.lastSale || null,
     notes: c.notes || null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -159,7 +162,7 @@ export function addMockCustomer(c: any): MockCustomer {
     smsLogs: [],
     churnSurveys: [],
   };
-  mockCustomersStore.unshift(newCust);
+  mockCustomersStore.push(newCust);
   return newCust;
 }
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquare, Send, Loader2, HandHeart, BellRing, Gift, Cake } from "lucide-react";
+import { MessageSquare, Send, Loader2, HandHeart, Gift, Cake } from "lucide-react";
 import { Modal, cn } from "@/components/ui";
 
-export type SmsTemplate = "FOLLOW_UP" | "AR_REMINDER" | "PROMOTION" | "BIRTHDAY";
+export type SmsTemplate = "FOLLOW_UP" | "PROMOTION" | "BIRTHDAY";
 
 const TEMPLATES: { id: SmsTemplate; label: string; icon: any; build: (name: string, shop: string) => string }[] = [
   {
@@ -13,13 +13,6 @@ const TEMPLATES: { id: SmsTemplate; label: string; icon: any; build: (name: stri
     icon: HandHeart,
     build: (n, s) =>
       `Hi ${n}, this is JKIOCEAN. How is the last order working out at ${s}? Text us anytime you need more brushes, tools or supplies!`,
-  },
-  {
-    id: "AR_REMINDER",
-    label: "Payment reminder",
-    icon: BellRing,
-    build: (n, s) =>
-      `Hi ${n}, this is JKIOCEAN. ${s} has an order that is still unpaid. Could you please send payment by Zelle or check when you can? Thank you!`,
   },
   {
     id: "PROMOTION",

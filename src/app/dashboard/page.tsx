@@ -9,17 +9,17 @@ import {
   FileText,
   Plus,
   ArrowRight,
-  Wallet,
   MapPin,
   Sparkles,
   Receipt,
+  Package,
+  PackageCheck,
 } from "lucide-react";
 import {
   Aurora,
   EmptyState,
   FadeIn,
-  PayBadge,
-  ProgressRing,
+  SegmentedRing,
   QUOTE_META,
   QuoteBadge,
   Skeleton,
@@ -58,7 +58,7 @@ export default function DashboardPage() {
   }
 
   const t = data.totals;
-  const paidPct = t.customers - t.customersNoOrder > 0 ? Math.round((t.customersPaid / (t.customers - t.customersNoOrder)) * 100) : 0;
+  const activePct = t.customers > 0 ? Math.round(((t.activeCustomers ?? t.customers) / t.customers) * 100) : 0;
   const maxState = Math.max(1, ...data.states.map((s: any) => s.count));
 
   return (
@@ -75,15 +75,15 @@ export default function DashboardPage() {
                 <span className="shiny-text text-brand-100">Today at a glance</span>
               </span>
               <h1 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-                <span className="gradient-text">{paidPct}%</span> of customers are fully paid
+                <span className="gradient-text">{activePct}%</span> of customers bought in the last 3 months
               </h1>
-              <p className="mt-2 text-ink-300">Track payments and send quotes in one tap.</p>
+              <p className="mt-2 text-ink-300">Manage customers, quotes, and product inventory in one tap.</p>
               <div className="mt-6 flex flex-wrap gap-2">
                 <Link href="/quotes/create" className="btn-primary">
                   <Plus className="w-4 h-4" /> Create quote
                 </Link>
-                <Link href="/payments" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
-                  <Wallet className="w-4 h-4" /> View payments
+                <Link href="/products" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
+                  <Package className="w-4 h-4" /> View products
                 </Link>
                 <Link href="/customers?add=1" className="btn bg-white/10 border border-white/15 text-white hover:bg-white/20 backdrop-blur">
                   <Users className="w-4 h-4" /> Add customer
@@ -93,28 +93,36 @@ export default function DashboardPage() {
 
             {/* Infographic ring */}
             <div className="flex items-center gap-6 rounded-3xl bg-white/[0.06] border border-white/10 backdrop-blur-md p-5 self-start lg:self-auto">
-              <ProgressRing value={t.customersPaid} total={t.customers - t.customersNoOrder} size={132} stroke={14} color="#34d399" track="rgba(255,255,255,0.12)">
-                <span className="text-3xl font-bold">{paidPct}%</span>
-                <span className="text-[11px] text-ink-300">fully paid</span>
-              </ProgressRing>
+              <SegmentedRing
+                size={132}
+                stroke={14}
+                track="rgba(255,255,255,0.12)"
+                segments={[
+                  { value: t.activeCustomers || 0, color: "#34d399" },
+                  { value: t.atRiskCustomers || 0, color: "#fbbf24" },
+                  { value: t.inactiveCustomers || 0, color: "#f87171" },
+                ]}
+              >
+                <span className="text-3xl font-bold">{t.customers}</span>
+                <span className="text-[11px] text-ink-300">customers</span>
+              </SegmentedRing>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                  <span className="text-ink-300">Fully paid</span>
-                  <b className="ml-auto pl-4">{t.customersPaid}</b>
+                  <span className="text-ink-300 whitespace-nowrap">Bought within 3 months</span>
+                  <b className="ml-auto pl-4">{t.activeCustomers || 0}</b>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                  <span className="text-ink-300 whitespace-nowrap">Last bought 3–6 months ago</span>
+                  <b className="ml-auto pl-4">{t.atRiskCustomers || 0}</b>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-                  <span className="text-ink-300">Not fully paid</span>
-                  <b className="ml-auto pl-4">{t.customersOwing}</b>
+                  <span className="text-ink-300 whitespace-nowrap">No purchase over 6 months</span>
+                  <b className="ml-auto pl-4">{t.inactiveCustomers || 0}</b>
                 </div>
-                {t.customersNoOrder > 0 && (
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-ink-400" />
-                    <span className="text-ink-300">No orders</span>
-                    <b className="ml-auto pl-4">{t.customersNoOrder}</b>
-                  </div>
-                )}
+                <p className="text-[11px] text-ink-400 max-w-[260px]">Customers with no order on record are counted in red.</p>
               </div>
             </div>
           </div>
@@ -122,21 +130,14 @@ export default function DashboardPage() {
       </FadeIn>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FadeIn delay={50}>
           <Link href="/customers">
             <StatCard label="Customers" value={t.customers} icon={Users} tone="brand" />
           </Link>
         </FadeIn>
         <FadeIn delay={100}>
-          <Link href="/payments?tab=PAID">
-            <StatCard label="Fully paid" value={t.customersPaid} icon={CheckCircle2} tone="green" />
-          </Link>
-        </FadeIn>
-        <FadeIn delay={150}>
-          <Link href="/quotes">
-            <StatCard label="Quotes" value={t.quotes} icon={FileText} tone="violet" />
-          </Link>
+          <StatCard label="Products sold" value={t.productsSold || 0} icon={PackageCheck} tone="violet" />
         </FadeIn>
       </div>
 
@@ -200,22 +201,40 @@ export default function DashboardPage() {
         </FadeIn>
 
         <FadeIn delay={200} className="md:col-span-2 lg:col-span-1">
-          <SpotlightCard className="p-6 h-full">
-            <SectionTitle icon={Receipt} tone="bg-emerald-50 text-emerald-600" title="Recent orders" link="/payments" linkText="All" />
-            <ol className="mt-5 relative border-l-2 border-dashed border-ink-100 ml-2 space-y-4">
-              {data.recentOrders.map((o: any) => (
-                <li key={o.id} className="pl-5 relative">
-                  <span className={`absolute -left-[7px] top-1.5 w-3 h-3 rounded-full ring-4 ring-white ${o.status === "PAID" ? "bg-emerald-500" : o.status === "PARTIAL" ? "bg-amber-500" : "bg-rose-500"}`} />
-                  <div className="flex items-start justify-between gap-2">
-                    <Link href={`/customers/${o.customerId}`} className="min-w-0">
-                      <p className="text-sm font-semibold text-ink-800 truncate hover:text-brand-600">{o.businessName}</p>
-                      <p className="text-xs text-ink-400">{timeAgo(o.createdAt)}</p>
-                    </Link>
-                    <PayBadge status={o.status} />
-                  </div>
-                </li>
-              ))}
-            </ol>
+          <SpotlightCard className="p-6 h-full flex flex-col">
+            <SectionTitle icon={Receipt} tone="bg-emerald-50 text-emerald-600" title="Recent orders" link="/customers" linkText="All customers" />
+            {data.recentOrders?.length === 0 ? (
+              <div className="py-8 text-center text-sm text-ink-400">No orders recorded yet.</div>
+            ) : (
+              <ol className="mt-5 relative border-l-2 border-dashed border-ink-100 ml-2 space-y-4 flex-1">
+                {data.recentOrders.slice(0, 5).map((o: any) => (
+                  <li key={o.id} className="pl-5 relative">
+                    <span className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full ring-4 ring-white bg-emerald-500" />
+                    <div className="flex items-start justify-between gap-2">
+                      <Link href={`/customers/${o.customerId}`} className="min-w-0 flex-1 group">
+                        <p className="text-sm font-semibold text-ink-800 truncate group-hover:text-brand-600 transition-colors">
+                          {o.businessName}
+                        </p>
+                        <p className="text-xs text-ink-400 flex items-center gap-1.5 mt-0.5">
+                          <span>{timeAgo(o.createdAt)}</span>
+                          {o.itemCount > 0 && (
+                            <>
+                              <span>·</span>
+                              <span className="truncate max-w-[130px] text-ink-500">
+                                {o.topProduct ? `${o.topProduct}` : `${o.itemCount} items`}
+                              </span>
+                            </>
+                          )}
+                        </p>
+                      </Link>
+                      <div className="text-right shrink-0">
+                        <span className="block text-xs font-mono font-semibold text-ink-500">{o.orderNumber}</span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
           </SpotlightCard>
         </FadeIn>
       </div>

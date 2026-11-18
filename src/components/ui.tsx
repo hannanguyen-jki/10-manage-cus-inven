@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
-import { LucideIcon, X, CheckCircle2, XCircle, CircleDashed, Send, ThumbsUp, ThumbsDown, FileEdit } from "lucide-react";
+import { LucideIcon, X, CheckCircle2, XCircle, Info, CircleDashed, Send, ThumbsUp, ThumbsDown, FileEdit } from "lucide-react";
 
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -209,6 +209,56 @@ export function ProgressRing({
 }
 
 /* ------------------------------------------------------------------ */
+/* SegmentedRing – donut split into several coloured parts              */
+/* ------------------------------------------------------------------ */
+export function SegmentedRing({
+  segments,
+  size = 120,
+  stroke = 12,
+  track = "#eceef2",
+  children,
+}: {
+  segments: { value: number; color: string }[];
+  size?: number;
+  stroke?: number;
+  track?: string;
+  children?: React.ReactNode;
+}) {
+  const total = segments.reduce((sum, s) => sum + s.value, 0);
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  let offset = 0;
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} stroke={track} strokeWidth={stroke} fill="none" />
+        {total > 0 &&
+          segments.map((s, i) => {
+            const len = (s.value / total) * c;
+            const el =
+              s.value > 0 ? (
+                <circle
+                  key={i}
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={r}
+                  stroke={s.color}
+                  strokeWidth={stroke}
+                  fill="none"
+                  strokeDasharray={`${len} ${c - len}`}
+                  strokeDashoffset={-offset}
+                />
+              ) : null;
+            offset += len;
+            return el;
+          })}
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">{children}</div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* SegmentBar – stacked horizontal bar infographic                      */
 /* ------------------------------------------------------------------ */
 export function SegmentBar({
@@ -387,25 +437,9 @@ export function PayBadge({ status, pulse }: { status: PayStatus; pulse?: boolean
   );
 }
 
-/** Per-customer payment summary badge */
-export function CustomerPayBadge({ c }: { c: { payStatus: string; unpaidOrders: number } }) {
-  if (c.payStatus === "NONE")
-    return <span className="inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-ink-100 text-ink-500">No orders</span>;
-  if (c.payStatus === "PAID")
-    return (
-      <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
-        <CheckCircle2 className="w-3.5 h-3.5" /> All paid
-      </span>
-    );
-  return (
-    <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-rose-50 text-rose-700 ring-1 ring-rose-200">
-      <span className="relative flex h-2 w-2">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-60" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-rose-500" />
-      </span>
-      {c.unpaidOrders} unpaid
-    </span>
-  );
+/** Per-customer payment summary badge - hidden */
+export function CustomerPayBadge(_props: any) {
+  return null;
 }
 
 /* ------------------------------------------------------------------ */
@@ -503,9 +537,9 @@ export function Modal({
 /* Toast                                                               */
 /* ------------------------------------------------------------------ */
 export function useToast() {
-  const [toast, setToast] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [toast, setToast] = useState<{ text: string; type: "success" | "error" | "info" } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>();
-  const show = (text: string, type: "success" | "error" = "success") => {
+  const show = (text: string, type: "success" | "error" | "info" = "success") => {
     setToast({ text, type });
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setToast(null), 3500);
@@ -515,10 +549,16 @@ export function useToast() {
       <div
         className={cn(
           "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium shadow-2xl",
-          toast.type === "success" ? "bg-ink-900 text-white" : "bg-rose-600 text-white"
+          toast.type === "error" ? "bg-rose-600 text-white" : "bg-ink-900 text-white"
         )}
       >
-        {toast.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <XCircle className="w-5 h-5" />}
+        {toast.type === "success" ? (
+          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+        ) : toast.type === "info" ? (
+          <Info className="w-5 h-5 text-sky-300" />
+        ) : (
+          <XCircle className="w-5 h-5" />
+        )}
         {toast.text}
       </div>
     </div>

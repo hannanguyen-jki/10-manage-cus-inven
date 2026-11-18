@@ -3,13 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Users, Wallet, FileText, Package } from "lucide-react";
+import { LayoutGrid, Users, FileText, Package } from "lucide-react";
 import { cn } from "@/components/ui";
 
 export const navItems = [
   { title: "Overview", short: "Overview", href: "/dashboard", icon: LayoutGrid },
   { title: "Customers", short: "Customers", href: "/customers", icon: Users },
-  { title: "Payments", short: "Payments", href: "/payments", icon: Wallet },
   { title: "Quotes", short: "Quotes", href: "/quotes", icon: FileText },
   { title: "Products", short: "Products", href: "/products", icon: Package },
 ];
